@@ -199,12 +199,6 @@ public class CinemaModDownloader extends Thread {
 
         taskLabel.setText("Verifying library files...");
 
-        String noticeString = "CinemaMod contains binary patches for Chromium Embedded Framework to include additional codecs (AVC & MPEG-4).\n" +
-                "The end user is responsible for compiling the final binary product via this helper-software.\n" +
-                "See the Google Chrome license for more info here: https://www.google.com/chrome/terms/";
-
-        JOptionPane.showMessageDialog(frame, noticeString);
-
         try {
             ensureJcef(versions.getProperty("jcef"), platform);
         } catch (IOException e) {
