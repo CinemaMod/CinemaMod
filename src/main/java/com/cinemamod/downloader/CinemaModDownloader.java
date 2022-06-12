@@ -1,5 +1,8 @@
 package com.cinemamod.downloader;
 
+import io.sigpipe.jbsdiff.InvalidHeaderException;
+import io.sigpipe.jbsdiff.ui.FileUI;
+import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.io.FileUtils;
 
 import javax.swing.*;
@@ -8,23 +11,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class CinemaModDownloader extends Thread {
 
     private Properties versions;
-    private JFrame frame;
-    private JLabel taskLabel;
-    private JLabel jcefVersionLabel;
-    private JLabel fileLabel;
-    private JProgressBar progressBar;
-
-    private int totalJcefFiles;
+    private final JFrame frame;
+    private final JLabel taskLabel;
+    private final JLabel jcefVersionLabel;
+    private final JLabel fileLabel;
+    private final JProgressBar progressBar;
 
     public CinemaModDownloader(JFrame frame, JLabel taskLabel, JLabel jcefVersionLabel, JLabel fileLabel, JProgressBar progressBar) {
         this.frame = frame;
@@ -32,6 +31,22 @@ public class CinemaModDownloader extends Thread {
         this.jcefVersionLabel = jcefVersionLabel;
         this.fileLabel = fileLabel;
         this.progressBar = progressBar;
+    }
+
+    private Map<String, String> fetchFileManifest(String url) throws IOException {
+        // sha1sum, filename
+        Map<String, String> manifest = new HashMap<>();
+        try (InputStream inputStream = new URL(url).openStream()) {
+            try (Scanner scanner = new Scanner(inputStream)) {
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    String sha1hash = line.split(" ")[0];
+                    String filePath = line.split(" ")[2].substring(1); // substring to remove the leading "."
+                    manifest.put(sha1hash, filePath);
+                }
+            }
+        }
+        return manifest;
     }
 
     private void fetchVersions() throws IOException {
@@ -64,7 +79,7 @@ public class CinemaModDownloader extends Thread {
         if (libFile.exists()) {
             // check hash of existing file on disk
             try {
-                String onDiskHash = HashUtil.sha1Hash(libFile);
+                String onDiskHash = Util.sha1Hash(libFile);
 
                 if (sha1hash.equals(onDiskHash)) {
                     // file is good
@@ -90,49 +105,37 @@ public class CinemaModDownloader extends Thread {
         // set appropriate files as executable on linux
         if (System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("linux")) {
             if (localFile.toString().contains("chrome-sandbox") || localFile.toString().contains("jcef_helper")) {
-                Set<PosixFilePermission> perms = new HashSet<>();
-                perms.add(PosixFilePermission.OWNER_READ);
-                perms.add(PosixFilePermission.OWNER_WRITE);
-                perms.add(PosixFilePermission.OWNER_EXECUTE);
-
-                try {
-                    Files.setPosixFilePermissions(localFile.toPath(), perms);
-                } catch (IOException e) {
-                    // Ignore
-                }
+                Util.makeExecNix(localFile);
             }
         }
     }
 
+    private void patchLibFile(String relPath) throws CompressorException, IOException, InvalidHeaderException {
+        Path librariesPath = Paths.get(System.getProperty("cinemamod.libraries.path"));
+        fileLabel.setText("Patching " + relPath);
+        System.out.println(fileLabel.getText());
+        File libFile = new File(librariesPath + relPath);
+        File patchFile = new File(libFile + ".diff");
+        FileUI.patch(libFile, libFile, patchFile);
+    }
+
     private void ensureJcef(String cefBranch, String platform) throws IOException {
-        String jcefUrlString = Resource.getCinemamodJcefUrl(cefBranch, platform);
-        String jcefManifestUrlString = jcefUrlString + "/manifest.txt";
+        // manifest of the unpatched JCEF files
+        String jcefManifestUrlString = Resource.getJcefUrl(cefBranch, platform) + "/manifest.txt";
+        // manifest of the patched JCEF files
+        String jcefPatchedManifestUrlString = Resource.getJcefPatchesUrl(cefBranch, platform) + "/patched-manifest.txt";
+        // manifest of the .diff JCEF patch files
+        String jcefPatchesManifestUrlString = Resource.getJcefPatchesUrl(cefBranch, platform) + "/manifest.txt";
 
-        System.out.println("JCEF Manifest location " + jcefManifestUrlString);
-
-        URL jcefManifestURL = new URL(jcefManifestUrlString);
-
-        Map<String, String> jcefFiles = new HashMap<>();
-
-        try (InputStream inputStream = jcefManifestURL.openStream()) {
-            try (Scanner scanner = new Scanner(inputStream)) {
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    String sha1hash = line.split(" ")[0];
-                    String filePath = line.split(" ")[2].substring(1); // substring to remove the leading "."
-
-                    jcefFiles.put(sha1hash, filePath);
-
-                    totalJcefFiles++;
-                }
-            }
-        }
+        Map<String, String> jcefManifest = fetchFileManifest(jcefManifestUrlString);
+        Map<String, String> jcefPatchedManifest = fetchFileManifest(jcefPatchedManifestUrlString);
+        Map<String, String> patchesManifest = fetchFileManifest(jcefPatchesManifestUrlString);
 
         int fileCount = 0;
-        for (Map.Entry<String, String> entry : jcefFiles.entrySet()) {
+        for (Map.Entry<String, String> entry : jcefPatchedManifest.entrySet()) {
             fileCount++;
 
-            int value = (int) ((fileCount / (double) totalJcefFiles) * 100);
+            int value = (int) ((fileCount / (double) jcefPatchedManifest.size()) * 100);
 
             progressBar.setValue(value);
 
@@ -142,9 +145,26 @@ public class CinemaModDownloader extends Thread {
             fileLabel.setText("Found " + filePath.substring(1)); // substring to remove leading "/"
 
             if (!ensureLibFile(sha1hash, filePath)) {
-                String remotePath = jcefUrlString + filePath;
+                // Download the unpatched JCEF library file
+                String remotePath = Resource.getJcefUrl(cefBranch, platform) + filePath;
                 fileLabel.setText(remotePath);
                 downloadLibFile(remotePath, filePath);
+
+                // Check if the file has a patch
+                for (String patchFileName : patchesManifest.values()) {
+                    if (patchFileName.startsWith(filePath)) {
+                        // Download the patch .diff file
+                        String patchRemotePath = Resource.getJcefPatchesUrl(cefBranch, platform) + patchFileName;
+                        downloadLibFile(patchRemotePath, patchFileName);
+
+                        // Patch the JCEF file
+                        try {
+                            patchLibFile(filePath);
+                        } catch (CompressorException | InvalidHeaderException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         }
     }
@@ -179,6 +199,12 @@ public class CinemaModDownloader extends Thread {
 
         taskLabel.setText("Verifying library files...");
 
+        String noticeString = "CinemaMod contains binary patches for Chromium Embedded Framework to include additional codecs (AVC & MPEG-4).\n" +
+                "The end user is responsible for compiling the final binary product via this helper-software.\n" +
+                "See the Google Chrome license for more info here: https://www.google.com/chrome/terms/";
+
+        JOptionPane.showMessageDialog(frame, noticeString);
+
         try {
             ensureJcef(versions.getProperty("jcef"), platform);
         } catch (IOException e) {
@@ -199,18 +225,12 @@ public class CinemaModDownloader extends Thread {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
 
         JFrame frame = new JFrame();
-        frame.setSize(700, 250);
+        frame.setSize(600, 250);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JPanel mainPanel = new JPanel();
