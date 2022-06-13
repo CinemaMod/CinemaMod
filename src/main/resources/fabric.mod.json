@@ -3,7 +3,7 @@
   "id": "cinemamod",
   "name": "CinemaMod",
   "version": "${version}",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "entrypoints": {
     "client": [
       "com.cinemamod.fabric.CinemaModClient"
