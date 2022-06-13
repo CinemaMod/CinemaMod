@@ -1,5 +1,6 @@
 package com.cinemamod.downloader;
 
+import com.cinemamod.fabric.CinemaMod;
 import io.sigpipe.jbsdiff.InvalidHeaderException;
 import io.sigpipe.jbsdiff.ui.FileUI;
 import org.apache.commons.compress.compressors.CompressorException;
@@ -119,7 +120,7 @@ public class CinemaModDownloader extends Thread {
         FileUI.patch(libFile, libFile, patchFile);
     }
 
-    private void ensureJcef(String cefBranch, String platform) throws IOException {
+    private void ensureJcef(String cefBranch, String platform) {
         // manifest of the unpatched JCEF files
         String jcefManifestUrlString = Resource.getJcefUrl(cefBranch, platform) + "/manifest.txt";
         // manifest of the patched JCEF files
@@ -127,15 +128,40 @@ public class CinemaModDownloader extends Thread {
         // manifest of the .diff JCEF patch files
         String jcefPatchesManifestUrlString = Resource.getJcefPatchesUrl(cefBranch, platform) + "/manifest.txt";
 
-        Map<String, String> jcefManifest = fetchFileManifest(jcefManifestUrlString);
-        Map<String, String> jcefPatchedManifest = fetchFileManifest(jcefPatchedManifestUrlString);
-        Map<String, String> patchesManifest = fetchFileManifest(jcefPatchesManifestUrlString);
+        Map<String, String> jcefManifest = new HashMap<>();
+        Map<String, String> jcefPatchedManifest = new HashMap<>();;
+        Map<String, String> patchesManifest = new HashMap<>();;
+
+        boolean usingCodecs = true;
+
+        try {
+            jcefManifest = fetchFileManifest(jcefManifestUrlString);
+        } catch (IOException e) {
+            CinemaMod.LOGGER.warn("Unable to download JCEF manifest");
+            e.printStackTrace();
+        }
+
+        try {
+            jcefPatchedManifest = fetchFileManifest(jcefPatchedManifestUrlString);
+        } catch (IOException e) {
+            CinemaMod.LOGGER.warn("Unable to download patched JCEF manifest");
+            e.printStackTrace();
+            usingCodecs = false;
+        }
+
+        try {
+            patchesManifest = fetchFileManifest(jcefPatchesManifestUrlString);
+        } catch (IOException e) {
+            CinemaMod.LOGGER.warn("Unable to JCEF patches manifest");
+            e.printStackTrace();
+            usingCodecs = false;
+        }
 
         int fileCount = 0;
-        for (Map.Entry<String, String> entry : jcefPatchedManifest.entrySet()) {
+        for (Map.Entry<String, String> entry : usingCodecs ? jcefPatchedManifest.entrySet() : jcefManifest.entrySet()) {
             fileCount++;
 
-            int value = (int) ((fileCount / (double) jcefPatchedManifest.size()) * 100);
+            int value = (int) ((fileCount / (double) jcefManifest.size()) * 100);
 
             progressBar.setValue(value);
 
@@ -148,20 +174,31 @@ public class CinemaModDownloader extends Thread {
                 // Download the unpatched JCEF library file
                 String remotePath = Resource.getJcefUrl(cefBranch, platform) + filePath;
                 fileLabel.setText(remotePath);
-                downloadLibFile(remotePath, filePath);
 
-                // Check if the file has a patch
-                for (String patchFileName : patchesManifest.values()) {
-                    if (patchFileName.startsWith(filePath)) {
-                        // Download the patch .diff file
-                        String patchRemotePath = Resource.getJcefPatchesUrl(cefBranch, platform) + patchFileName;
-                        downloadLibFile(patchRemotePath, patchFileName);
+                try {
+                    downloadLibFile(remotePath, filePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                        // Patch the JCEF file
-                        try {
-                            patchLibFile(filePath);
-                        } catch (CompressorException | InvalidHeaderException e) {
-                            e.printStackTrace();
+                if (usingCodecs) {
+                    // Check if the file has a patch
+                    for (String patchFileName : patchesManifest.values()) {
+                        if (patchFileName.startsWith(filePath)) {
+                            // Download the patch .diff file
+                            String patchRemotePath = Resource.getJcefPatchesUrl(cefBranch, platform) + patchFileName;
+                            try {
+                                downloadLibFile(patchRemotePath, patchFileName);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            // Patch the JCEF file
+                            try {
+                                patchLibFile(filePath);
+                            } catch (CompressorException | InvalidHeaderException | IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -199,11 +236,7 @@ public class CinemaModDownloader extends Thread {
 
         taskLabel.setText("Verifying library files...");
 
-        try {
-            ensureJcef(versions.getProperty("jcef"), platform);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ensureJcef(versions.getProperty("jcef"), platform);
 
         frame.setVisible(false);
         frame.dispose();
