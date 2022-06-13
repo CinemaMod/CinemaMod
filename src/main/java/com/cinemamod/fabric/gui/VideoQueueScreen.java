@@ -5,15 +5,20 @@ import com.cinemamod.fabric.gui.widget.VideoQueueWidget;
 import com.cinemamod.fabric.util.NetworkUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import org.lwjgl.glfw.GLFW;
 
 public class VideoQueueScreen extends Screen {
 
     protected static final Identifier TEXTURE = new Identifier("textures/gui/social_interactions.png");
+    protected static KeyBinding keyBinding;
 
     public VideoQueueWidget videoQueueWidget;
 
@@ -84,7 +89,7 @@ public class VideoQueueScreen extends Screen {
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        if (client.options.dropKey.matchesKey(keyCode, scanCode)) {
+        if (keyBinding.matchesKey(keyCode, scanCode)) {
             close();
         }
         return super.keyReleased(keyCode, scanCode, modifiers);
@@ -97,10 +102,17 @@ public class VideoQueueScreen extends Screen {
     }
 
     public static void registerKeyInput() {
+        keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.cinemamod.openvideoqueue",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_R,
+                "category.cinemamod.keybinds"
+        ));
+
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (!CinemaModClient.getInstance().getScreenManager().hasActiveScreen()) return;
 
-            if (client.options.dropKey.wasPressed()) {
+            if (keyBinding.wasPressed()) {
                 client.setScreen(new VideoQueueScreen());
             }
         });
