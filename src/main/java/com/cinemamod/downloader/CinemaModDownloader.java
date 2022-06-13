@@ -234,7 +234,7 @@ public class CinemaModDownloader extends Thread {
         JPanel taskPanel = new JPanel();
         taskPanel.setLayout(new FlowLayout());
 
-        JLabel nameLabel = new JLabel("CinemaDisplays");
+        JLabel nameLabel = new JLabel("CinemaMod");
         taskPanel.add(nameLabel);
 
         JLabel taskLabel = new JLabel("Setting up...");
