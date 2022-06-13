@@ -5,13 +5,14 @@ import net.minecraft.util.math.BlockPos;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ScreenManager {
 
-    private final Map<BlockPos, Screen> screens;
+    private final ConcurrentHashMap<BlockPos, Screen> screens;
 
     public ScreenManager() {
-        screens = new HashMap<>();
+        screens = new ConcurrentHashMap<>();
     }
 
     public Collection<Screen> getScreens() {
