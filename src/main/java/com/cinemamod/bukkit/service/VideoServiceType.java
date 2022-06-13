@@ -7,7 +7,7 @@ import org.apache.commons.lang.NotImplementedException;
 public enum VideoServiceType implements PacketByteBufSerializable<VideoServiceType> {
 
     YOUTUBE(
-            "hhttps://cinemamod-static.ewr1.vultrobjects.com/service/v1/youtube.html",
+            "https://cinemamod-static.ewr1.vultrobjects.com/service/v1/youtube.html",
             "th_volume(%d);",
             "th_video('%s', %b);",
             "th_seek(%d);",
