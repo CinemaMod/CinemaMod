@@ -30,7 +30,7 @@ public class VideoURLParser {
 
         String youtubeVideoId = getYouTubeVideoId(url);
         if (youtubeVideoId != null) {
-            infoFetcher = new YouTubeVideoInfoFetcher(cinemaModPlugin.getCinemaModConfig().youtubeDataApiKey, youtubeVideoId);
+            infoFetcher = new YouTubeVideoInfoFetcher(cinemaModPlugin, youtubeVideoId);
             return;
         }
 
@@ -41,7 +41,7 @@ public class VideoURLParser {
         }
 
         if (url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith("m4v")) {
-            infoFetcher = new FileVideoInfoFetcher("cinemamod.request.file", url, player == null ? "server" : player.getName(), cinemaModPlugin);
+            infoFetcher = new FileVideoInfoFetcher(cinemaModPlugin, "cinemamod.request.file", url, player == null ? "server" : player.getName());
             return;
         }
 

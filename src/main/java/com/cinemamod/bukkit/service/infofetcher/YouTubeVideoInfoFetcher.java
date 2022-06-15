@@ -1,5 +1,6 @@
 package com.cinemamod.bukkit.service.infofetcher;
 
+import com.cinemamod.bukkit.CinemaModPlugin;
 import com.cinemamod.bukkit.service.VideoServiceType;
 import com.cinemamod.bukkit.storage.VideoInfo;
 import com.google.gson.JsonArray;
@@ -21,17 +22,28 @@ public class YouTubeVideoInfoFetcher extends VideoInfoFetcher {
             = "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics,status&id=%s&key=%s";
     private static final JsonParser JSON_PARSER = new JsonParser();
 
+    private CinemaModPlugin cinemaModPlugin;
     private String youtubeDataApiKey;
     private String youtubeVideoId;
 
-    public YouTubeVideoInfoFetcher(String youtubeDataApiKey, String youtubeVideoId) {
+    public YouTubeVideoInfoFetcher(CinemaModPlugin cinemaModPlugin, String youtubeVideoId) {
         super("cinemamod.request.youtube");
-        this.youtubeDataApiKey = youtubeDataApiKey;
+        this.cinemaModPlugin = cinemaModPlugin;
+        this.youtubeDataApiKey = cinemaModPlugin.getCinemaModConfig().youtubeDataApiKey;
         this.youtubeVideoId = youtubeVideoId;
+    }
+
+    public boolean keyConfigured() {
+        return youtubeDataApiKey.length() == 39;
     }
 
     @Override
     public CompletableFuture<VideoInfo> fetch() {
+        if (!keyConfigured()) {
+            cinemaModPlugin.getLogger().warning("A YouTube video was unable to be requested. You must set a YouTube Data API V3 key in your CinemaMod config.yml.");
+            return CompletableFuture.completedFuture(null);
+        }
+
         return CompletableFuture.supplyAsync(() -> {
             try {
                 String urlString = String.format(YOUTUBE_FETCH_URL_FORMAT, youtubeVideoId, youtubeDataApiKey);

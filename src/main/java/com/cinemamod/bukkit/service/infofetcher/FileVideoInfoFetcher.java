@@ -28,20 +28,23 @@ public class FileVideoInfoFetcher extends VideoInfoFetcher {
         ffprobeAvailable = false;
     }
 
+    private CinemaModPlugin cinemaModPlugin;
     private String url;
     private String requesterUsername;
-    private CinemaModPlugin cinemaModPlugin;
 
-    public FileVideoInfoFetcher(String permission, String url, String requesterUsername, CinemaModPlugin cinemaModPlugin) {
+    public FileVideoInfoFetcher(CinemaModPlugin cinemaModPlugin, String permission, String url, String requesterUsername) {
         super(permission);
+        this.cinemaModPlugin = cinemaModPlugin;
         this.url = url;
         this.requesterUsername = requesterUsername;
-        this.cinemaModPlugin = cinemaModPlugin;
     }
 
     @Override
     public CompletableFuture<VideoInfo> fetch() {
         if (!ffprobeAvailable) {
+            cinemaModPlugin.getLogger().warning("A video file was unable to be requested because the server is lacking ffprobe." +
+                    "If on Windows, ffprobe must be installed in the CinemaMod plugin directory as ffprobe.exe." +
+                    "If on Linux, ffprobe must be available at /usr/bin/ffprobe.");
             return CompletableFuture.completedFuture(null);
         }
 
