@@ -50,6 +50,7 @@ public class CinemaModPlugin extends JavaPlugin {
 
         cinemaModConfig = new CinemaModConfig();
         cinemaModConfig.youtubeDataApiKey = getConfig().getString("youtube-data-api-key");
+        cinemaModConfig.enableTabTheaterList = getConfig().getBoolean("enable-tab-theater-list");
         cinemaModConfig.useMysql = getConfig().getBoolean("video-storage.mysql.use");
         cinemaModConfig.mysqlHost = getConfig().getString("video-storage.mysql.host");
         cinemaModConfig.mysqlPort = getConfig().getInt("video-storage.mysql.port");
@@ -95,7 +96,10 @@ public class CinemaModPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerTheaterListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerVideoTimelineListener(this), this);
         getServer().getScheduler().runTaskTimer(this, () -> theaterManager.tickTheaters(), 20L, 20L);
-        getServer().getScheduler().runTaskTimer(this, new PlayerListUpdateTask(this), 20L, 20L);
+
+        if (cinemaModConfig.enableTabTheaterList) {
+            getServer().getScheduler().runTaskTimer(this, new PlayerListUpdateTask(this), 20L, 20L);
+        }
 
         getCommand("request").setExecutor(new RequestCommand(this));
         getCommand("forceskip").setExecutor(new ForceSkipCommand(this));

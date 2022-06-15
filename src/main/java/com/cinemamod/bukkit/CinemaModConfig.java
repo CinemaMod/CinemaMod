@@ -3,7 +3,9 @@ package com.cinemamod.bukkit;
 public class CinemaModConfig {
 
     public String youtubeDataApiKey = "abc123";
+    public boolean enableTabTheaterList = true;
 
+    // storage
     public boolean useMysql = false;
     public String mysqlHost = "localhost";
     public int mysqlPort = 3306;

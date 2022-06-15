@@ -2,6 +2,8 @@
 # Get one from Google Cloud Console
 youtube-data-api-key: abc123
 
+enable-tab-theater-list: true
+
 video-storage:
   mysql:
     use: false
