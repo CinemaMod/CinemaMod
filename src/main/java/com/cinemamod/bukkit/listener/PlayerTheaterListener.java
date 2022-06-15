@@ -40,6 +40,7 @@ public class PlayerTheaterListener implements Listener {
 
             if (privateTheater.isOwner(player)) {
                 player.sendMessage(ChatColor.GOLD + "You've lost ownership of the theater because you left.");
+                privateTheater.setOwner(null);
             }
         }
     }

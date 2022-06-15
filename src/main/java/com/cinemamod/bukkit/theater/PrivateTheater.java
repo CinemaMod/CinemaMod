@@ -63,6 +63,12 @@ public class PrivateTheater extends Theater {
             }
         }
 
+        if (owner == null) {
+            if (getVideoQueue().isLocked()) {
+                getVideoQueue().setLocked(false);
+            }
+        }
+
         if (owner == null && isPlaying() && isViewer(getPlaying().getRequester())) {
             owner = getPlaying().getRequester();
             TheaterSetOwnerEvent event = new TheaterSetOwnerEvent(owner, this);
