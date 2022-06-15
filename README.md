@@ -5,6 +5,8 @@
 # CinemaMod-Bukkit
 Watch online videos with others in Minecraft. This is the server implementation for Bukkit. Supports CinemaMod-Fabric users while also allowing you to use your average Bukkit server (Spigot, Paper, etc). Vanilla clients are still able to join, just not see the cinema screens.
 
+Requires: WorldGuard (and WorldEdit), ProtocolLib
+
 NOT RELEASED, IN DEVELOPMENT
 
 ## Discussion
