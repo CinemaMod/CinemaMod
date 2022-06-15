@@ -133,7 +133,11 @@ public class FileVideoInfoFetcher extends VideoInfoFetcher {
                     plugin.getLogger().info("Found ffprobe for Windows!");
                 }
             } else {
-                // TODO: check if ffprobe installed on Linux
+                File ffprobeBin = new File("/usr/bin/ffprobe");
+
+                if (!ffprobeBin.exists()) {
+                    return;
+                }
             }
 
             ffprobeAvailable = true;
