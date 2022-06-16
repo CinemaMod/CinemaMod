@@ -21,6 +21,7 @@ public class YouTubeVideoInfoFetcher extends VideoInfoFetcher {
     private static final String YOUTUBE_FETCH_URL_FORMAT
             = "https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics,status&id=%s&key=%s";
     private static final JsonParser JSON_PARSER = new JsonParser();
+    private static final String PIPED_FETCH_URL_FORMAT = "https://pipedapi.kavin.rocks/streams/%s";
 
     private CinemaModPlugin cinemaModPlugin;
     private String youtubeDataApiKey;
@@ -40,8 +41,27 @@ public class YouTubeVideoInfoFetcher extends VideoInfoFetcher {
     @Override
     public CompletableFuture<VideoInfo> fetch() {
         if (!keyConfigured()) {
-            cinemaModPlugin.getLogger().warning("A YouTube video was unable to be requested. You must set a YouTube Data API V3 key in your CinemaMod config.yml.");
-            return CompletableFuture.completedFuture(null);
+            cinemaModPlugin.getLogger().warning("A YouTube video was unable to be requested. You must set a YouTube Data API V3 key in your CinemaMod config.yml. Falling back to Piped and Invidious backends");
+            // Piped only for now (for some reason I feel like it's more reliable)
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    String urlString = String.format(PIPED_FETCH_URL_FORMAT, youtubeVideoId);
+                    URL url = new URL(urlString);
+
+                    try (InputStreamReader reader = new InputStreamReader(url.openStream())) {
+                        JsonObject root = JSON_PARSER.parse(reader).getAsJsonObject();
+                        return new VideoInfo(VideoServiceType.YOUTUBE,
+                                youtubeVideoId,
+                                root.get("title").getAsString(),
+                                root.get("uploader").getAsString(),
+                                root.get("thumbnailUrl").getAsString(), // goes through imageproxy tho
+                                root.get("duration").getAsInt());
+                    }
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                return null;
+            });
         }
 
         return CompletableFuture.supplyAsync(() -> {
