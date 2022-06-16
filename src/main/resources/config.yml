@@ -75,3 +75,6 @@ theaters:
       height: 1
       visible: true
       muted: false
+
+# automatically makes 200x200x64 regions for testing when an existing region is not found
+autogenCubicRegions: false

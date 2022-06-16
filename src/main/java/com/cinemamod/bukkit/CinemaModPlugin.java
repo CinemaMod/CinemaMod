@@ -58,6 +58,8 @@ public class CinemaModPlugin extends JavaPlugin {
         cinemaModConfig.mysqlUsername = getConfig().getString("video-storage.mysql.username");
         cinemaModConfig.mysqlPassword = getConfig().getString("video-storage.mysql.password");
 
+        cinemaModConfig.autogenCubicRegions = getConfig().getBoolean("autogenCubicRegions");
+
         if (cinemaModConfig.youtubeDataApiKey.length() != 39) {
             getLogger().warning("Invalid YouTube Data API V3 key. YouTube videos will not be able to be requested.");
         }

@@ -37,3 +37,6 @@ manifest.mf
 
 # delombok
 */src/main/lombok
+
+*server.sh
+inspect.sh
