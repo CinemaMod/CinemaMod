@@ -15,4 +15,6 @@ public class CinemaModConfig {
 
     public boolean useSqlite = true;
 
+    public boolean autogenCubicRegions = false;
+
 }

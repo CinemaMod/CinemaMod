@@ -10,6 +10,8 @@ import com.cinemamod.bukkit.util.NetworkUtil;
 import com.cinemamod.bukkit.util.WorldGuardUtil;
 import com.cinemamod.bukkit.video.Video;
 import com.cinemamod.bukkit.video.queue.VideoQueue;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 import org.bukkit.boss.BarColor;
@@ -48,6 +50,14 @@ public abstract class Theater {
 
         videoQueue = new VideoQueue(cinemaModPlugin, this);
         regions = WorldGuardUtil.guessTheaterRegions(this);
+
+        if(regions.isEmpty() && this.cinemaModPlugin.getCinemaModConfig().autogenCubicRegions){
+            Location screenLoc = this.getScreen().getLocation();
+            Location cornerA = screenLoc.subtract(100,32,100);
+            Location cornerB = screenLoc.add(100,32,100);
+            // TODO: Make line not super long.
+            regions.add(new ProtectedCuboidRegion("autogened_theatre_" + id + "_" + name, BlockVector3.at(cornerA.getBlockX(), cornerA.getBlockY(), cornerA.getBlockZ()),BlockVector3.at(cornerB.getBlockX(), cornerB.getBlockY(), cornerB.getBlockZ()) ));
+        }
 
         if (regions.isEmpty()) {
             cinemaModPlugin.getLogger().info("Theater '" + id + "' has no WorldGuard region");
