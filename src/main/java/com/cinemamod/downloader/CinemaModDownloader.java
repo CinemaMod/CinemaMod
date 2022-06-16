@@ -6,8 +6,10 @@ import io.sigpipe.jbsdiff.ui.FileUI;
 import org.apache.commons.compress.compressors.CompressorException;
 import org.apache.commons.io.FileUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -211,12 +213,27 @@ public class CinemaModDownloader extends Thread {
         taskLabel.setText("Fetching mod version info...");
 
         try {
-            fetchVersions();
-        } catch (IOException e) {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        System.out.println("CinemaMod library versions " + versions.toString());
+        try {
+            fetchVersions();
+        } catch (IOException e) {
+            CinemaMod.LOGGER.warn(taskLabel.getText());
+
+            for (int i = 5; i > 0; i--) {
+                taskLabel.setText("Unable to fetch mod version info (is there internet access?). Continuing in " + i);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        CinemaMod.LOGGER.info("CinemaMod library versions " + versions.toString());
 
         jcefVersionLabel.setText("Current CinemaDisplays CEF branch: " + versions.getProperty("jcef"));
 
@@ -234,9 +251,11 @@ public class CinemaModDownloader extends Thread {
             platform = "unknown";
         }
 
-        taskLabel.setText("Verifying library files...");
+        if (versions.get("jcef") != null) {
+            taskLabel.setText("Verifying library files...");
 
-        ensureJcef(versions.getProperty("jcef"), platform);
+            ensureJcef(versions.getProperty("jcef"), platform);
+        }
 
         frame.setVisible(false);
         frame.dispose();
@@ -257,18 +276,30 @@ public class CinemaModDownloader extends Thread {
         }
 
         JFrame frame = new JFrame();
-        frame.setSize(600, 250);
+        frame.setSize(600, 300);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setTitle("CinemaMod Downloader");
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(3, 1));
+        mainPanel.setLayout(new GridLayout(4, 1));
+
+        // Icon panel
+        JPanel iconPanel = new JPanel();
+        iconPanel.setLayout(new FlowLayout());
+
+        try {
+            BufferedImage image = ImageIO.read(CinemaModDownloader.class.getResourceAsStream("/assets/cinemamod/icon.png"));
+            Image scaledImage = image.getScaledInstance(80, 63, Image.SCALE_SMOOTH);
+            iconPanel.add(new JLabel(new ImageIcon(scaledImage)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mainPanel.add(iconPanel);
 
         // Task panel
         JPanel taskPanel = new JPanel();
         taskPanel.setLayout(new FlowLayout());
-
-        JLabel nameLabel = new JLabel("CinemaMod");
-        taskPanel.add(nameLabel);
 
         JLabel taskLabel = new JLabel("Setting up...");
         taskPanel.add(taskLabel);
