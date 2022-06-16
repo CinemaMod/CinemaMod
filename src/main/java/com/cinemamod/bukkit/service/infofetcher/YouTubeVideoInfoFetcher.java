@@ -40,6 +40,7 @@ public class YouTubeVideoInfoFetcher extends VideoInfoFetcher {
 
     @Override
     public CompletableFuture<VideoInfo> fetch() {
+        // FUTURE TODO: Once another yt backend is added, allow for selection via "youtube-backend" config option instead of autoselecting based off if an valid api key is provided. 
         if (!keyConfigured()) {
             cinemaModPlugin.getLogger().warning("A YouTube video was unable to be requested. You must set a YouTube Data API V3 key in your CinemaMod config.yml. Falling back to Piped and Invidious backends");
             // Piped only for now (for some reason I feel like it's more reliable)
