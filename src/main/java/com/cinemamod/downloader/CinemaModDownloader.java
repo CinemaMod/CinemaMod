@@ -235,7 +235,7 @@ public class CinemaModDownloader extends Thread {
 
         CinemaMod.LOGGER.info("CinemaMod library versions " + versions.toString());
 
-        jcefVersionLabel.setText("Current CinemaDisplays CEF branch: " + versions.getProperty("jcef"));
+        jcefVersionLabel.setText("Current CinemaMod CEF branch: " + versions.getProperty("jcef"));
 
         final String platform;
 
