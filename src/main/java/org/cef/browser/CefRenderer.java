@@ -51,25 +51,6 @@ public class CefRenderer {
 
     @SuppressWarnings("static-access")
     public void render(double x1, double y1, double x2, double y2) {
-//        if (view_width_ == 0 || view_height_ == 0) {
-//            System.out.println("no view width");
-//            return;
-//        }
-
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder vb = t.getBuffer();
-
-        RenderSystem.bindTexture(texture_id_[0]);
-
-        vb.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-        vb.vertex(x1, y1, 0).color(255, 255, 255, 255).texture(0.0f, 1.0f).next();
-        vb.vertex(x2, y1, 0).color(255, 255, 255, 255).texture(1.0f, 1.0f).next();
-        vb.vertex(x2, y2, 0).color(255, 255, 255, 255).texture(1.0f, 0.0f).next();
-        vb.vertex(x1, y2, 0).color(255, 255, 255, 255).texture(0.0f, 0.0f).next();
-
-        t.draw();
-
-        RenderSystem.bindTexture(0);
     }
 
     protected void onPopupSize(Rectangle rect) {
