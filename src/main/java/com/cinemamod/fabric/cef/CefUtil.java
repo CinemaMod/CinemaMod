@@ -51,6 +51,26 @@ public final class CefUtil {
         return cefClientInstance;
     }
 
+    public static CefBrowserOsr createBrowser(String startUrl, int widthPx, int heightPx) {
+        if (!init) {
+            return null;
+        }
+
+        CefBrowserOsr browser = (CefBrowserOsr) cefClientInstance.createBrowser(startUrl, true, false);
+        browser.setCloseAllowed();
+        browser.createImmediately();
+
+        // Adjust screen size
+        {
+            float scale = widthPx / (float) heightPx;
+            int height = CinemaModClient.getInstance().getVideoSettings().getBrowserResolution();
+            int width = (int) Math.floor(height * scale);
+            browser.resize(width, height);
+        }
+
+        return browser;
+    }
+
     public static CefBrowserOsr createBrowser(String startUrl, Screen screen) {
         if (!init) {
             return null;

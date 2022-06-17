@@ -22,6 +22,10 @@ public class LoadHandler implements CefLoadHandler {
     public void onLoadEnd(CefBrowser browser, CefFrame frame, int httpStatusCode) {
         Screen screen = CinemaModClient.getInstance().getScreenManager().getScreen(browser.getIdentifier());
 
+        if (screen == null) {
+            return;
+        }
+
         screen.startVideo();
 
         if (screen.isMuted()) {

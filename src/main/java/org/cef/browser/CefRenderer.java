@@ -51,8 +51,10 @@ public class CefRenderer {
 
     @SuppressWarnings("static-access")
     public void render(double x1, double y1, double x2, double y2) {
-        if (view_width_ == 0 || view_height_ == 0)
-            return;
+//        if (view_width_ == 0 || view_height_ == 0) {
+//            System.out.println("no view width");
+//            return;
+//        }
 
         Tessellator t = Tessellator.getInstance();
         BufferBuilder vb = t.getBuffer();
