@@ -5,10 +5,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.cef.browser.CefBrowserOsr;
 import org.lwjgl.glfw.GLFW;
@@ -17,23 +20,49 @@ public class VideoRequestBrowser extends Screen {
 
     protected static KeyBinding keyBinding;
     private static CefBrowserOsr browser;
+    private static final int browserDrawOffset = 40;
 
-    private int width;
-    private int height;
+    private ButtonWidget backBtn, fwdBtn, requestBtn, closeBtn;
+    private TextFieldWidget urlField;
 
-    protected VideoRequestBrowser(int width, int height) {
+    protected VideoRequestBrowser() {
         super(Text.of("Video Request Browser"));
+    }
 
-        this.width = width;
-        this.height = height;
+    @Override
+    protected void init() {
+        super.init();
 
         if (CefUtil.isInit() && browser == null) {
             browser = CefUtil.createBrowser("https://google.com", width, height);
         }
+
+        if (browser == null) return;
+
+        browser.resize(client.getWindow().getWidth(), client.getWindow().getHeight() - scaleY(20));
+
+        addDrawableChild(backBtn = (new ButtonWidget(browserDrawOffset, browserDrawOffset - 20, 20, 20, new LiteralText("<"), button -> {
+            System.out.println("back button");
+        })));
+        addDrawableChild(fwdBtn = (new ButtonWidget(browserDrawOffset + 20, browserDrawOffset - 20, 20, 20, new LiteralText(">"), button -> {
+            System.out.println("fwd button");
+        })));
+        addDrawableChild(requestBtn = (new ButtonWidget(width - browserDrawOffset - 20 - 60, browserDrawOffset - 20, 60, 20, new LiteralText("Request"), button -> {
+            System.out.println("request button");
+        })));
+        addDrawableChild(closeBtn = (new ButtonWidget(width - browserDrawOffset - 20, browserDrawOffset - 20, 20, 20, new LiteralText("X"), button -> {
+            System.out.println("close button");
+        })));
+
+        urlField = new TextFieldWidget(client.textRenderer, browserDrawOffset + 40, browserDrawOffset - 20 + 1, width - browserDrawOffset - 160, 20, new LiteralText(""));
+        urlField.setMaxLength(65535);
+        urlField.setText(browser.getURL()); // why does getURL return an empty string here?
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        urlField.render(matrices, mouseX, mouseY, delta);
+        super.render(matrices, mouseX, mouseY, delta);
         RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
         int glId = browser.renderer_.texture_id_[0];
@@ -41,10 +70,10 @@ public class VideoRequestBrowser extends Screen {
         Tessellator t = Tessellator.getInstance();
         BufferBuilder buffer = t.getBuffer();
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-        buffer.vertex(0, height, 0).color(255, 255, 255, 255).texture(0.0f, 1.0f).next();
-        buffer.vertex(width, height, 0).color(255, 255, 255, 255).texture(1.0f, 1.0f).next();
-        buffer.vertex(width, 0, 0).color(255, 255, 255, 255).texture(1.0f, 0.0f).next();
-        buffer.vertex(0, 0, 0).color(255, 255, 255, 255).texture(0.0f, 0.0f).next();
+        buffer.vertex(browserDrawOffset, height - browserDrawOffset, 0).color(255, 255, 255, 255).texture(0.0f, 1.0f).next();
+        buffer.vertex(width - browserDrawOffset, height - browserDrawOffset, 0).color(255, 255, 255, 255).texture(1.0f, 1.0f).next();
+        buffer.vertex(width - browserDrawOffset, browserDrawOffset, 0).color(255, 255, 255, 255).texture(1.0f, 0.0f).next();
+        buffer.vertex(browserDrawOffset, browserDrawOffset, 0).color(255, 255, 255, 255).texture(0.0f, 0.0f).next();
         t.draw();
         RenderSystem.setShaderTexture(0, 0);
         RenderSystem.enableDepthTest();
@@ -58,6 +87,18 @@ public class VideoRequestBrowser extends Screen {
         browser = null;
     }
 
+    public int scaleY(int y) {
+        assert client != null;
+        double sy = ((double) y) / ((double) height) * ((double) client.getWindow().getHeight());
+        return (int) sy;
+    }
+
+    public int scaleX(int x) {
+        assert client != null;
+        double sx = ((double) x) / ((double) width) * ((double) client.getWindow().getWidth());
+        return (int) sx;
+    }
+
     public static void registerKeyInput() {
         keyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.cinemamod.openrequestbrowser",
@@ -68,8 +109,7 @@ public class VideoRequestBrowser extends Screen {
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (keyBinding.wasPressed()) {
-                // TODO adjust width and height based on size of MC window
-                client.setScreen(new VideoRequestBrowser(200, 200));
+                client.setScreen(new VideoRequestBrowser());
             }
         });
     }
