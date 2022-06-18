@@ -2,7 +2,6 @@ package com.cinemamod.fabric.mixins;
 
 import com.cinemamod.downloader.CinemaModDownloader;
 import com.cinemamod.fabric.CinemaMod;
-import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.cef.CefUtil;
 import net.minecraft.client.main.Main;
 import org.cef.OS;
@@ -47,9 +46,9 @@ public class CefInitMixin {
 
         CinemaModDownloader.main(new String[]{});
 
-        // TEMP HACK
+        // TODO: Move to org.cef.CefApp
         if (OS.isLinux()) {
-            System.load("/usr/lib/jvm/java-17-openjdk-17.0.3.0.7-1.fc36.x86_64/lib/libjawt.so");
+            System.loadLibrary("jawt");
         }
 
         if (OS.isWindows() || OS.isLinux()) {
