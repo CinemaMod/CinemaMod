@@ -1,0 +1,5 @@
+rootProject.name = 'CinemaMod'
+
+include ':cinemamod-api'
+
+project(':cinemamod-api').setProjectDir(file('api'))
