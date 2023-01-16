@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 /**
  * A mixin is used here to load JCEF at the earliest point in the MC bootstrap process
@@ -21,7 +22,7 @@ import java.io.IOException;
 @Mixin(Main.class)
 public class CefInitMixin {
 
-    private static void setupLibraryPath(Platform platform) throws IOException {
+    private static void setupLibraryPath(Platform platform) throws IOException, URISyntaxException {
         // Check for development environment
         // i.e. cinemamod-repo/build/cef/<platform>
         File cefPlatformDir = new File("../build/cef/" + platform.getNormalizedName());
@@ -29,6 +30,9 @@ public class CefInitMixin {
             System.setProperty("cinemamod.libraries.path", cefPlatformDir.getCanonicalPath());
             return;
         }
+
+        // TODO: extract
+
 
         // Check for .minecraft/mods/cinemamod-libraries directory
         File cinemaModLibrariesDir = new File("mods/cinemamod-libraries");
@@ -44,7 +48,7 @@ public class CefInitMixin {
 
         try {
             setupLibraryPath(platform);
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
 

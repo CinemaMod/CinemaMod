@@ -59,13 +59,38 @@ jar {
 void createPlatformJarTask(String platform) {
 	Task platformJarTask = task ("jar_$platform", type: RemapJarTask, dependsOn: jar) {
 		inputFile = jar.archiveFile
-		onlyIf { new File("build/cef/$platform").exists() }
+
+		onlyIf {
+			new File("build/cef/$platform").exists()
+		}
+
 		into("cef") {
 			from "build/cef/$platform"
 		}
-		from sourceSets.main.output
-		appendix platform
+
+		doFirst {
+			// Create CEF file manifest
+			// Used for extraction
+
+			File cefManifestFile = new File("build/cef/$platform/cef_manifest.txt")
+			if (cefManifestFile.delete()) {
+				cefManifestFile.createNewFile()
+			} else if (!cefManifestFile.exists()) {
+				cefManifestFile.createNewFile()
+			}
+
+			fileTree("build/cef/$platform").visit { FileVisitDetails details ->
+				if (details.file.isDirectory() || details.file == cefManifestFile) {
+					return
+				}
+				cefManifestFile.append(details.relativePath.toString() + System.lineSeparator())
+			}
+
+			from sourceSets.main.output
+			appendix platform
+		}
 	}
+
 	build.dependsOn(platformJarTask)
 }
 
