@@ -80,10 +80,9 @@ void createPlatformJarTask(String platform) {
 			}
 
 			fileTree("build/cef/$platform").visit { FileVisitDetails details ->
-				if (details.file.isDirectory() || details.file == cefManifestFile) {
-					return
+				if (!details.file.isDirectory() && details.file.name != cefManifestFile.name) {
+					cefManifestFile.append(details.relativePath.toString() + System.lineSeparator())
 				}
-				cefManifestFile.append(details.relativePath.toString() + System.lineSeparator())
 			}
 
 			from sourceSets.main.output
