@@ -1,6 +1,7 @@
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
+	id "de.undercouch.download" version "5.3.0"
 	id 'fabric-loom' version '0.11-SNAPSHOT'
 	id 'maven-publish'
 }
@@ -56,30 +57,58 @@ jar {
 	}
 }
 
+// From com.cinemamod.fabric.cef.Platform enum
+var platforms = ["linux_amd64", "linux_arm64", "windows_amd64", "windows_arm64", "macos_amd64", "macos_arm64"]
+
+task downloadJcef {
+	for (String platform : platforms) {
+		try {
+			"https://ewr1.vultrobjects.com/cinemamod-libraries/cef/$cef_branch/$platform/manifest.txt".toURL().text.eachLine {
+				var fileHash = it.split("  ")[0]
+				var relFilePath = it.split("  ")[1]
+				var cefResourceUrl = "https://ewr1.vultrobjects.com/cinemamod-libraries/cef/$cef_branch/$platform/$relFilePath"
+				download.run {
+					src cefResourceUrl
+					dest "$buildDir/cef/$platform/$relFilePath"
+					overwrite false
+				}
+				if (relFilePath.contains("chrome-sandbox") || relFilePath.contains("jcef_helper")) {
+					exec {
+						commandLine("chmod", "700", "$buildDir/cef/$platform/$relFilePath")
+					}
+				}
+			}
+		} catch (Exception e) {
+			println("Skipping CEF libraries for $cef_branch/$platform")
+			println(e.getMessage())
+		}
+	}
+}
+
 void createPlatformJarTask(String platform) {
 	Task platformJarTask = task ("jar_$platform", type: RemapJarTask, dependsOn: jar) {
 		inputFile = jar.archiveFile
 
 		onlyIf {
-			new File("build/cef/$platform").exists()
+			new File("$buildDir/cef/$platform").exists()
 		}
 
 		into("cef") {
-			from "build/cef/$platform"
+			from "$buildDir/cef/$platform"
 		}
 
 		doFirst {
 			// Create CEF file manifest
 			// Used for extraction
 
-			File cefManifestFile = new File("build/cef/$platform/cef_manifest.txt")
+			File cefManifestFile = new File("$buildDir/cef/$platform/cef_manifest.txt")
 			if (cefManifestFile.delete()) {
 				cefManifestFile.createNewFile()
 			} else if (!cefManifestFile.exists()) {
 				cefManifestFile.createNewFile()
 			}
 
-			fileTree("build/cef/$platform").visit { FileVisitDetails details ->
+			fileTree("$buildDir/cef/$platform").visit { FileVisitDetails details ->
 				if (!details.file.isDirectory() && details.file.name != cefManifestFile.name) {
 					cefManifestFile.append(details.relativePath.toString() + System.lineSeparator())
 				}
@@ -93,13 +122,7 @@ void createPlatformJarTask(String platform) {
 	build.dependsOn(platformJarTask)
 }
 
-// From com.cinemamod.fabric.cef.Platform enum
-createPlatformJarTask("linux_amd64")
-createPlatformJarTask("linux_arm64")
-createPlatformJarTask("windows_amd64")
-createPlatformJarTask("windows_arm64")
-createPlatformJarTask("macos_amd64")
-createPlatformJarTask("macos_arm64")
+platforms.forEach(platform -> createPlatformJarTask(platform))
 
 // configure the maven publication
 publishing {

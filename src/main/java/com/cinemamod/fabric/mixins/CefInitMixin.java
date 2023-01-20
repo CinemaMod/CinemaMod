@@ -61,7 +61,7 @@ public class CefInitMixin {
         //
         // CEF library extraction
         //
-        URL cefManifestURL = CefInitMixin.class.getClassLoader().getResource("cef/cef_manifest.txt");
+        URL cefManifestURL = CefInitMixin.class.getClassLoader().getResource("cef/manifest.txt");
 
         if (cefManifestURL == null) {
             return;
