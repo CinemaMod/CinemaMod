@@ -63,25 +63,33 @@ public class CefInitMixin {
         //
         URL cefManifestURL = CefInitMixin.class.getClassLoader().getResource("cef/cef_manifest.txt");
 
-        if (cefManifestURL != null) {
-            try (InputStream cefManifestInputStream = cefManifestURL.openStream();
-                 Scanner scanner = new Scanner(cefManifestInputStream)) {
-                while (scanner.hasNext()) {
-                    String cefResourceName = scanner.nextLine();
-                    URL cefResourceURL = CefInitMixin.class.getClassLoader().getResource("cef/" + cefResourceName);
+        if (cefManifestURL == null) {
+            return;
+        }
 
-                    if (cefResourceURL != null) {
-                        try (InputStream cefResourceInputStream = cefResourceURL.openStream()) {
-                            File cefResourceFile = new File(cinemaModLibrariesDir, cefResourceName);
-                            if (!cefResourceFile.exists()) {
-                                cefResourceFile.getParentFile().mkdirs(); // For when we run across a nested file, i.e. locales/sl.pak
-                                Files.copy(cefResourceInputStream, cefResourceFile.toPath());
-                                if (platform.isLinux()) {
-                                    if (cefResourceFile.getName().contains("chrome-sandbox") || cefResourceFile.getName().contains("jcef_helper")) {
-                                        setUnixExecutable(cefResourceFile);
-                                    }
-                                }
-                            }
+        try (InputStream cefManifestInputStream = cefManifestURL.openStream();
+             Scanner scanner = new Scanner(cefManifestInputStream)) {
+            while (scanner.hasNext()) {
+                String cefResourceName = scanner.nextLine();
+                URL cefResourceURL = CefInitMixin.class.getClassLoader().getResource("cef/" + cefResourceName);
+
+                if (cefResourceURL == null) {
+                    continue;
+                }
+
+                try (InputStream cefResourceInputStream = cefResourceURL.openStream()) {
+                    File cefResourceFile = new File(cinemaModLibrariesDir, cefResourceName);
+
+                    if (cefResourceFile.exists()) {
+                        continue;
+                    }
+
+                    cefResourceFile.getParentFile().mkdirs(); // For when we run across a nested file, i.e. locales/sl.pak
+                    Files.copy(cefResourceInputStream, cefResourceFile.toPath());
+                    if (platform.isLinux()) {
+                        if (cefResourceFile.getName().contains("chrome-sandbox")
+                                || cefResourceFile.getName().contains("jcef_helper")) {
+                            setUnixExecutable(cefResourceFile);
                         }
                     }
                 }
