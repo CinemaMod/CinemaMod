@@ -1,6 +1,5 @@
 package com.cinemamod.fabric.cef;
 
-import com.cinemamod.fabric.CinemaMod;
 import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.screen.Screen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -56,7 +55,7 @@ public final class CefUtil {
             return null;
         }
 
-        CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl);
+        CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl, true, null);
         browser.setCloseAllowed();
         browser.createImmediately();
 
@@ -76,7 +75,7 @@ public final class CefUtil {
             return null;
         }
 
-        CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl);
+        CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl, true, null);
         browser.setCloseAllowed();
         browser.createImmediately();
 
@@ -96,8 +95,8 @@ public final class CefUtil {
     public static void registerCefTick() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (CefUtil.isInit()) {
-//                CefUtil.getCefApp().N_DoMessageLoopWork();
-//                CinemaModClient.getInstance().getScreenManager().updateAll();
+                CefUtil.getCefApp().N_DoMessageLoopWork();
+                CinemaModClient.getInstance().getScreenManager().updateAll();
             }
         });
     }

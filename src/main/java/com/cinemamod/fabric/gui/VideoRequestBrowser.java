@@ -65,7 +65,7 @@ public class VideoRequestBrowser extends Screen {
         super.render(matrices, mouseX, mouseY, delta);
         RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
-        int glId = browser.getTextureID();
+        int glId = browser.renderer.texture_id_[0];
         RenderSystem.setShaderTexture(0, glId);
         Tessellator t = Tessellator.getInstance();
         BufferBuilder buffer = t.getBuffer();
@@ -83,7 +83,7 @@ public class VideoRequestBrowser extends Screen {
     @Override
     public void close() {
         super.close();
-        browser.close();
+        browser.close(true);
         browser = null;
     }
 
@@ -117,7 +117,7 @@ public class VideoRequestBrowser extends Screen {
     public static void registerCefTick() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (browser != null) {
-//                browser.update();
+                browser.update();
             }
         });
     }

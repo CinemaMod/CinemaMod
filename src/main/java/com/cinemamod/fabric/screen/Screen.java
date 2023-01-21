@@ -118,7 +118,7 @@ public class Screen implements PacketByteBufSerializable<Screen> {
 
     public void closeBrowser() {
         if (browser != null) {
-            browser.close();
+            browser.close(true);
             browser = null;
         }
     }
