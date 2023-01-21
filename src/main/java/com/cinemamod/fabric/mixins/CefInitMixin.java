@@ -70,15 +70,17 @@ public class CefInitMixin {
         try (InputStream cefManifestInputStream = cefManifestURL.openStream();
              Scanner scanner = new Scanner(cefManifestInputStream)) {
             while (scanner.hasNext()) {
-                String cefResourceName = scanner.nextLine();
-                URL cefResourceURL = CefInitMixin.class.getClassLoader().getResource("cef/" + cefResourceName);
+                String line = scanner.nextLine();
+                String fileHash = line.split("  ")[0]; // TODO: check hash
+                String relFilePath = line.split("  ")[1];
+                URL cefResourceURL = CefInitMixin.class.getClassLoader().getResource("cef/" + relFilePath);
 
                 if (cefResourceURL == null) {
                     continue;
                 }
 
                 try (InputStream cefResourceInputStream = cefResourceURL.openStream()) {
-                    File cefResourceFile = new File(cinemaModLibrariesDir, cefResourceName);
+                    File cefResourceFile = new File(cinemaModLibrariesDir, relFilePath);
 
                     if (cefResourceFile.exists()) {
                         continue;
