@@ -97,26 +97,8 @@ void createPlatformJarTask(String platform) {
 			from "$buildDir/cef/$platform"
 		}
 
-		doFirst {
-			// Create CEF file manifest
-			// Used for extraction
-
-			File cefManifestFile = new File("$buildDir/cef/$platform/cef_manifest.txt")
-			if (cefManifestFile.delete()) {
-				cefManifestFile.createNewFile()
-			} else if (!cefManifestFile.exists()) {
-				cefManifestFile.createNewFile()
-			}
-
-			fileTree("$buildDir/cef/$platform").visit { FileVisitDetails details ->
-				if (!details.file.isDirectory() && details.file.name != cefManifestFile.name) {
-					cefManifestFile.append(details.relativePath.toString() + System.lineSeparator())
-				}
-			}
-
-			from sourceSets.main.output
-			appendix platform
-		}
+		from sourceSets.main.output
+		appendix platform
 	}
 
 	build.dependsOn(platformJarTask)
