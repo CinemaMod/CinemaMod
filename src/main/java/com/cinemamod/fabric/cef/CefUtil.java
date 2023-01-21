@@ -1,12 +1,12 @@
 package com.cinemamod.fabric.cef;
 
+import com.cinemamod.fabric.CinemaMod;
 import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.screen.Screen;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import org.cef.CefApp;
 import org.cef.CefClient;
 import org.cef.CefSettings;
-import org.cef.browser.CefBrowserOsr;
 
 public final class CefUtil {
 
@@ -51,12 +51,12 @@ public final class CefUtil {
         return cefClientInstance;
     }
 
-    public static CefBrowserOsr createBrowser(String startUrl, int widthPx, int heightPx) {
+    public static CefBrowserCinema createBrowser(String startUrl, int widthPx, int heightPx) {
         if (!init) {
             return null;
         }
 
-        CefBrowserOsr browser = (CefBrowserOsr) cefClientInstance.createBrowser(startUrl, true, false);
+        CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl);
         browser.setCloseAllowed();
         browser.createImmediately();
 
@@ -71,12 +71,12 @@ public final class CefUtil {
         return browser;
     }
 
-    public static CefBrowserOsr createBrowser(String startUrl, Screen screen) {
+    public static CefBrowserCinema createBrowser(String startUrl, Screen screen) {
         if (!init) {
             return null;
         }
 
-        CefBrowserOsr browser = (CefBrowserOsr) cefClientInstance.createBrowser(startUrl, true, false);
+        CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl);
         browser.setCloseAllowed();
         browser.createImmediately();
 
@@ -96,8 +96,8 @@ public final class CefUtil {
     public static void registerCefTick() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (CefUtil.isInit()) {
-                CefUtil.getCefApp().N_DoMessageLoopWork();
-                CinemaModClient.getInstance().getScreenManager().updateAll();
+//                CefUtil.getCefApp().N_DoMessageLoopWork();
+//                CinemaModClient.getInstance().getScreenManager().updateAll();
             }
         });
     }

@@ -58,15 +58,22 @@ jar {
 }
 
 sourceSets {
-	javaCef {
+	jcef {
 		java {
 			srcDir "java-cef/java"
+			exclude "**/tests/**"
 		}
 	}
 
 	main {
-		compileClasspath += javaCef.output
-		runtimeClasspath += javaCef.output
+		compileClasspath += jcef.output
+		runtimeClasspath += jcef.output
+	}
+}
+
+idea {
+	module {
+		excludeDirs += file("java-cef/java/tests")
 	}
 }
 

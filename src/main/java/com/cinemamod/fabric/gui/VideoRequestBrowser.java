@@ -1,5 +1,6 @@
 package com.cinemamod.fabric.gui;
 
+import com.cinemamod.fabric.cef.CefBrowserCinema;
 import com.cinemamod.fabric.cef.CefUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -13,13 +14,12 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import org.cef.browser.CefBrowserOsr;
 import org.lwjgl.glfw.GLFW;
 
 public class VideoRequestBrowser extends Screen {
 
     protected static KeyBinding keyBinding;
-    private static CefBrowserOsr browser;
+    private static CefBrowserCinema browser;
     private static final int browserDrawOffset = 40;
 
     private ButtonWidget backBtn, fwdBtn, requestBtn, closeBtn;
@@ -65,7 +65,7 @@ public class VideoRequestBrowser extends Screen {
         super.render(matrices, mouseX, mouseY, delta);
         RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
-        int glId = browser.renderer_.texture_id_[0];
+        int glId = browser.getTextureID();
         RenderSystem.setShaderTexture(0, glId);
         Tessellator t = Tessellator.getInstance();
         BufferBuilder buffer = t.getBuffer();
@@ -117,7 +117,7 @@ public class VideoRequestBrowser extends Screen {
     public static void registerCefTick() {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (browser != null) {
-                browser.update();
+//                browser.update();
             }
         });
     }

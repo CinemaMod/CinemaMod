@@ -47,7 +47,7 @@ public class CefInitMixin {
         // i.e. cinemamod-repo/build/cef/<platform>
         File cefPlatformDir = new File("../build/cef/" + platform.getNormalizedName());
         if (cefPlatformDir.exists()) {
-            System.setProperty("cinemamod.libraries.path", cefPlatformDir.getCanonicalPath());
+            System.setProperty("jcef.path", cefPlatformDir.getCanonicalPath());
             return;
         }
 
@@ -56,7 +56,7 @@ public class CefInitMixin {
         if (!cinemaModLibrariesDir.exists()) {
             cinemaModLibrariesDir.mkdirs();
         }
-        System.setProperty("cinemamod.libraries.path", cinemaModLibrariesDir.getCanonicalPath());
+        System.setProperty("jcef.path", cinemaModLibrariesDir.getCanonicalPath());
 
         //
         // CEF library extraction

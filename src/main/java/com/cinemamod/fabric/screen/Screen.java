@@ -2,6 +2,7 @@ package com.cinemamod.fabric.screen;
 
 import com.cinemamod.fabric.block.ScreenBlock;
 import com.cinemamod.fabric.buffer.PacketByteBufSerializable;
+import com.cinemamod.fabric.cef.CefBrowserCinema;
 import com.cinemamod.fabric.cef.CefUtil;
 import com.cinemamod.fabric.video.Video;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
@@ -10,7 +11,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.NotImplementedException;
-import org.cef.browser.CefBrowserOsr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class Screen implements PacketByteBufSerializable<Screen> {
     private boolean muted;
 
     private transient List<PreviewScreen> previewScreens;
-    private transient CefBrowserOsr browser;
+    private transient CefBrowserCinema browser;
     private transient Video video;
     private transient boolean unregistered;
     private transient BlockPos blockPos; // used as a cache for performance
@@ -96,7 +96,7 @@ public class Screen implements PacketByteBufSerializable<Screen> {
         previewScreens.add(previewScreen);
     }
 
-    public CefBrowserOsr getBrowser() {
+    public CefBrowserCinema getBrowser() {
         return browser;
     }
 

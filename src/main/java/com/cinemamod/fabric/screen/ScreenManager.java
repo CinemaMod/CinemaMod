@@ -70,7 +70,7 @@ public class ScreenManager {
     public void updateAll() {
         for (Screen screen : screens.values()) {
             if (screen.hasBrowser()) {
-                screen.getBrowser().update();
+//                screen.getBrowser().update();
             }
         }
     }
