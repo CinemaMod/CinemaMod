@@ -57,6 +57,19 @@ jar {
 	}
 }
 
+sourceSets {
+	javaCef {
+		java {
+			srcDir "java-cef/java"
+		}
+	}
+
+	main {
+		compileClasspath += javaCef.output
+		runtimeClasspath += javaCef.output
+	}
+}
+
 // From com.cinemamod.fabric.cef.Platform enum
 var platforms = ["linux_amd64", "linux_arm64", "windows_amd64", "windows_arm64", "macos_amd64", "macos_arm64"]
 

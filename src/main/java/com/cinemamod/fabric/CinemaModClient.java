@@ -7,6 +7,7 @@ import com.cinemamod.fabric.block.ScreenBlockEntity;
 import com.cinemamod.fabric.block.render.PreviewScreenBlockEntityRenderer;
 import com.cinemamod.fabric.block.render.ScreenBlockEntityRenderer;
 import com.cinemamod.fabric.cef.CefUtil;
+import com.cinemamod.fabric.cef.Platform;
 import com.cinemamod.fabric.gui.VideoQueueScreen;
 import com.cinemamod.fabric.gui.VideoRequestBrowser;
 import com.cinemamod.fabric.screen.PreviewScreenManager;
@@ -17,7 +18,6 @@ import com.cinemamod.fabric.video.list.VideoListManager;
 import com.cinemamod.fabric.video.queue.VideoQueue;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.util.Util;
-import org.cef.OS;
 
 import java.io.IOException;
 
@@ -61,7 +61,7 @@ public class CinemaModClient implements ClientModInitializer {
     }
 
     private static void initCefMac() {
-        if (OS.isMacintosh()) {
+        if (Platform.getPlatform().isMacOS()) {
             Util.getBootstrapExecutor().execute(() -> {
                 if (CefUtil.init()) {
                     CinemaMod.LOGGER.info("Chromium Embedded Framework initialized for macOS");
