@@ -80,6 +80,8 @@ idea {
 // From com.cinemamod.fabric.cef.Platform enum
 var platforms = ["linux_amd64", "linux_arm64", "windows_amd64", "windows_arm64", "macos_amd64", "macos_arm64"]
 
+import org.apache.tools.ant.taskdefs.condition.Os
+
 task downloadJcef {
 	for (String platform : platforms) {
 		try {
@@ -92,9 +94,11 @@ task downloadJcef {
 					dest "$buildDir/cef/$platform/$relFilePath"
 					overwrite false
 				}
-				if (relFilePath.contains("chrome-sandbox") || relFilePath.contains("jcef_helper")) {
-					exec {
-						commandLine("chmod", "700", "$buildDir/cef/$platform/$relFilePath")
+				if (Os.isFamily(Os.FAMILY_UNIX)) {
+					if (relFilePath.contains("chrome-sandbox") || relFilePath.contains("jcef_helper")) {
+						exec {
+							commandLine("chmod", "700", "$buildDir/cef/$platform/$relFilePath")
+						}
 					}
 				}
 			}
