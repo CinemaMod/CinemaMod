@@ -22,7 +22,7 @@ public class VideoRequestBrowser extends Screen {
     private static CefBrowserCinema browser;
     private static final int browserDrawOffset = 40;
 
-    @SuppressWarnings("unused")
+
     private ButtonWidget backBtn, fwdBtn, requestBtn, closeBtn;
     private TextFieldWidget urlField;
 
