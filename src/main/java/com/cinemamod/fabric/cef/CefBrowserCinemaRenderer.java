@@ -24,7 +24,6 @@ public class CefBrowserCinemaRenderer {
         RenderSystem.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         RenderSystem.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         RenderSystem.bindTexture(0);
-        RenderSystem.disableTexture();
     }
 
     public int getTextureID() {
