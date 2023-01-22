@@ -18,6 +18,7 @@ During development, it is necessary to have a build of java-cef for the mod to w
 First, clone this repo:
 ```
 $ git clone https://github.com/CinemaMod/CinemaMod-Fabric
+$ cd CinemaMod-Fabric
 ```
 
 Then, clone the java-cef submodule (brings in the java-cef code)
