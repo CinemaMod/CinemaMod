@@ -13,13 +13,13 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import org.cef.browser.CefBrowserOsr;
+import com.cinemamod.fabric.cef.CefBrowserCinema;
 import org.lwjgl.glfw.GLFW;
 
 public class VideoRequestBrowser extends Screen {
 
     protected static KeyBinding keyBinding;
-    private static CefBrowserOsr browser;
+    private static CefBrowserCinema browser;
     private static final int browserDrawOffset = 40;
 
     @SuppressWarnings("unused")
