@@ -1,21 +1,23 @@
 package com.cinemamod.fabric.block.render;
 
+import org.joml.Quaternionf;
+
 import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.block.PreviewScreenBlockEntity;
 import com.cinemamod.fabric.screen.PreviewScreen;
 import com.cinemamod.fabric.screen.PreviewScreenManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Quaternion;
 
 public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<PreviewScreenBlockEntity> {
 
@@ -73,7 +75,7 @@ public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<Pre
         RenderUtil.moveVertical(matrices, -0.15f);
         RenderUtil.moveForward(matrices, previewScreen.getFacing(), 0.01f);
         RenderUtil.fixRotation(matrices, previewScreen.getFacing());
-        matrices.multiply(new Quaternion(180, 0, 0, true));
+        matrices.multiply(new Quaternionf().rotationX((float) Math.toRadians(180.0)));
         matrices.scale(0.02f, 0.02f, 0.02f);
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
         final String topText;
@@ -92,7 +94,7 @@ public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<Pre
     }
 
     public static void register() {
-        BlockEntityRendererRegistry.register(PreviewScreenBlockEntity.PREVIEW_SCREEN_BLOCK_ENTITY, PreviewScreenBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(PreviewScreenBlockEntity.PREVIEW_SCREEN_BLOCK_ENTITY, PreviewScreenBlockEntityRenderer::new);
     }
 
 }

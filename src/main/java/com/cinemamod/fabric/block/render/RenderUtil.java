@@ -1,35 +1,41 @@
 package com.cinemamod.fabric.block.render;
 
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.render.*;
+
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Quaternion;
 
 public final class RenderUtil {
 
     public static void fixRotation(MatrixStack matrixStack, String facing) {
-        final Quaternion rotation;
+        final Quaternionf rotation;
+
 
         switch (facing) {
             case "NORTH":
-                rotation = new Quaternion(0, 180, 0, true);
+                rotation = new Quaternionf().rotationY((float) Math.toRadians(180));
                 matrixStack.translate(0, 0, 1);
                 break;
             case "WEST":
-                rotation = new Quaternion(0, -90, 0, true);
+                rotation = new Quaternionf().rotationY((float) Math.toRadians(-90.0));
                 matrixStack.translate(0, 0, 0);
                 break;
             case "EAST":
-                rotation = new Quaternion(0, 90, 0, true);
+                rotation = new Quaternionf().rotationY((float) Math.toRadians(90.0));
                 matrixStack.translate(-1, 0, 1);
                 break;
             default:
-                rotation = new Quaternion(0, 0, 0, true);
+                rotation = new Quaternionf();
                 matrixStack.translate(-1, 0, 0);
                 break;
         }
-
         matrixStack.multiply(rotation);
     }
 
@@ -72,7 +78,7 @@ public final class RenderUtil {
     }
 
     public static void renderTexture(MatrixStack matrixStack, Tessellator tessellator, BufferBuilder buffer, int glId) {
-        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
         RenderSystem.setShaderTexture(0, glId);
         Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
@@ -85,7 +91,7 @@ public final class RenderUtil {
     }
 
     public static void renderColor(MatrixStack matrixStack, Tessellator tessellator, BufferBuilder buffer, int r, int g, int b) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(matrix4f, 0.0F, -1.0F, 1.0F).color(r, g, b, 255).next();

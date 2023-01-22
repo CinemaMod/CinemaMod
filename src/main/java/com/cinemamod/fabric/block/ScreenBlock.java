@@ -3,9 +3,10 @@ package com.cinemamod.fabric.block;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -34,7 +35,7 @@ public class ScreenBlock extends Block implements BlockEntityProvider {
         IDENT = new Identifier("cinemamod", "screen");
         SCREEN_BLOCK = new ScreenBlock();
 
-        Registry.register(Registry.BLOCK, IDENT, SCREEN_BLOCK);
+        Registry.register(Registries.BLOCK, IDENT, SCREEN_BLOCK);
     }
 
     @Nullable

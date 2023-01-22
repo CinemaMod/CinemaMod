@@ -5,11 +5,11 @@ import com.cinemamod.fabric.block.ScreenBlockEntity;
 import com.cinemamod.fabric.screen.Screen;
 import com.cinemamod.fabric.screen.ScreenManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -51,7 +51,6 @@ public class ScreenBlockEntityRenderer implements BlockEntityRenderer<ScreenBloc
     }
 
     public static void register() {
-        BlockEntityRendererRegistry.register(ScreenBlockEntity.SCREEN_BLOCK_ENTITY, ScreenBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(ScreenBlockEntity.SCREEN_BLOCK_ENTITY, ScreenBlockEntityRenderer::new);
     }
-
 }

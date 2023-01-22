@@ -8,8 +8,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
@@ -18,7 +18,7 @@ import java.util.Locale;
 public class VideoHistoryScreen extends Screen {
 
     protected static final Identifier TEXTURE = new Identifier("textures/gui/social_interactions.png");
-    protected static final Text SEARCH_TEXT = (new TranslatableText("gui.socialInteractions.search_hint")).formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
+    protected static final Text SEARCH_TEXT = ((MutableText) Text.of("gui.socialInteractions.search_hint")).formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
 
     private TextFieldWidget searchBox;
     private VideoListWidget videoListWidget;
@@ -30,7 +30,7 @@ public class VideoHistoryScreen extends Screen {
 
     @Override
     protected void init() {
-        client.keyboard.setRepeatEvents(true);
+        //client.keyboard.setRepeatEvents(true);
         String string = searchBox != null ? searchBox.getText() : "";
         searchBox = new TextFieldWidget(textRenderer, method_31362() + 28, 78, 196, 16, SEARCH_TEXT);
         searchBox.setMaxLength(16);
@@ -46,7 +46,7 @@ public class VideoHistoryScreen extends Screen {
 
     @Override
     public void removed() {
-        client.keyboard.setRepeatEvents(false);
+        //client.keyboard.setRepeatEvents(false);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class VideoHistoryScreen extends Screen {
         this.renderBackground(matrices);
         videoListWidget.render(matrices, mouseX, mouseY, delta);
         if (!this.searchBox.isFocused() && this.searchBox.getText().isEmpty()) {
-            drawTextWithShadow(matrices, this.client.textRenderer, SEARCH_TEXT, this.searchBox.x, this.searchBox.y, -1);
+            drawTextWithShadow(matrices, this.client.textRenderer, SEARCH_TEXT, this.searchBox.getX(), this.searchBox.getY(), -1);
         } else {
             this.searchBox.render(matrices, mouseX, mouseY, delta);
         }

@@ -1,7 +1,6 @@
 package com.cinemamod.fabric.gui.widget;
 
 import com.cinemamod.fabric.CinemaMod;
-import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.gui.VideoQueueScreen;
 import com.cinemamod.fabric.util.NetworkUtil;
 import com.cinemamod.fabric.video.queue.QueuedVideo;
