@@ -57,8 +57,8 @@ public class VideoRequestBrowser extends Screen {
 
         backBtnBuilder.dimensions(browserDrawOffset, browserDrawOffset - 20, 20, 20);
         fwdBtnBuilder.dimensions(browserDrawOffset + 20, browserDrawOffset - 20, 20, 20);
-        requestBtnBuilder.dimensions(width - browserDrawOffset + 20, browserDrawOffset - 20, 20, 20);
-        closeBtnBuilder.dimensions(width - browserDrawOffset, browserDrawOffset - 20, 20, 20);
+        requestBtnBuilder.dimensions(width - browserDrawOffset - 20 - 60, browserDrawOffset - 20, 60, 20);
+        closeBtnBuilder.dimensions(width - browserDrawOffset - 20, browserDrawOffset - 20, 20, 20);
 
         addDrawableChild(backBtnBuilder.build());
         addDrawableChild(fwdBtnBuilder.build());
