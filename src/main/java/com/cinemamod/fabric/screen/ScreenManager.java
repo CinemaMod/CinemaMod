@@ -65,12 +65,4 @@ public class ScreenManager {
         screens.clear();
     }
 
-    public void updateAll() {
-        for (Screen screen : screens.values()) {
-            if (screen.hasBrowser()) {
-                screen.getBrowser().update();
-            }
-        }
-    }
-
 }

@@ -37,7 +37,7 @@ public class ScreenBlockEntityRenderer implements BlockEntityRenderer<ScreenBloc
         RenderUtil.fixRotation(matrices, screen.getFacing());
         matrices.scale(screen.getWidth(), screen.getHeight(), 0);
         if (screen.hasBrowser()) {
-            int glId = screen.getBrowser().renderer.texture_id_[0];
+            int glId = screen.getBrowser().renderer.getTextureID();
             RenderUtil.renderTexture(matrices, tessellator, buffer, glId);
         } else {
             RenderUtil.renderBlack(matrices, tessellator, buffer);

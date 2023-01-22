@@ -1,5 +1,6 @@
 package com.cinemamod.fabric.cef;
 
+import net.minecraft.client.MinecraftClient;
 import org.cef.CefClient;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefBrowserOsr;
@@ -14,8 +15,34 @@ public class CefBrowserCinema extends CefBrowserOsr {
     public final CefBrowserCinemaRenderer renderer = new CefBrowserCinemaRenderer(true);
     private final CefImageData imageData = new CefImageData();
 
+    private class CefBrowserCinemaUpdateThread extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                synchronized (imageData) {
+                    if (imageData.shouldClose) {
+                        return;
+                    }
+
+                    if (imageData.hasFrame) {
+                        MinecraftClient.getInstance().submit(() -> renderer.onPaint(imageData.dirtyRects, imageData.buffer, imageData.width, imageData.height, imageData.fullReRender));
+                        imageData.hasFrame = false;
+                        imageData.fullReRender = false;
+                    }
+                }
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
     public CefBrowserCinema(CefClient client, String url, boolean transparent, CefRequestContext context) {
         super(client, url, transparent, context);
+        new CefBrowserCinemaUpdateThread().start();
     }
 
     @Override
@@ -47,14 +74,10 @@ public class CefBrowserCinema extends CefBrowserOsr {
         wasResized(width, height);
     }
 
-    public void update() {
-        synchronized (imageData) {
-            if (imageData.hasFrame) {
-                renderer.onPaint(false, imageData.dirtyRects, imageData.buffer, imageData.width, imageData.height, imageData.fullReRender);
-                imageData.hasFrame = false;
-                imageData.fullReRender = false;
-            }
-        }
+    public void close() {
+        renderer.cleanup();
+        super.close(true);
+        imageData.shouldClose = true;
     }
 
 }

@@ -33,7 +33,7 @@ public final class CefUtil {
 
         cefAppInstance = CefApp.getInstance(cefSwitches, cefSettings);
         cefClientInstance = cefAppInstance.createClient();
-        cefClientInstance.addLoadHandler(new LoadHandler());
+        cefClientInstance.addLoadHandler(new CefBrowserCinemaLoadHandler());
 
         return init = true;
     }
@@ -96,7 +96,7 @@ public final class CefUtil {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (CefUtil.isInit()) {
                 CefUtil.getCefApp().N_DoMessageLoopWork();
-                CinemaModClient.getInstance().getScreenManager().updateAll();
+//                CinemaModClient.getInstance().getScreenManager().updateAll();
             }
         });
     }

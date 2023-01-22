@@ -11,5 +11,6 @@ public class CefImageData {
     public Rectangle[] dirtyRects;
     public boolean hasFrame;
     public boolean fullReRender;
+    public boolean shouldClose;
 
 }

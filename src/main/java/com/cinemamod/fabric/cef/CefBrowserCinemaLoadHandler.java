@@ -8,7 +8,7 @@ import org.cef.browser.CefFrame;
 import org.cef.handler.CefLoadHandler;
 import org.cef.network.CefRequest;
 
-public class LoadHandler implements CefLoadHandler {
+public class CefBrowserCinemaLoadHandler implements CefLoadHandler {
 
     @Override
     public void onLoadingStateChange(CefBrowser browser, boolean isLoading, boolean canGoBack, boolean canGoForward) {

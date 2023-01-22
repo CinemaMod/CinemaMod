@@ -111,7 +111,7 @@ public class CinemaModClient implements ClientModInitializer {
 
         VideoQueueScreen.registerKeyInput();
         VideoRequestBrowser.registerKeyInput();
-        VideoRequestBrowser.registerCefTick();
+//        VideoRequestBrowser.registerCefTick();
     }
 
 }
