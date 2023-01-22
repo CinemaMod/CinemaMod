@@ -118,6 +118,7 @@ void createPlatformJarTask(String platform) {
 		}
 
 		from sourceSets.main.output
+		from sourceSets.jcef.output
 		appendix platform
 	}
 
