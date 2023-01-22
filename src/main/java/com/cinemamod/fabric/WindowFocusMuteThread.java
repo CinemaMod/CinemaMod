@@ -14,7 +14,7 @@ public class WindowFocusMuteThread extends Thread {
 
     @Override
     public void run() {
-        while (MinecraftClient.getInstance().isRunning()) {
+        while (MinecraftClient.getInstance() != null) {
             if (CinemaModClient.getInstance().getVideoSettings().isMuteWhenAltTabbed()) {
                 if (MinecraftClient.getInstance().isWindowFocused() && !previousState) {
                     // if currently focused and was previously not focused
