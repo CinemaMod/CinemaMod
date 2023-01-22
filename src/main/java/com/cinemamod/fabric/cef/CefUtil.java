@@ -2,7 +2,6 @@ package com.cinemamod.fabric.cef;
 
 import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.screen.Screen;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import org.cef.CefApp;
 import org.cef.CefClient;
 import org.cef.CefSettings;
@@ -30,6 +29,8 @@ public final class CefUtil {
         cefSettings.windowless_rendering_enabled = true;
         cefSettings.background_color = cefSettings.new ColorType(0, 255, 255, 255);
 //        cefSettings.cache_path = new File("chromium", "cache").getAbsolutePath();
+
+//        CefApp.addAppHandler(new CefBrowserCinemaAppHandler());
 
         cefAppInstance = CefApp.getInstance(cefSwitches, cefSettings);
         cefClientInstance = cefAppInstance.createClient();
@@ -90,15 +91,6 @@ public final class CefUtil {
         }
 
         return browser;
-    }
-
-    public static void registerCefTick() {
-        ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (CefUtil.isInit()) {
-                CefUtil.getCefApp().N_DoMessageLoopWork();
-//                CinemaModClient.getInstance().getScreenManager().updateAll();
-            }
-        });
     }
 
 }
