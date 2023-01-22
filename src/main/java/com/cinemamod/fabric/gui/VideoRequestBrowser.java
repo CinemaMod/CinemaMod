@@ -1,6 +1,5 @@
 package com.cinemamod.fabric.gui;
 
-import com.cinemamod.fabric.cef.CefBrowserCinema;
 import com.cinemamod.fabric.cef.CefUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -8,20 +7,22 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.ButtonWidget.Builder;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import org.cef.browser.CefBrowserOsr;
 import org.lwjgl.glfw.GLFW;
 
 public class VideoRequestBrowser extends Screen {
 
     protected static KeyBinding keyBinding;
-    private static CefBrowserCinema browser;
+    private static CefBrowserOsr browser;
     private static final int browserDrawOffset = 40;
 
+    @SuppressWarnings("unused")
     private ButtonWidget backBtn, fwdBtn, requestBtn, closeBtn;
     private TextFieldWidget urlField;
 
@@ -41,20 +42,30 @@ public class VideoRequestBrowser extends Screen {
 
         browser.resize(client.getWindow().getWidth(), client.getWindow().getHeight() - scaleY(20));
 
-        addDrawableChild(backBtn = (new ButtonWidget(browserDrawOffset, browserDrawOffset - 20, 20, 20, new LiteralText("<"), button -> {
+        ButtonWidget.Builder backBtnBuilder = new Builder(Text.of("<"), button -> {
             System.out.println("back button");
-        })));
-        addDrawableChild(fwdBtn = (new ButtonWidget(browserDrawOffset + 20, browserDrawOffset - 20, 20, 20, new LiteralText(">"), button -> {
+        });
+        ButtonWidget.Builder fwdBtnBuilder = new Builder(Text.of(">"), button -> {
             System.out.println("fwd button");
-        })));
-        addDrawableChild(requestBtn = (new ButtonWidget(width - browserDrawOffset - 20 - 60, browserDrawOffset - 20, 60, 20, new LiteralText("Request"), button -> {
+        });
+        ButtonWidget.Builder requestBtnBuilder = new Builder(Text.of("Request"), button -> {
             System.out.println("request button");
-        })));
-        addDrawableChild(closeBtn = (new ButtonWidget(width - browserDrawOffset - 20, browserDrawOffset - 20, 20, 20, new LiteralText("X"), button -> {
+        });
+        ButtonWidget.Builder closeBtnBuilder = new Builder(Text.of("X"), button -> {
             System.out.println("close button");
-        })));
+        });
 
-        urlField = new TextFieldWidget(client.textRenderer, browserDrawOffset + 40, browserDrawOffset - 20 + 1, width - browserDrawOffset - 160, 20, new LiteralText(""));
+        backBtnBuilder.dimensions(browserDrawOffset, browserDrawOffset - 20, 20, 20);
+        fwdBtnBuilder.dimensions(browserDrawOffset + 20, browserDrawOffset - 20, 20, 20);
+        requestBtnBuilder.dimensions(width - browserDrawOffset + 20, browserDrawOffset - 20, 20, 20);
+        closeBtnBuilder.dimensions(width - browserDrawOffset, browserDrawOffset - 20, 20, 20);
+
+        addDrawableChild(backBtnBuilder.build());
+        addDrawableChild(fwdBtnBuilder.build());
+        addDrawableChild(requestBtnBuilder.build());
+        addDrawableChild(closeBtnBuilder.build());
+
+        urlField = new TextFieldWidget(client.textRenderer, browserDrawOffset + 40, browserDrawOffset - 20 + 1, width - browserDrawOffset - 160, 20, Text.of(""));
         urlField.setMaxLength(65535);
         urlField.setText(browser.getURL()); // why does getURL return an empty string here?
     }
@@ -64,8 +75,8 @@ public class VideoRequestBrowser extends Screen {
         urlField.render(matrices, mouseX, mouseY, delta);
         super.render(matrices, mouseX, mouseY, delta);
         RenderSystem.disableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
-        int glId = browser.renderer.getTextureID();
+        RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
+        int glId = browser.renderer_.texture_id_[0];
         RenderSystem.setShaderTexture(0, glId);
         Tessellator t = Tessellator.getInstance();
         BufferBuilder buffer = t.getBuffer();
@@ -110,6 +121,14 @@ public class VideoRequestBrowser extends Screen {
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (keyBinding.wasPressed()) {
                 client.setScreen(new VideoRequestBrowser());
+            }
+        });
+    }
+
+    public static void registerCefTick() {
+        ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            if (browser != null) {
+                browser.update();
             }
         });
     }

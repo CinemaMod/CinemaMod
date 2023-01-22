@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.ButtonWidget.Builder;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,9 +30,13 @@ public class VideoQueueScreen extends Screen {
     @Override
     protected void init() {
         videoQueueWidget = new VideoQueueWidget(this, client, this.width, this.height, 68, this.method_31361(), 19);
-        addDrawableChild(new ButtonWidget(method_31362() + 23, method_31359() + 78, 196, 20, Text.of("Video Settings"), button -> {
+        ButtonWidget.Builder videoSettingsBuilder = new Builder(Text.of("Video Settings"), button -> {
             client.setScreen(new VideoSettingsScreen());
-        }));
+        });
+
+        videoSettingsBuilder.dimensions(method_31362() + 23, method_31359() + 78, 196, 20);
+
+        addDrawableChild(videoSettingsBuilder.build());
     }
 
     private int method_31359() {

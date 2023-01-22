@@ -5,7 +5,8 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -34,7 +35,7 @@ public class PreviewScreenBlock extends Block implements BlockEntityProvider {
         IDENT = new Identifier("cinemamod", "preview_screen");
         PREVIEW_SCREEN_BLOCK = new PreviewScreenBlock();
 
-        Registry.register(Registry.BLOCK, IDENT, PREVIEW_SCREEN_BLOCK);
+        Registry.register(Registries.BLOCK, IDENT, PREVIEW_SCREEN_BLOCK);
     }
 
     @Nullable

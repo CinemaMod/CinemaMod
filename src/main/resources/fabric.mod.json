@@ -9,13 +9,19 @@
       "com.cinemamod.fabric.CinemaModClient"
     ]
   },
+  "contact": {
+    "homepage": "https://github.com/CinemaMod/CinemaMod-Fabric",
+    "sources": "https://github.com/CinemaMod/CinemaMod-Fabric",
+    "issues": "https://github.com/CinemaMod/CinemaMod-Fabric/issues",
+    "discord": "https://discord.gg/rNrh5kW8Ty"
+  },
   "mixins": [
     "cinemamod.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13.3",
+    "fabricloader": ">=0.14.12",
     "fabric": "*",
-    "minecraft": "1.18.x",
+    "minecraft": "1.19.3",
     "java": ">=17"
   }
 }

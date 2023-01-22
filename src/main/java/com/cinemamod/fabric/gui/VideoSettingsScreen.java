@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
+import net.minecraft.client.gui.widget.ButtonWidget.Builder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -50,14 +51,16 @@ public class VideoSettingsScreen extends Screen {
                 CinemaModClient.getInstance().getVideoSettings().setHideCrosshair(isChecked());
             }
         });
-        addDrawableChild(new ButtonWidget(method_31362() + 23, 142 + 32, 196, 20,
-                Text.of("Screen resolution: " + CinemaModClient.getInstance().getVideoSettings().getBrowserResolution() + "p"), button -> {
+        ButtonWidget.Builder screenResolutionBuilder = new Builder(
+            Text.of("Screen Resolution: " + CinemaModClient.getInstance().getVideoSettings().getBrowserResolution() + "p"),
+             button ->
+        {
             CinemaModClient.getInstance().getVideoSettings().setNextBrowserResolution();
             button.setMessage(Text.of("Screen resolution: " + CinemaModClient.getInstance().getVideoSettings().getBrowserResolution() + "p"));
             shouldReloadScreen = true;
-        }, (button, matrices, mouseX, mouseY) -> {
-            renderTooltip(matrices, Text.of("A higher resolution may decrease FPS"), mouseX, mouseY);
-        }));
+        });
+        screenResolutionBuilder.dimensions(method_31362() + 23, 142 + 32, 196, 20);
+        addDrawableChild(screenResolutionBuilder.build());
     }
 
     private int method_31359() {
@@ -66,10 +69,6 @@ public class VideoSettingsScreen extends Screen {
 
     private int method_31360() {
         return this.method_31359() / 16;
-    }
-
-    private int method_31361() {
-        return 80 + this.method_31360() * 16 - 8;
     }
 
     private int method_31362() {
