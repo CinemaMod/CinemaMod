@@ -3,7 +3,7 @@
 </p>
 
 # CinemaMod-Fabric
-Watch online videos with others in Minecraft. Developed with Fabric, currently supports Minecraft 1.18.2.
+Watch online videos with others in Minecraft. Developed with Fabric, currently supports Minecraft 1.19.3
 
 NOT RELEASED, IN DEVELOPMENT
 
