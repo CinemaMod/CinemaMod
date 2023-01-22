@@ -31,11 +31,14 @@ public class CefBrowserCinemaRenderer {
     }
 
     protected void cleanup() {
-        if (textureID[0] != 0)
+        if (textureID[0] != 0) {
             glDeleteTextures(textureID[0]);
+            textureID[0] = 0;
+        }
     }
 
     protected void onPaint(ByteBuffer buffer, int width, int height) {
+        if (textureID[0] == 0) return;
         if (transparent) RenderSystem.enableBlend();
         RenderSystem.enableTexture();
         RenderSystem.bindTexture(textureID[0]);
