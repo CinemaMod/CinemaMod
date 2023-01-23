@@ -111,7 +111,7 @@ public class CefBrowserCinema extends CefBrowserOsr {
                 mouseY,
                 1,
                 false,
-                button);
+                button + 1);
         sendMouseEvent(mouseEvent);
     }
 
