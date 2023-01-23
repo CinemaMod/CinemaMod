@@ -41,16 +41,16 @@ public class VideoRequestBrowser extends Screen {
         if (browser == null) return;
 
         ButtonWidget.Builder backBtnBuilder = new Builder(Text.of("<"), button -> {
-            System.out.println("back button");
+            browser.goBack();
         });
         ButtonWidget.Builder fwdBtnBuilder = new Builder(Text.of(">"), button -> {
-            System.out.println("fwd button");
+            browser.goForward();
         });
         ButtonWidget.Builder requestBtnBuilder = new Builder(Text.of("Request"), button -> {
-            System.out.println("request button");
+            System.out.println("TODO, request button");
         });
         ButtonWidget.Builder closeBtnBuilder = new Builder(Text.of("X"), button -> {
-            System.out.println("close button");
+            close();
         });
 
         backBtnBuilder.dimensions(browserDrawOffset, browserDrawOffset - 20, 20, 20);
