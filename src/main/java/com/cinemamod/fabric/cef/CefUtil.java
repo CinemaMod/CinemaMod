@@ -52,34 +52,19 @@ public final class CefUtil {
     }
 
     public static CefBrowserCinema createBrowser(String startUrl, int widthPx, int heightPx) {
-        if (!init) {
-            return null;
-        }
-
+        if (!init) return null;
         CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl, true, null);
         browser.setCloseAllowed();
         browser.createImmediately();
-
-        // Adjust screen size
-        {
-            float scale = widthPx / (float) heightPx;
-            int height = CinemaModClient.getInstance().getVideoSettings().getBrowserResolution();
-            int width = (int) Math.floor(height * scale);
-            browser.resize(width, height);
-        }
-
+        browser.resize(widthPx, heightPx);
         return browser;
     }
 
     public static CefBrowserCinema createBrowser(String startUrl, Screen screen) {
-        if (!init) {
-            return null;
-        }
-
+        if (!init) return null;
         CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl, true, null);
         browser.setCloseAllowed();
         browser.createImmediately();
-
         // Adjust screen size
         {
             float widthBlocks = screen.getWidth();
@@ -89,7 +74,6 @@ public final class CefUtil {
             int width = (int) Math.floor(height * scale);
             browser.resize(width, height);
         }
-
         return browser;
     }
 

@@ -1,19 +1,20 @@
 package com.cinemamod.fabric.gui;
 
+import com.cinemamod.fabric.cef.CefBrowserCinema;
 import com.cinemamod.fabric.cef.CefUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.ButtonWidget.Builder;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import com.cinemamod.fabric.cef.CefBrowserCinema;
 import org.lwjgl.glfw.GLFW;
 
 public class VideoRequestBrowser extends Screen {
@@ -21,7 +22,6 @@ public class VideoRequestBrowser extends Screen {
     protected static KeyBinding keyBinding;
     private static CefBrowserCinema browser;
     private static final int browserDrawOffset = 40;
-
 
     private ButtonWidget backBtn, fwdBtn, requestBtn, closeBtn;
     private TextFieldWidget urlField;
@@ -35,12 +35,10 @@ public class VideoRequestBrowser extends Screen {
         super.init();
 
         if (CefUtil.isInit() && browser == null) {
-            browser = CefUtil.createBrowser("https://google.com", width, height);
+            browser = CefUtil.createBrowser("https://google.com", vx(width), vy(height));
         }
 
         if (browser == null) return;
-
-        browser.resize(client.getWindow().getWidth(), client.getWindow().getHeight() - scaleY(20));
 
         ButtonWidget.Builder backBtnBuilder = new Builder(Text.of("<"), button -> {
             System.out.println("back button");
@@ -67,12 +65,12 @@ public class VideoRequestBrowser extends Screen {
 
         urlField = new TextFieldWidget(client.textRenderer, browserDrawOffset + 40, browserDrawOffset - 20 + 1, width - browserDrawOffset - 160, 20, Text.of(""));
         urlField.setMaxLength(65535);
-        urlField.setText(browser.getURL()); // why does getURL return an empty string here?
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        urlField.render(matrices, mouseX, mouseY, delta);
+        urlField.setText(browser.getURL());
+        urlField.render(matrices, mouseX, mouseY, delta); // The URL bar looks better under everything else
         super.render(matrices, mouseX, mouseY, delta);
         RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
@@ -98,16 +96,105 @@ public class VideoRequestBrowser extends Screen {
         browser = null;
     }
 
-    public int scaleY(int y) {
-        assert client != null;
-        double sy = ((double) y) / ((double) height) * ((double) client.getWindow().getHeight());
-        return (int) sy;
+    @Override
+    public void resize(MinecraftClient client, int width, int height) {
+        if (width > 100 && height > 100) {
+            browser.resize(vx(width), vy(height));
+        }
+        super.resize(client, width, height);
     }
 
-    public int scaleX(int x) {
-        assert client != null;
-        double sx = ((double) x) / ((double) width) * ((double) client.getWindow().getWidth());
-        return (int) sx;
+    private static int remapKeyCode(int keyCode) {
+        switch (keyCode) {
+            case GLFW.GLFW_KEY_BACKSPACE:
+                return 0x08;
+            case GLFW.GLFW_KEY_DELETE:
+                return 0x2E;
+            case GLFW.GLFW_KEY_DOWN:
+                return 0x28;
+            case GLFW.GLFW_KEY_ENTER:
+                return 0x0D;
+            case GLFW.GLFW_KEY_ESCAPE:
+                return 0x1B;
+            case GLFW.GLFW_KEY_LEFT:
+                return 0x25;
+            case GLFW.GLFW_KEY_RIGHT:
+                return 0x27;
+            case GLFW.GLFW_KEY_TAB:
+                return 0x09;
+            case GLFW.GLFW_KEY_UP:
+                return 0x26;
+            case GLFW.GLFW_KEY_PAGE_UP:
+                return 0x21;
+            case GLFW.GLFW_KEY_PAGE_DOWN:
+                return 0x22;
+            case GLFW.GLFW_KEY_END:
+                return 0x23;
+            case GLFW.GLFW_KEY_HOME:
+                return 0x24;
+        }
+        return -1;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        super.keyPressed(keyCode, scanCode, modifiers);
+        if (browser == null || urlField.isFocused()) return true;
+        int remap = remapKeyCode(keyCode);
+        if (remap != -1) {
+            browser.sendKeyPress(remap, modifiers);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        super.keyReleased(keyCode, scanCode, modifiers);
+        if (browser == null || urlField.isFocused()) return true;
+        int remap = remapKeyCode(keyCode);
+        if (remap != -1) {
+            browser.sendKeyRelease(remap, modifiers);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean charTyped(char chr, int modifiers) {
+        super.charTyped(chr, modifiers);
+        if (browser == null || urlField.isFocused()) return true;
+        browser.sendKeyTyped(chr, modifiers);
+        return true;
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        super.mouseMoved(mouseX, mouseY);
+        if (browser == null || urlField.isFocused()) return;
+        browser.sendMouseMove(vx(mouseX), vy(mouseY));
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
+        if (browser == null || urlField.isFocused()) return true;
+        browser.sendMousePress(vx(mouseX), vy(mouseY), button);
+        return true;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        super.mouseReleased(mouseX, mouseY, button);
+        if (browser == null || urlField.isFocused()) return true;
+        browser.sendMouseRelease(vx(mouseX), vy(mouseY), button);
+        return true;
+    }
+
+    public int vx(double x) {
+        return (int) (x * client.getWindow().getScaleFactor()) - browserDrawOffset;
+    }
+
+    public int vy(double y) {
+        return (int) (y * client.getWindow().getScaleFactor()) - browserDrawOffset;
     }
 
     public static void registerKeyInput() {
@@ -124,4 +211,5 @@ public class VideoRequestBrowser extends Screen {
             }
         });
     }
+
 }
