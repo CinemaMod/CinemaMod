@@ -10,6 +10,7 @@ import org.lwjgl.glfw.GLFW;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import java.nio.ByteBuffer;
 
 public class CefBrowserCinema extends CefBrowserOsr {
@@ -105,11 +106,12 @@ public class CefBrowserCinema extends CefBrowserOsr {
         MouseEvent mouseEvent = new MouseEvent(dummyComponent,
                 MouseEvent.MOUSE_PRESSED,
                 System.currentTimeMillis(),
-                button,
+                0,
                 mouseX,
                 mouseY,
                 1,
-                false);
+                false,
+                button + 1);
         sendMouseEvent(mouseEvent);
     }
 
@@ -117,12 +119,39 @@ public class CefBrowserCinema extends CefBrowserOsr {
         MouseEvent mouseEvent = new MouseEvent(dummyComponent,
                 MouseEvent.MOUSE_RELEASED,
                 System.currentTimeMillis(),
-                button,
+                0,
                 mouseX,
                 mouseY,
                 1,
-                false);
+                false,
+                button + 1);
         sendMouseEvent(mouseEvent);
+
+        mouseEvent = new MouseEvent(dummyComponent,
+                MouseEvent.MOUSE_CLICKED,
+                System.currentTimeMillis(),
+                0,
+                mouseX,
+                mouseY,
+                1,
+                false,
+                button + 1);
+        sendMouseEvent(mouseEvent);
+    }
+
+    public void sendMouseWheel(int mouseX, int mouseY, int mods, int amount, int rotation) {
+        MouseWheelEvent mouseWheelEvent = new MouseWheelEvent(dummyComponent,
+                MouseEvent.MOUSE_WHEEL,
+                System.currentTimeMillis(),
+                mods,
+                mouseX,
+                mouseY,
+                0,
+                false,
+                MouseWheelEvent.WHEEL_UNIT_SCROLL,
+                amount,
+                rotation);
+        sendMouseWheelEvent(mouseWheelEvent);
     }
 
     public void resize(int width, int height) {

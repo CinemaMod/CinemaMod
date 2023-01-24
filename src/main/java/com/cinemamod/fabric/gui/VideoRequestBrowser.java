@@ -170,14 +170,14 @@ public class VideoRequestBrowser extends Screen {
     public void mouseMoved(double mouseX, double mouseY) {
         super.mouseMoved(mouseX, mouseY);
         if (browser == null || urlField.isFocused()) return;
-        browser.sendMouseMove(vx(mouseX), vy(mouseY));
+        browser.sendMouseMove(mx(mouseX), my(mouseY));
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (browser == null || urlField.isFocused()) return true;
-        browser.sendMousePress(vx(mouseX), vy(mouseY), button);
+        browser.sendMousePress(mx(mouseX), my(mouseY), button);
         return true;
     }
 
@@ -185,16 +185,32 @@ public class VideoRequestBrowser extends Screen {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
         if (browser == null || urlField.isFocused()) return true;
-        browser.sendMouseRelease(vx(mouseX), vy(mouseY), button);
+        browser.sendMouseRelease(mx(mouseX), my(mouseY), button);
+        return true;
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+        super.mouseScrolled(mouseX, mouseY, amount);
+        if (browser == null || urlField.isFocused()) return true;
+        browser.sendMouseWheel(mx(mouseX), my(mouseY), 0, (int)amount, 90);
         return true;
     }
 
     public int vx(double x) {
-        return (int) (x * client.getWindow().getScaleFactor()) - browserDrawOffset;
+        return (int) ((x - browserDrawOffset * 2) * client.getWindow().getScaleFactor());
     }
 
     public int vy(double y) {
-        return (int) (y * client.getWindow().getScaleFactor()) - browserDrawOffset;
+        return (int) ((y - browserDrawOffset * 2) * client.getWindow().getScaleFactor());
+    }
+
+    public int mx(double x) {
+        return (int) ((x - browserDrawOffset) * client.getWindow().getScaleFactor());
+    }
+
+    public int my(double y) {
+        return (int) ((y - browserDrawOffset) * client.getWindow().getScaleFactor());
     }
 
     public static void registerKeyInput() {
