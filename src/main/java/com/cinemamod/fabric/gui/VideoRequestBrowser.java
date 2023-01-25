@@ -17,6 +17,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
 
+import static java.awt.event.KeyEvent.VK_ENTER;
+
 public class VideoRequestBrowser extends Screen {
 
     protected static KeyBinding keyBinding;
@@ -113,7 +115,7 @@ public class VideoRequestBrowser extends Screen {
             case GLFW.GLFW_KEY_DOWN:
                 return 0x28;
             case GLFW.GLFW_KEY_ENTER:
-                return 0x0D;
+                return VK_ENTER;
             case GLFW.GLFW_KEY_ESCAPE:
                 return 0x1B;
             case GLFW.GLFW_KEY_LEFT:
