@@ -33,7 +33,6 @@ public class CefBrowserCinema extends CefBrowserOsr {
                 modifiers,
                 keyCode,
                 KeyEvent.CHAR_UNDEFINED);
-        System.out.println(keyEvent);
         sendKeyEvent(keyEvent);
     }
 
