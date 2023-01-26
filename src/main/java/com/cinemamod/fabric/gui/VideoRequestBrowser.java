@@ -155,6 +155,9 @@ public class VideoRequestBrowser extends Screen {
         if (browser == null || urlField.isFocused()) return true;
         int remap = remapKeyCode(keyCode);
         if (remap != -1) {
+            if (remap == VK_ENTER) {
+                browser.sendKeyTyped((char)13, 0);
+            }
             browser.sendKeyRelease(remap, modifiers);
         }
         return true;
