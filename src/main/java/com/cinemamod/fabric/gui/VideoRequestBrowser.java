@@ -71,7 +71,10 @@ public class VideoRequestBrowser extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        urlField.setText(browser.getURL());
+        if (!urlField.isFocused()) {
+            urlField.setText(browser.getURL());
+            urlField.setCursor(0); // If the URL is longer than the URL field, we want it to start at the beginning
+        }
         urlField.render(matrices, mouseX, mouseY, delta); // The URL bar looks better under everything else
         super.render(matrices, mouseX, mouseY, delta);
         RenderSystem.disableDepthTest();
@@ -100,10 +103,15 @@ public class VideoRequestBrowser extends Screen {
 
     @Override
     public void resize(MinecraftClient client, int width, int height) {
+        super.resize(client, width, height);
+
+        if (browser == null) {
+            return;
+        }
+
         if (width > 100 && height > 100) {
             browser.resize(vx(width), vy(height));
         }
-        super.resize(client, width, height);
     }
 
     private static int remapKeyCode(int keyCode) {
@@ -141,18 +149,47 @@ public class VideoRequestBrowser extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         super.keyPressed(keyCode, scanCode, modifiers);
-        if (browser == null || urlField.isFocused()) return true;
+
+        if (urlField.isFocused()) {
+            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+                String newURL = urlField.getText();
+                // Basic sanitation
+                if (newURL.contains(" ")) {
+                    urlField.setTextFieldFocused(false);
+                    return true;
+                }
+                urlField.setTextFieldFocused(false);
+                browser.loadURL(newURL);
+                return true;
+            }
+
+            return urlField.keyPressed(keyCode, scanCode, modifiers);
+        }
+
+        if (browser == null) {
+            return true;
+        }
+
         int remap = remapKeyCode(keyCode);
         if (remap != -1) {
             browser.sendKeyPress(remap, modifiers);
         }
+
         return true;
     }
 
     @Override
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         super.keyReleased(keyCode, scanCode, modifiers);
-        if (browser == null || urlField.isFocused()) return true;
+
+        if (urlField.isFocused()) {
+            return urlField.keyReleased(keyCode, scanCode, modifiers);
+        }
+
+        if (browser == null) {
+            return true;
+        }
+
         int remap = remapKeyCode(keyCode);
         if (remap != -1) {
             if (remap == VK_ENTER) {
@@ -160,45 +197,96 @@ public class VideoRequestBrowser extends Screen {
             }
             browser.sendKeyRelease(remap, modifiers);
         }
+
         return true;
     }
 
     @Override
     public boolean charTyped(char chr, int modifiers) {
         super.charTyped(chr, modifiers);
-        if (browser == null || urlField.isFocused()) return true;
+
+        if (urlField.isFocused()) {
+            return urlField.charTyped(chr, modifiers);
+        }
+
+        if (browser == null) {
+            return true;
+        }
+
         browser.sendKeyTyped(chr, modifiers);
+
         return true;
     }
 
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
         super.mouseMoved(mouseX, mouseY);
-        if (browser == null || urlField.isFocused()) return;
+
+        if (urlField.isFocused()) {
+            urlField.mouseMoved(mouseX, mouseY);
+            return;
+        }
+
+        if (browser == null) {
+            return;
+        }
+
         browser.sendMouseMove(mx(mouseX), my(mouseY));
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
-        if (browser == null || urlField.isFocused()) return true;
+
+        if (urlField.isMouseOver(mouseX, mouseY)) {
+            urlField.setTextFieldFocused(true);
+            urlField.setEditable(true);
+        }
+
+        if (urlField.isFocused()) {
+            return urlField.mouseClicked(mouseX, mouseY, button);
+        }
+
+        if (browser == null) {
+            return true;
+        }
+
         browser.sendMousePress(mx(mouseX), my(mouseY), button);
+
         return true;
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
-        if (browser == null || urlField.isFocused()) return true;
+
+        if (urlField.isFocused()) {
+            urlField.mouseReleased(mouseX, mouseY, button);
+        }
+
+        if (browser == null) {
+            return true;
+        }
+
         browser.sendMouseRelease(mx(mouseX), my(mouseY), button);
+
         return true;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
         super.mouseScrolled(mouseX, mouseY, amount);
-        if (browser == null || urlField.isFocused()) return true;
+
+        if (urlField.isFocused()) {
+            urlField.mouseScrolled(mouseX, mouseY, amount);
+        }
+
+        if (browser == null) {
+            return true;
+        }
+
         browser.sendMouseWheel(mx(mouseX), my(mouseY), 0, (int)amount, 90);
+
         return true;
     }
 

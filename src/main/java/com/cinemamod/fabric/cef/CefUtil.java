@@ -53,7 +53,7 @@ public final class CefUtil {
 
     public static CefBrowserCinema createBrowser(String startUrl, int widthPx, int heightPx) {
         if (!init) return null;
-        CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl, true, null);
+        CefBrowserCinema browser = new CefBrowserCinema(cefClientInstance, startUrl, false, null);
         browser.setCloseAllowed();
         browser.createImmediately();
         browser.resize(widthPx, heightPx);
