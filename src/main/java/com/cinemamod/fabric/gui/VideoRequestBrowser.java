@@ -250,6 +250,11 @@ public class VideoRequestBrowser extends Screen {
             return true;
         }
 
+        // Extra mouse buttons will cause a crash
+        // by HeadlessToolkit.areExtraMouseButtonsEnabled
+        // Also, right click is middle click?
+        if (button > 0) return true;
+
         browser.sendMousePress(mx(mouseX), my(mouseY), button);
 
         return true;
@@ -266,6 +271,11 @@ public class VideoRequestBrowser extends Screen {
         if (browser == null) {
             return true;
         }
+
+        // Extra mouse buttons will cause a crash
+        // by HeadlessToolkit.areExtraMouseButtonsEnabled
+        // Also, right click is middle click?
+        if (button > 0) return true;
 
         browser.sendMouseRelease(mx(mouseX), my(mouseY), button);
 
