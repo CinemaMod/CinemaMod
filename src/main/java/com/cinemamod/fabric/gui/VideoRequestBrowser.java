@@ -153,11 +153,6 @@ public class VideoRequestBrowser extends Screen {
         if (urlField.isFocused()) {
             if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
                 String newURL = urlField.getText();
-                // Basic sanitation
-                if (newURL.contains(" ")) {
-                    urlField.setTextFieldFocused(false);
-                    return true;
-                }
                 urlField.setTextFieldFocused(false);
                 browser.loadURL(newURL);
                 return true;
