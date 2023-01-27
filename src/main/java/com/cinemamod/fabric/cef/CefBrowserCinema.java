@@ -26,23 +26,25 @@ public class CefBrowserCinema extends CefBrowserOsr {
         renderer.onPaint(buffer, width, height);
     }
 
-    public void sendKeyPress(int keyCode, int modifiers) {
-        KeyEvent keyEvent = new KeyEvent(dummyComponent,
+    public void sendKeyPress(int keyCode, int modifiers, long scanCode) {
+        CefBrowserKeyEvent keyEvent = new CefBrowserKeyEvent(dummyComponent,
                 KeyEvent.KEY_PRESSED,
                 System.currentTimeMillis(),
                 modifiers,
                 keyCode,
-                KeyEvent.CHAR_UNDEFINED);
+                KeyEvent.CHAR_UNDEFINED,
+                scanCode);
         sendKeyEvent(keyEvent);
     }
 
-    public void sendKeyRelease(int keyCode, int modifiers) {
-        KeyEvent keyEvent = new KeyEvent(dummyComponent,
+    public void sendKeyRelease(int keyCode, int modifiers, long scanCode) {
+        CefBrowserKeyEvent keyEvent = new CefBrowserKeyEvent(dummyComponent,
                 KeyEvent.KEY_RELEASED,
                 System.currentTimeMillis(),
                 modifiers,
                 keyCode,
-                KeyEvent.CHAR_UNDEFINED);
+                KeyEvent.CHAR_UNDEFINED,
+                scanCode);
         sendKeyEvent(keyEvent);
     }
 
