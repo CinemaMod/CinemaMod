@@ -30,8 +30,6 @@ public final class CefUtil {
         cefSettings.background_color = cefSettings.new ColorType(0, 255, 255, 255);
 //        cefSettings.cache_path = new File("chromium", "cache").getAbsolutePath();
 
-//        CefApp.addAppHandler(new CefBrowserCinemaAppHandler());
-
         cefAppInstance = CefApp.getInstance(cefSwitches, cefSettings);
         cefClientInstance = cefAppInstance.createClient();
         cefClientInstance.addLoadHandler(new CefBrowserCinemaLoadHandler());

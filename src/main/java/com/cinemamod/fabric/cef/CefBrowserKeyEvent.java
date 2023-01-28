@@ -1,12 +1,11 @@
 package com.cinemamod.fabric.cef;
 
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class CefBrowserKeyEvent extends KeyEvent {
 
-    private static final long serialVersionUID = 1L;
-    private long scancode = 0;
+    private long scancode = 0; // https://github.com/CinemaMod/java-cef/blob/6f9ddcb78228fdaac0eacba04f905a6aa97cff9f/native/CefBrowser_N.cpp#L1625
 
     public CefBrowserKeyEvent(Component source, int id, long when, int modifiers, int keyCode, char keyChar, int keyLocation) {
         super(source, id, when, modifiers, keyCode, keyChar, keyLocation);
@@ -16,4 +15,5 @@ public class CefBrowserKeyEvent extends KeyEvent {
         super(source, id, when, modifiers, keyCode, keyChar);
         this.scancode = scanCode;
     }
+
 }

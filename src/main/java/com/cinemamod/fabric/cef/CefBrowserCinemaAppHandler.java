@@ -28,4 +28,5 @@ public class CefBrowserCinemaAppHandler extends CefAppHandlerAdapter {
     public void onScheduleMessagePumpWork(long delay_ms) {
         // Do nothing, we handle this ourselves in CefRenderMixin
     }
+
 }

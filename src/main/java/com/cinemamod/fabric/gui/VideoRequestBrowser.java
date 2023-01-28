@@ -148,7 +148,7 @@ public class VideoRequestBrowser extends Screen {
     }
 
     private static int remapScanCode(int scanCode) {
-        switch(scanCode) {
+        switch (scanCode) {
             case 327: return 0x47; // HOME
             case 328: return 0x48; // UP
             case 329: return 0x49; // PGUP
