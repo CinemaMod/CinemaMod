@@ -62,7 +62,7 @@ public class CefBrowserCinema extends CefBrowserOsr {
         MouseEvent mouseEvent = new MouseEvent(dummyComponent,
                 MouseEvent.MOUSE_MOVED,
                 System.currentTimeMillis(),
-                0,
+                MouseEvent.BUTTON1_DOWN_MASK, // Allow for mouse dragging
                 mouseX,
                 mouseY,
                 0,
