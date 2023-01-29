@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class VideoURLParser {
 
-    private CinemaModPlugin cinemaModPlugin;
-    private String url;
+    private final CinemaModPlugin cinemaModPlugin;
+    private final String url;
     private boolean parsed;
     private VideoInfoFetcher infoFetcher;
 

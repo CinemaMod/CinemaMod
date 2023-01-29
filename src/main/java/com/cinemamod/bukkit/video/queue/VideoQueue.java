@@ -3,7 +3,7 @@ package com.cinemamod.bukkit.video.queue;
 import com.cinemamod.bukkit.CinemaModPlugin;
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.event.queue.*;
-import com.cinemamod.bukkit.storage.VideoInfo;
+import com.cinemamod.bukkit.video.VideoInfo;
 import com.cinemamod.bukkit.theater.PrivateTheater;
 import com.cinemamod.bukkit.theater.Theater;
 import com.cinemamod.bukkit.util.NetworkUtil;
@@ -17,9 +17,9 @@ public class VideoQueue {
 
     private static final int MAX_QUEUE_SIZE = 32;
 
-    private CinemaModPlugin cinemaModPlugin;
-    private Theater theater;
-    private PriorityQueue<Video> priorityQueue;
+    private final CinemaModPlugin cinemaModPlugin;
+    private final Theater theater;
+    private final PriorityQueue<Video> priorityQueue;
     private boolean locked;
 
     public VideoQueue(CinemaModPlugin cinemaModPlugin, Theater theater) {
@@ -29,11 +29,11 @@ public class VideoQueue {
     }
 
     public boolean upvoteVideo(Player voter, Video video) {
-        return addVote(voter, video, QueueVoteType.UPVOTE);
+        return addVote(voter, video, QueueVoteType.UP_VOTE);
     }
 
     public boolean downvoteVideo(Player voter, Video video) {
-        return addVote(voter, video, QueueVoteType.DOWNVOTE);
+        return addVote(voter, video, QueueVoteType.DOWN_VOTE);
     }
 
     private boolean addVote(Player voter, Video video, QueueVoteType voteType) {
@@ -170,9 +170,9 @@ public class VideoQueue {
             buf.writeInt(video.getVoteScore());
             final int clientState;
             QueueVoteType currentVote = video.getCurrentVote(origin);
-            if (QueueVoteType.UPVOTE == currentVote) {
+            if (QueueVoteType.UP_VOTE == currentVote) {
                 clientState = 1;
-            } else if (QueueVoteType.DOWNVOTE == currentVote) {
+            } else if (QueueVoteType.DOWN_VOTE == currentVote) {
                 clientState = -1;
             } else {
                 clientState = 0;

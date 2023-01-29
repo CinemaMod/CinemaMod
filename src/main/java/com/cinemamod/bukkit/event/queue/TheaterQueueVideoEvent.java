@@ -5,7 +5,7 @@ import com.cinemamod.bukkit.video.Video;
 
 public class TheaterQueueVideoEvent extends TheaterQueueChangeEvent {
 
-    private Video video;
+    private final Video video;
 
     public TheaterQueueVideoEvent(Theater theater, Video video) {
         super(theater);

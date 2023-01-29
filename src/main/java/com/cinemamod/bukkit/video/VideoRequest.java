@@ -1,4 +1,4 @@
-package com.cinemamod.bukkit.storage;
+package com.cinemamod.bukkit.video;
 
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.buffer.PacketByteBufSerializable;
@@ -10,8 +10,8 @@ import java.util.UUID;
 // Serializes to VideoListEntry on client
 public class VideoRequest implements PacketByteBufSerializable<VideoRequest> {
 
-    private UUID requester;
-    private VideoInfo videoInfo;
+    private final UUID requester;
+    private final VideoInfo videoInfo;
     private long lastRequested;
     private int timesRequested;
     private boolean hidden;

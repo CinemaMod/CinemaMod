@@ -48,9 +48,7 @@ public final class WorldGuardUtil {
 
         if (parent != null) {
             regions.add(parent);
-
-            parent.getIntersectingRegions(regionManager.getRegions().values())
-                    .forEach(intersecting -> regions.add(intersecting));
+            regions.addAll(parent.getIntersectingRegions(regionManager.getRegions().values()));
         }
 
         return regions;

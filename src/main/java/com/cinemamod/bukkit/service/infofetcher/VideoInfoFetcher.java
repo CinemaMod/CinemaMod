@@ -1,12 +1,12 @@
 package com.cinemamod.bukkit.service.infofetcher;
 
-import com.cinemamod.bukkit.storage.VideoInfo;
+import com.cinemamod.bukkit.video.VideoInfo;
 
 import java.util.concurrent.CompletableFuture;
 
 public abstract class VideoInfoFetcher {
 
-    private String permission;
+    private final String permission;
 
     public VideoInfoFetcher(String permission) {
         this.permission = permission;

@@ -4,7 +4,7 @@ youtube-data-api-key: abc123
 
 enable-tab-theater-list: true
 
-video-storage:
+storage:
   mysql:
     use: false
     host: localhost

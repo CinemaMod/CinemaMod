@@ -51,12 +51,12 @@ public class CinemaModPlugin extends JavaPlugin {
         cinemaModConfig = new CinemaModConfig();
         cinemaModConfig.youtubeDataApiKey = getConfig().getString("youtube-data-api-key");
         cinemaModConfig.enableTabTheaterList = getConfig().getBoolean("enable-tab-theater-list");
-        cinemaModConfig.useMysql = getConfig().getBoolean("video-storage.mysql.use");
-        cinemaModConfig.mysqlHost = getConfig().getString("video-storage.mysql.host");
-        cinemaModConfig.mysqlPort = getConfig().getInt("video-storage.mysql.port");
-        cinemaModConfig.mysqlDatabase = getConfig().getString("video-storage.mysql.database");
-        cinemaModConfig.mysqlUsername = getConfig().getString("video-storage.mysql.username");
-        cinemaModConfig.mysqlPassword = getConfig().getString("video-storage.mysql.password");
+        cinemaModConfig.useMysql = getConfig().getBoolean("storage.mysql.use");
+        cinemaModConfig.mysqlHost = getConfig().getString("storage.mysql.host");
+        cinemaModConfig.mysqlPort = getConfig().getInt("storage.mysql.port");
+        cinemaModConfig.mysqlDatabase = getConfig().getString("storage.mysql.database");
+        cinemaModConfig.mysqlUsername = getConfig().getString("storage.mysql.username");
+        cinemaModConfig.mysqlPassword = getConfig().getString("storage.mysql.password");
 
         cinemaModConfig.autogenCubicRegions = getConfig().getBoolean("autogenCubicRegions");
 

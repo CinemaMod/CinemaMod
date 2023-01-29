@@ -1,7 +1,7 @@
 package com.cinemamod.bukkit.service.infofetcher;
 
 import com.cinemamod.bukkit.service.VideoServiceType;
-import com.cinemamod.bukkit.storage.VideoInfo;
+import com.cinemamod.bukkit.video.VideoInfo;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -9,7 +9,7 @@ public class TwitchVideoInfoFetcher extends VideoInfoFetcher {
 
     private static final String TWITCH_THUMBNAIL_URL = "https://cinemamod-static.ewr1.vultrobjects.com/images/twitch_thumbnail.jpg";
 
-    private String twitchUser;
+    private final String twitchUser;
 
     public TwitchVideoInfoFetcher(String twitchUser) {
         super("cinemamod.request.twitch");

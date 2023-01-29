@@ -2,7 +2,7 @@ package com.cinemamod.bukkit.theater;
 
 import com.cinemamod.bukkit.CinemaModPlugin;
 import com.cinemamod.bukkit.event.*;
-import com.cinemamod.bukkit.storage.VideoInfo;
+import com.cinemamod.bukkit.video.VideoInfo;
 import com.cinemamod.bukkit.theater.screen.PreviewScreen;
 import com.cinemamod.bukkit.theater.screen.Screen;
 import com.cinemamod.bukkit.util.ChatUtil;
@@ -51,12 +51,13 @@ public abstract class Theater {
         videoQueue = new VideoQueue(cinemaModPlugin, this);
         regions = WorldGuardUtil.guessTheaterRegions(this);
 
-        if(regions.isEmpty() && this.cinemaModPlugin.getCinemaModConfig().autogenCubicRegions){
+        if (regions.isEmpty() && this.cinemaModPlugin.getCinemaModConfig().autogenCubicRegions) {
             Location screenLoc = this.getScreen().getLocation();
             Location cornerA = screenLoc.subtract(100,32,100);
             Location cornerB = screenLoc.add(100,32,100);
-            // TODO: Make line not super long.
-            ProtectedCuboidRegion newRegion = new ProtectedCuboidRegion("autogened_theatre_" + id, BlockVector3.at(cornerA.getBlockX(), cornerA.getBlockY(), cornerA.getBlockZ()),BlockVector3.at(cornerB.getBlockX(), cornerB.getBlockY(), cornerB.getBlockZ()) );
+            ProtectedCuboidRegion newRegion = new ProtectedCuboidRegion("autogened_theater_" + id,
+                    BlockVector3.at(cornerA.getBlockX(), cornerA.getBlockY(), cornerA.getBlockZ()),
+                    BlockVector3.at(cornerB.getBlockX(), cornerB.getBlockY(), cornerB.getBlockZ()));
             regions.add(newRegion);
             cinemaModPlugin.getLogger().info("Automatically generated a cuboid region with id " + newRegion.getId() + " as needed corners -> " + cornerA + " and " + cornerB);
         }

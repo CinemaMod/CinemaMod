@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 
 public class PlayerTheaterListener implements Listener {
 
-    private CinemaModPlugin cinemaModPlugin;
+    private final CinemaModPlugin cinemaModPlugin;
 
     public PlayerTheaterListener(CinemaModPlugin cinemaModPlugin) {
         this.cinemaModPlugin = cinemaModPlugin;

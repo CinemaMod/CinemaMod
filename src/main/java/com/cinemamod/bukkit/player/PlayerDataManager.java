@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PlayerDataManager {
 
-    private CinemaModPlugin cinemaModPlugin;
-    private Map<UUID, PlayerData> cache;
+    private final CinemaModPlugin cinemaModPlugin;
+    private final Map<UUID, PlayerData> cache;
 
     public PlayerDataManager(CinemaModPlugin cinemaModPlugin) {
         this.cinemaModPlugin = cinemaModPlugin;
@@ -22,9 +22,6 @@ public class PlayerDataManager {
         cinemaModPlugin.getVideoStorage().loadVideoRequests(playerId).thenAccept(videoRequests -> {
             PlayerRequestHistory requestHistory = new PlayerRequestHistory(playerId, videoRequests);
             playerData.setRequestHistory(requestHistory, cinemaModPlugin);
-        });
-        cinemaModPlugin.getVideoStorage().loadPlaylists(playerId).thenAccept(videoPlaylists -> {
-            playerData.setPlaylists(videoPlaylists, cinemaModPlugin);
         });
         cache.put(playerId, playerData);
         return playerData;

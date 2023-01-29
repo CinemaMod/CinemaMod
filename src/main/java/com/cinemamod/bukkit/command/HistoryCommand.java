@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class HistoryCommand implements CommandExecutor {
 
-    private CinemaModPlugin cinemaModPlugin;
+    private final CinemaModPlugin cinemaModPlugin;
 
     public HistoryCommand(CinemaModPlugin cinemaModPlugin) {
         this.cinemaModPlugin = cinemaModPlugin;

@@ -1,4 +1,4 @@
-package com.cinemamod.bukkit.storage;
+package com.cinemamod.bukkit.video;
 
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.buffer.PacketByteBufSerializable;
@@ -24,9 +24,7 @@ public class VideoInfo implements PacketByteBufSerializable<VideoInfo> {
         this.durationSeconds = durationSeconds;
     }
 
-    public VideoInfo() {
-
-    }
+    public VideoInfo() {}
 
     public VideoServiceType getServiceType() {
         return serviceType;

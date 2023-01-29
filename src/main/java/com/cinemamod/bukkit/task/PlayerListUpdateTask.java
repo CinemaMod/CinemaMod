@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 
 public class PlayerListUpdateTask implements Runnable {
 
-    private CinemaModPlugin cinemaModPlugin;
+    private final CinemaModPlugin cinemaModPlugin;
 
     public PlayerListUpdateTask(CinemaModPlugin cinemaModPlugin) {
         this.cinemaModPlugin = cinemaModPlugin;

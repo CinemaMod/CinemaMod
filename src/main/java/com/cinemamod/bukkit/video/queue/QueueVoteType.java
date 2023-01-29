@@ -2,10 +2,10 @@ package com.cinemamod.bukkit.video.queue;
 
 public enum QueueVoteType {
 
-    UPVOTE(1),
-    DOWNVOTE(-1);
+    UP_VOTE(1),
+    DOWN_VOTE(-1);
 
-    private int value;
+    private final int value;
 
     QueueVoteType(int value) {
         this.value = value;

@@ -2,7 +2,7 @@ package com.cinemamod.bukkit.service.infofetcher;
 
 import com.cinemamod.bukkit.CinemaModPlugin;
 import com.cinemamod.bukkit.service.VideoServiceType;
-import com.cinemamod.bukkit.storage.VideoInfo;
+import com.cinemamod.bukkit.video.VideoInfo;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -23,9 +23,9 @@ public class YouTubeVideoInfoFetcher extends VideoInfoFetcher {
     private static final JsonParser JSON_PARSER = new JsonParser();
     private static final String PIPED_FETCH_URL_FORMAT = "https://pipedapi.kavin.rocks/streams/%s";
 
-    private CinemaModPlugin cinemaModPlugin;
-    private String youtubeDataApiKey;
-    private String youtubeVideoId;
+    private final CinemaModPlugin cinemaModPlugin;
+    private final String youtubeDataApiKey;
+    private final String youtubeVideoId;
 
     public YouTubeVideoInfoFetcher(CinemaModPlugin cinemaModPlugin, String youtubeVideoId) {
         super("cinemamod.request.youtube");

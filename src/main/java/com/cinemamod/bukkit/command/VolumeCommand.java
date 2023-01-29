@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class VolumeCommand implements CommandExecutor {
 
-    private CinemaModPlugin cinemaModPlugin;
+    private final CinemaModPlugin cinemaModPlugin;
 
     public VolumeCommand(CinemaModPlugin cinemaModPlugin) {
         this.cinemaModPlugin = cinemaModPlugin;

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 
 public class TheaterQueueVoteAddEvent extends TheaterQueueVoteEvent {
 
-    private QueueVoteType voteType;
+    private final QueueVoteType voteType;
 
     public TheaterQueueVoteAddEvent(Theater theater, Player voter, QueueVoteType voteType) {
         super(theater, voter);

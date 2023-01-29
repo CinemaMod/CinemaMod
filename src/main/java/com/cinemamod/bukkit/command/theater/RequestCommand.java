@@ -12,8 +12,8 @@ import java.util.Set;
 
 public class RequestCommand extends TheaterCommandExecutor {
 
-    private CinemaModPlugin cinemaModPlugin;
-    private Set<Player> lock;
+    private final CinemaModPlugin cinemaModPlugin;
+    private final Set<Player> lock;
 
     public RequestCommand(CinemaModPlugin cinemaModPlugin) {
         super(cinemaModPlugin);

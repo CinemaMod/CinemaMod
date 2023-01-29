@@ -1,6 +1,6 @@
 package com.cinemamod.bukkit.storage.sql;
 
-import com.cinemamod.bukkit.storage.VideoRequest;
+import com.cinemamod.bukkit.video.VideoRequest;
 
 import java.util.UUID;
 

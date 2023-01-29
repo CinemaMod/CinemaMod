@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class PlayerJoinQuitListener implements Listener {
 
-    private CinemaModPlugin cinemaModPlugin;
+    private final CinemaModPlugin cinemaModPlugin;
 
     public PlayerJoinQuitListener(CinemaModPlugin cinemaModPlugin) {
         this.cinemaModPlugin = cinemaModPlugin;

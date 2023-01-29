@@ -8,7 +8,7 @@ public class PlayerTheaterEvent extends TheaterEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private Player player;
+    private final Player player;
 
     public PlayerTheaterEvent(Player player, Theater theater) {
         super(theater);

@@ -31,11 +31,11 @@ public enum VideoServiceType implements PacketByteBufSerializable<VideoServiceTy
             "",
             "%s");
 
-    private String serviceUrl;
-    private String setVolumeJs;
-    private String startJs;
-    private String seekJs;
-    private String originUrlFormat;
+    private final String serviceUrl;
+    private final String setVolumeJs;
+    private final String startJs;
+    private final String seekJs;
+    private final String originUrlFormat;
 
     VideoServiceType(String serviceUrl, String setVolumeJs, String startJs, String seekJs, String originUrlFormat) {
         this.serviceUrl = serviceUrl;

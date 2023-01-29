@@ -1,8 +1,8 @@
 package com.cinemamod.bukkit.player;
 
 import com.cinemamod.bukkit.CinemaModPlugin;
-import com.cinemamod.bukkit.storage.VideoInfo;
-import com.cinemamod.bukkit.storage.VideoRequest;
+import com.cinemamod.bukkit.video.VideoInfo;
+import com.cinemamod.bukkit.video.VideoRequest;
 
 import java.util.*;
 

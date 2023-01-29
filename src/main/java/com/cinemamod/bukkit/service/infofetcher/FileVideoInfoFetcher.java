@@ -2,7 +2,7 @@ package com.cinemamod.bukkit.service.infofetcher;
 
 import com.cinemamod.bukkit.CinemaModPlugin;
 import com.cinemamod.bukkit.service.VideoServiceType;
-import com.cinemamod.bukkit.storage.VideoInfo;
+import com.cinemamod.bukkit.video.VideoInfo;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

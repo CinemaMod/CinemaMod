@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 public class SQLiteVideoStorage extends GenericSQLVideoStorage {
 
-    private File dbFile;
+    private final File dbFile;
 
     public SQLiteVideoStorage(File dbFile) throws IOException, SQLException {
         this.dbFile = dbFile;
@@ -44,18 +44,6 @@ public class SQLiteVideoStorage extends GenericSQLVideoStorage {
                     "hidden BOOL DEFAULT 0, " +
                     "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
                     "UNIQUE (requester, video_info_id));");
-            statement.execute("CREATE TABLE IF NOT EXISTS video_playlists (" +
-                    "id INT, " +
-                    "owner VARCHAR(36), " +
-                    "name VARCHAR(32), " +
-                    "PRIMARY KEY (id), " +
-                    "UNIQUE (owner, name));");
-            statement.execute("CREATE TABLE IF NOT EXISTS video_playlist_videos (" +
-                    "video_playlist_id INT, " +
-                    "video_info_id INT, " +
-                    "FOREIGN KEY (video_playlist_id) REFERENCES video_playlists(id), " +
-                    "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
-                    "UNIQUE (video_playlist_id, video_info_id));");
         }
     }
 

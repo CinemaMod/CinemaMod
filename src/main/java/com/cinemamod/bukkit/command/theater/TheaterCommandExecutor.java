@@ -9,6 +9,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * Represents a command which is run while inside a theater
+ */
 public abstract class TheaterCommandExecutor implements CommandExecutor {
 
     private CinemaModPlugin cinemaModPlugin;

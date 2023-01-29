@@ -4,13 +4,13 @@ import com.cinemamod.bukkit.CinemaModPlugin;
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.player.PlayerData;
 import com.cinemamod.bukkit.service.VideoServiceType;
-import com.cinemamod.bukkit.storage.VideoInfo;
-import com.cinemamod.bukkit.storage.VideoRequest;
 import com.cinemamod.bukkit.theater.StaticTheater;
 import com.cinemamod.bukkit.theater.Theater;
 import com.cinemamod.bukkit.theater.screen.PreviewScreen;
 import com.cinemamod.bukkit.theater.screen.Screen;
 import com.cinemamod.bukkit.video.Video;
+import com.cinemamod.bukkit.video.VideoInfo;
+import com.cinemamod.bukkit.video.VideoRequest;
 import com.cinemamod.bukkit.video.queue.QueueVoteType;
 import com.cinemamod.bukkit.video.queue.VideoQueue;
 import io.netty.buffer.Unpooled;
@@ -32,16 +32,11 @@ public final class NetworkUtil {
     private static final String CHANNEL_UPDATE_PREVIEW_SCREEN = "cinemamod:update_preview_screen";
     private static final String CHANNEL_OPEN_SETTINGS_SCREEN = "cinemamod:open_settings_screen";
     private static final String CHANNEL_OPEN_HISTORY_SCREEN = "cinemamod:open_history_screen";
-    private static final String CHANNEL_OPEN_PLAYLISTS_SCREEN = "cinemamod:open_playlists_screen";
     private static final String CHANNEL_VIDEO_LIST_HISTORY_SPLIT = "cinemamod:video_list_history_split";
-    private static final String CHANNEL_VIDEO_LIST_PLAYLIST_SPLIT = "cinemamod:video_list_playlist_split";
     private static final String CHANNEL_VIDEO_QUEUE_STATE = "cinemamod:video_queue_state";
     /* INCOMING */
     private static final String CHANNEL_VIDEO_REQUEST = "cinemamod:video_request";
     private static final String CHANNEL_VIDEO_HISTORY_REMOVE = "cinemamod:video_history_remove";
-    private static final String CHANNEL_VIDEO_PLAYLIST_CREATE = "cinemamod:video_playlist_create";
-    private static final String CHANNEL_VIDEO_PLAYLIST_ADD = "cinemamod:video_playlist_add";
-    private static final String CHANNEL_VIDEO_PLAYLIST_REMOVE = "cinemamod:video_playlist_remove";
     private static final String CHANNEL_VIDEO_QUEUE_VOTE = "cinemamod:video_queue_vote";
     private static final String CHANNEL_VIDEO_QUEUE_REMOVE = "cinemamod:video_queue_remove";
     private static final String CHANNEL_SHOW_VIDEO_TIMELINE = "cinemamod:show_video_timeline";
@@ -56,9 +51,7 @@ public final class NetworkUtil {
         m.registerOutgoingPluginChannel(cinemaModPlugin, CHANNEL_UPDATE_PREVIEW_SCREEN);
         m.registerOutgoingPluginChannel(cinemaModPlugin, CHANNEL_OPEN_SETTINGS_SCREEN);
         m.registerOutgoingPluginChannel(cinemaModPlugin, CHANNEL_OPEN_HISTORY_SCREEN);
-        m.registerOutgoingPluginChannel(cinemaModPlugin, CHANNEL_OPEN_PLAYLISTS_SCREEN);
         m.registerOutgoingPluginChannel(cinemaModPlugin, CHANNEL_VIDEO_LIST_HISTORY_SPLIT);
-        m.registerOutgoingPluginChannel(cinemaModPlugin, CHANNEL_VIDEO_LIST_PLAYLIST_SPLIT);
         m.registerOutgoingPluginChannel(cinemaModPlugin, CHANNEL_VIDEO_QUEUE_STATE);
         /* INCOMING */
         m.registerIncomingPluginChannel(cinemaModPlugin, CHANNEL_VIDEO_REQUEST, (s, player, bytes) -> {
@@ -76,15 +69,6 @@ public final class NetworkUtil {
             VideoInfo videoInfo = new VideoInfo().fromBytes(buf);
             PlayerData playerData = cinemaModPlugin.getPlayerDataManager().getData(player.getUniqueId());
             playerData.deleteHistory(videoInfo, cinemaModPlugin);
-        });
-        m.registerIncomingPluginChannel(cinemaModPlugin, CHANNEL_VIDEO_PLAYLIST_CREATE, (s, player, bytes) -> {
-
-        });
-        m.registerIncomingPluginChannel(cinemaModPlugin, CHANNEL_VIDEO_PLAYLIST_ADD, (s, player, bytes) -> {
-
-        });
-        m.registerIncomingPluginChannel(cinemaModPlugin, CHANNEL_VIDEO_PLAYLIST_REMOVE, (s, player, bytes) -> {
-
         });
         m.registerIncomingPluginChannel(cinemaModPlugin, CHANNEL_VIDEO_QUEUE_VOTE, (s, player, bytes) -> {
             PacketByteBufReimpl buf = new PacketByteBufReimpl(Unpooled.wrappedBuffer(bytes));
@@ -182,10 +166,6 @@ public final class NetworkUtil {
         player.sendPluginMessage(plugin, CHANNEL_OPEN_HISTORY_SCREEN, new byte[0]);
     }
 
-    public static void sendOpenPlaylistsScreenPacket(JavaPlugin plugin, Player player) {
-        player.sendPluginMessage(plugin, CHANNEL_OPEN_PLAYLISTS_SCREEN, new byte[0]);
-    }
-
     public static void sendVideoListHistorySplitPacket(JavaPlugin plugin, Player player, List<VideoRequest> history) {
         for (List<VideoRequest> splitList : splitVideoRequests(history, 50)) {
             PacketByteBufReimpl buf = new PacketByteBufReimpl(Unpooled.buffer());
@@ -194,10 +174,6 @@ public final class NetworkUtil {
                 request.toBytes(buf);
             player.sendPluginMessage(plugin, CHANNEL_VIDEO_LIST_HISTORY_SPLIT, buf.array());
         }
-    }
-
-    public static void sendVideoListPlaylistSplitPacket(JavaPlugin plugin, Player player, List<VideoRequest> entries, String playlistName) {
-        // TODO:
     }
 
     public static void sendVideoQueueStatePacket(JavaPlugin plugin, Player player, VideoQueue queue) {

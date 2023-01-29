@@ -2,7 +2,6 @@ package com.cinemamod.bukkit.video;
 
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.buffer.PacketByteBufSerializable;
-import com.cinemamod.bukkit.storage.VideoInfo;
 import com.cinemamod.bukkit.video.queue.QueueVoteType;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -13,16 +12,16 @@ import java.util.Map;
 
 public class Video implements Comparable<Video>, PacketByteBufSerializable<Video> {
 
-    private VideoInfo videoInfo;
+    private final VideoInfo videoInfo;
     private long startedAt;
-    private transient Player requester;
-    private transient Map<Player, QueueVoteType> votes;
+    private final transient Player requester;
+    private final transient Map<Player, QueueVoteType> votes;
 
     public Video(VideoInfo videoInfo, Player requester) {
         this.videoInfo = videoInfo;
         this.requester = requester;
         votes = new HashMap<>();
-        votes.put(requester, QueueVoteType.UPVOTE);
+        votes.put(requester, QueueVoteType.UP_VOTE);
     }
 
     public VideoInfo getVideoInfo() {
@@ -47,10 +46,10 @@ public class Video implements Comparable<Video>, PacketByteBufSerializable<Video
         for (Player voter : votes.keySet()) {
             QueueVoteType voteType = votes.get(voter);
             switch (voteType) {
-                case UPVOTE:
+                case UP_VOTE:
                     score++;
                     break;
-                case DOWNVOTE:
+                case DOWN_VOTE:
                     score--;
                     break;
             }

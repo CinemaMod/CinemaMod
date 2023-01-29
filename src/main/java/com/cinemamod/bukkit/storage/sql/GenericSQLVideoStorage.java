@@ -1,13 +1,13 @@
 package com.cinemamod.bukkit.storage.sql;
 
 import com.cinemamod.bukkit.service.VideoServiceType;
-import com.cinemamod.bukkit.storage.VideoInfo;
-import com.cinemamod.bukkit.storage.VideoPlaylist;
-import com.cinemamod.bukkit.storage.VideoRequest;
+import com.cinemamod.bukkit.video.VideoInfo;
+import com.cinemamod.bukkit.video.VideoRequest;
 
-import javax.annotation.Nullable;
 import java.sql.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public abstract class GenericSQLVideoStorage extends SQLVideoStorage {
 
@@ -138,138 +138,6 @@ public abstract class GenericSQLVideoStorage extends SQLVideoStorage {
         return videoRequests;
     }
 
-    @Nullable
-    @Override
-    protected RelationalVideoPlaylist queryPlaylist(UUID owner, String name, Connection connection) throws SQLException {
-        try (PreparedStatement query = connection.prepareStatement("SELECT id FROM video_playlists WHERE owner = ? AND name = ?;")) {
-            query.setString(1, owner.toString());
-            query.setString(2, name);
-
-            try (ResultSet resultSet = query.executeQuery()) {
-                if (resultSet.next()) {
-                    int relId = resultSet.getInt("id");
-                    VideoPlaylist videoPlaylist = new VideoPlaylist(owner, name);
-                    return new RelationalVideoPlaylist(videoPlaylist, relId);
-                }
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    protected int insertPlaylist(VideoPlaylist playlist, Connection connection) throws SQLException {
-        try (PreparedStatement insert = connection.prepareStatement("INSERT INTO video_playlists (owner, name) VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS)) {
-            insert.setString(1, playlist.getOwner().toString());
-            insert.setString(2, playlist.getName());
-            insert.execute();
-
-            try (ResultSet resultSet = insert.getGeneratedKeys()) {
-                if (resultSet.next()) return resultSet.getInt(1);
-            }
-        }
-
-        return 0;
-    }
-
-    @Override
-    protected void updatePlaylist(RelationalVideoPlaylist playlist, Connection connection) throws SQLException {
-        try (PreparedStatement update = connection.prepareStatement("UPDATE video_playlists SET name = ? WHERE id = ?;")) {
-            update.setString(1, playlist.getName());
-            update.setInt(2, playlist.getRelId());
-            update.execute();
-        }
-    }
-
-    @Override
-    protected void deletePlaylist(RelationalVideoPlaylist playlist, Connection connection) throws SQLException {
-        try (PreparedStatement delete = connection.prepareStatement("DELETE FROM video_playlist_videos WHERE video_playlist_id = ?;")) {
-            delete.setInt(1, playlist.getRelId());
-            delete.execute();
-        }
-
-        try (PreparedStatement delete = connection.prepareStatement("DELETE FROM video_playlists WHERE id = ?;")) {
-            delete.setInt(1, playlist.getRelId());
-            delete.execute();
-        }
-    }
-
-    @Override
-    protected void insertPlaylistVideo(RelationalVideoPlaylist playlist, RelationalVideoInfo videoInfo, Connection connection) throws SQLException {
-        try (PreparedStatement insert = connection.prepareStatement(
-                "INSERT INTO video_playlist_videos (video_playlist_id, video_info_id) VALUES (?, ?);")) {
-            insert.setInt(1, playlist.getRelId());
-            insert.setInt(2, videoInfo.getRelId());
-            insert.execute();
-        }
-    }
-
-    @Override
-    protected void deletePlaylistVideo(RelationalVideoPlaylist playlist, RelationalVideoInfo videoInfo, Connection connection) throws SQLException {
-        try (PreparedStatement delete = connection.prepareStatement("DELETE FROM video_playlist_videos WHERE video_playlist_id = ? AND video_info_id = ?;")) {
-            delete.setInt(1, playlist.getRelId());
-            delete.setInt(2, videoInfo.getRelId());
-            delete.execute();
-        }
-    }
-
-    @Override
-    protected List<VideoInfo> queryPlaylistVideos(int playlistId, Connection connection) throws SQLException {
-        List<VideoInfo> videos = new ArrayList<>();
-
-        try (PreparedStatement query = connection.prepareStatement(
-                "SELECT * FROM video_playlist_videos INNER JOIN video_info ON video_playlist_videos.video_info_id = video_info.id WHERE video_playlist_id = ?;")) {
-            query.setInt(1, playlistId);
-
-            try (ResultSet resultSet = query.executeQuery()) {
-                while (resultSet.next()) {
-                    videos.add(buildVideoInfoFromResultSet(resultSet));
-                }
-            }
-        }
-
-        return videos;
-    }
-
-    @Override
-    protected List<VideoPlaylist> queryPlaylists(UUID owner, Connection connection) throws SQLException {
-        List<VideoPlaylist> playlists = new ArrayList<>();
-
-        try (PreparedStatement query = connection.prepareStatement("SELECT * FROM video_playlists WHERE owner = ?;")) {
-            query.setString(1, owner.toString());
-
-            try (ResultSet resultSet = query.executeQuery()) {
-                while (resultSet.next()) {
-                    int relId = resultSet.getInt("id");
-                    String name = resultSet.getString("name");
-                    List<VideoInfo> videos = queryPlaylistVideos(relId, connection);
-                    VideoPlaylist playlist = new VideoPlaylist(owner, name, new HashSet<>(videos));
-                    playlists.add(new RelationalVideoPlaylist(playlist, relId));
-                }
-            }
-        }
-
-        return playlists;
-    }
-
-    @Override
-    protected void insertVideoPlaylistVideo(RelationalVideoPlaylist playlist, RelationalVideoInfo video, Connection connection) throws SQLException {
-        try (PreparedStatement insert = connection.prepareStatement("INSERT INTO video_playlist_videos (video_playlist_id, video_info_id) VALUES (?, ?);")) {
-            insert.setInt(1, playlist.getRelId());
-            insert.setInt(2, video.getRelId());
-            insert.execute();
-        }
-    }
-
-    @Override
-    protected void deleteVideoFromPlaylist(RelationalVideoPlaylist playlist, RelationalVideoInfo video, Connection connection) throws SQLException {
-        try (PreparedStatement delete = connection.prepareStatement("DELETE FROM video_playlist_videos WHERE video_playlist_id = ? AND video_info_id = ?;")) {
-            delete.setInt(1, playlist.getRelId());
-            delete.setInt(2, video.getRelId());
-            delete.execute();
-        }
-    }
-
     @Override
     protected void createTables(Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
@@ -291,18 +159,6 @@ public abstract class GenericSQLVideoStorage extends SQLVideoStorage {
                     "hidden BOOL NOT NULL DEFAULT 0, " +
                     "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
                     "UNIQUE (requester, video_info_id));");
-            statement.execute("CREATE TABLE IF NOT EXISTS video_playlists (" +
-                    "id INT NOT NULL AUTO_INCREMENT, " +
-                    "owner VARCHAR(36) NOT NULL, " +
-                    "name VARCHAR(32) NOT NULL, " +
-                    "PRIMARY KEY (id), " +
-                    "UNIQUE (owner, name));");
-            statement.execute("CREATE TABLE IF NOT EXISTS video_playlist_videos (" +
-                    "video_playlist_id INT NOT NULL, " +
-                    "video_info_id INT NOT NULL, " +
-                    "FOREIGN KEY (video_playlist_id) REFERENCES video_playlists(id), " +
-                    "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
-                    "UNIQUE (video_playlist_id, video_info_id));");
         }
     }
 

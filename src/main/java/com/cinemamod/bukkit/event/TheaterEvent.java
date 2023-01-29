@@ -8,7 +8,7 @@ public class TheaterEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private Theater theater;
+    private final Theater theater;
 
     public TheaterEvent(Theater theater) {
         this.theater = theater;

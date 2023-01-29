@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 
 public class PlayerVideoTimelineListener implements Listener {
 
-    private CinemaModPlugin cinemaModPlugin;
+    private final CinemaModPlugin cinemaModPlugin;
 
     public PlayerVideoTimelineListener(CinemaModPlugin cinemaModPlugin) {
         this.cinemaModPlugin = cinemaModPlugin;
