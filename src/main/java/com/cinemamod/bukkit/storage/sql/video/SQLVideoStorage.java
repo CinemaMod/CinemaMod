@@ -1,7 +1,9 @@
 package com.cinemamod.bukkit.storage.sql.video;
 
 import com.cinemamod.bukkit.service.VideoServiceType;
+import com.cinemamod.bukkit.storage.sql.MySQLDriver;
 import com.cinemamod.bukkit.storage.sql.SQLDriver;
+import com.cinemamod.bukkit.storage.sql.SQLiteDriver;
 import com.cinemamod.bukkit.video.VideoInfo;
 import com.cinemamod.bukkit.video.VideoRequest;
 
@@ -10,33 +12,54 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class GenericSQLVideoStorage extends SQLVideoStorage {
+public class SQLVideoStorage extends AbstractSQLVideoStorage {
 
-    public GenericSQLVideoStorage(SQLDriver driver) {
+    public SQLVideoStorage(SQLDriver driver) throws SQLException {
         super(driver);
     }
 
     @Override
     public void createTables(Connection connection) throws SQLException {
         try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE IF NOT EXISTS video_info (" +
-                    "id INT NOT NULL AUTO_INCREMENT, " +
-                    "service_type VARCHAR(16) NOT NULL, " +
-                    "service_id VARCHAR(255) NOT NULL, " +
-                    "title TEXT NOT NULL, " +
-                    "poster TEXT NOT NULL, " +
-                    "thumbnail_url TEXT NOT NULL, " +
-                    "duration_seconds BIGINT NOT NULL, " +
-                    "PRIMARY KEY (id), " +
-                    "UNIQUE (service_type, service_id));");
-            statement.execute("CREATE TABLE IF NOT EXISTS video_requests (" +
-                    "requester VARCHAR(36) NOT NULL, " +
-                    "video_info_id INT NOT NULL, " +
-                    "last_requested BIGINT NOT NULL, " +
-                    "times_requested INT NOT NULL DEFAULT 1, " +
-                    "hidden BOOL NOT NULL DEFAULT 0, " +
-                    "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
-                    "UNIQUE (requester, video_info_id));");
+            if (getDriver() instanceof SQLiteDriver) {
+                statement.execute("CREATE TABLE IF NOT EXISTS video_info (" +
+                        "id INT, " +
+                        "service_type VARCHAR(16), " +
+                        "service_id VARCHAR(255), " +
+                        "title TEXT, " +
+                        "poster TEXT, " +
+                        "thumbnail_url TEXT, " +
+                        "duration_seconds BIGINT, " +
+                        "PRIMARY KEY (id), " +
+                        "UNIQUE (service_type, service_id));");
+                statement.execute("CREATE TABLE IF NOT EXISTS video_requests (" +
+                        "requester VARCHAR(36), " +
+                        "video_info_id INT, " +
+                        "last_requested BIGINT, " +
+                        "times_requested INT DEFAULT 1, " +
+                        "hidden BOOL DEFAULT 0, " +
+                        "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
+                        "UNIQUE (requester, video_info_id));");
+            } else if (getDriver() instanceof MySQLDriver) {
+                statement.execute("CREATE TABLE IF NOT EXISTS video_info (" +
+                        "id INT NOT NULL AUTO_INCREMENT, " +
+                        "service_type VARCHAR(16) NOT NULL, " +
+                        "service_id VARCHAR(255) NOT NULL, " +
+                        "title TEXT NOT NULL, " +
+                        "poster TEXT NOT NULL, " +
+                        "thumbnail_url TEXT NOT NULL, " +
+                        "duration_seconds BIGINT NOT NULL, " +
+                        "PRIMARY KEY (id), " +
+                        "UNIQUE (service_type, service_id));");
+                statement.execute("CREATE TABLE IF NOT EXISTS video_requests (" +
+                        "requester VARCHAR(36) NOT NULL, " +
+                        "video_info_id INT NOT NULL, " +
+                        "last_requested BIGINT NOT NULL, " +
+                        "times_requested INT NOT NULL DEFAULT 1, " +
+                        "hidden BOOL NOT NULL DEFAULT 0, " +
+                        "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
+                        "UNIQUE (requester, video_info_id));");
+            }
         }
     }
 

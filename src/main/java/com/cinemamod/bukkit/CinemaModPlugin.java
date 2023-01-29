@@ -9,8 +9,10 @@ import com.cinemamod.bukkit.listener.PlayerVideoTimelineListener;
 import com.cinemamod.bukkit.player.PlayerDataManager;
 import com.cinemamod.bukkit.service.infofetcher.FileVideoInfoFetcher;
 import com.cinemamod.bukkit.storage.VideoStorage;
-import com.cinemamod.bukkit.storage.sql.MySQLVideoStorage;
-import com.cinemamod.bukkit.storage.sql.SQLiteVideoStorage;
+import com.cinemamod.bukkit.storage.sql.MySQLDriver;
+import com.cinemamod.bukkit.storage.sql.SQLDriver;
+import com.cinemamod.bukkit.storage.sql.SQLiteDriver;
+import com.cinemamod.bukkit.storage.sql.video.SQLVideoStorage;
 import com.cinemamod.bukkit.task.PlayerListUpdateTask;
 import com.cinemamod.bukkit.theater.TheaterManager;
 import com.cinemamod.bukkit.util.NetworkUtil;
@@ -69,27 +71,29 @@ public class CinemaModPlugin extends JavaPlugin {
         theaterManager = new TheaterManager(this);
         theaterManager.loadFromConfig(getConfig().getConfigurationSection("theaters"));
 
+        SQLDriver sqlDriver = null;
+
         if (cinemaModConfig.useMysql) {
-            try {
-                videoStorage = new MySQLVideoStorage(cinemaModConfig);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            sqlDriver = new MySQLDriver(cinemaModConfig);
         } else if (cinemaModConfig.useSqlite) {
+            File dbFile = new File(getDataFolder(), "video_storage.db");
             try {
-                File dbFile = new File(getDataFolder(), "video_storage.db");
-                videoStorage = new SQLiteVideoStorage(dbFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
+                sqlDriver = new SQLiteDriver(dbFile);
+            } catch (IOException ignored) {
+                getLogger().warning("Unable to create or load database file");
             }
         }
 
-        if (videoStorage == null) {
-            getLogger().warning("No video storage type found.");
+        if (sqlDriver == null) {
+            getLogger().warning("Could not initialize video storage");
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+
+        try {
+            videoStorage = new SQLVideoStorage(sqlDriver);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         playerDataManager = new PlayerDataManager(this);

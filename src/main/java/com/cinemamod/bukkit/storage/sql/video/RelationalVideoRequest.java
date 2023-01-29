@@ -1,4 +1,4 @@
-package com.cinemamod.bukkit.storage.sql;
+package com.cinemamod.bukkit.storage.sql.video;
 
 import com.cinemamod.bukkit.video.VideoRequest;
 

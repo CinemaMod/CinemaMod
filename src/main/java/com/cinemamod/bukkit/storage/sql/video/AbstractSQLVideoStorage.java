@@ -13,16 +13,20 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class SQLVideoStorage implements VideoStorage {
+public abstract class AbstractSQLVideoStorage implements VideoStorage {
 
     private final SQLDriver driver;
 
-    public SQLVideoStorage(SQLDriver driver) throws SQLException {
+    public AbstractSQLVideoStorage(SQLDriver driver) throws SQLException {
         this.driver = driver;
 
         try (Connection connection = driver.createConnection()) {
             createTables(connection);
         }
+    }
+
+    public SQLDriver getDriver() {
+        return driver;
     }
 
     public abstract void createTables(Connection connection) throws SQLException;

@@ -8,14 +8,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class VideoStorage {
+public interface VideoStorage {
 
-    public abstract CompletableFuture<Void> saveVideoInfo(VideoInfo videoInfo);
+    CompletableFuture<Void> saveVideoInfo(VideoInfo videoInfo);
 
-    public abstract CompletableFuture<VideoInfo> searchVideoInfo(VideoServiceType videoService, String id);
+    CompletableFuture<VideoInfo> searchVideoInfo(VideoServiceType videoService, String id);
 
-    public abstract CompletableFuture<Void> saveVideoRequest(VideoRequest request);
+    CompletableFuture<Void> saveVideoRequest(VideoRequest request);
 
-    public abstract CompletableFuture<Set<VideoRequest>> loadVideoRequests(UUID requester);
+    CompletableFuture<Set<VideoRequest>> loadVideoRequests(UUID requester);
 
 }
