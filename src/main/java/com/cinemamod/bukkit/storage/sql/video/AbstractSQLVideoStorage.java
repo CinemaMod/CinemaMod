@@ -1,9 +1,10 @@
-package com.cinemamod.bukkit.storage.sql;
+package com.cinemamod.bukkit.storage.sql.video;
 
 import com.cinemamod.bukkit.service.VideoServiceType;
+import com.cinemamod.bukkit.storage.VideoStorage;
+import com.cinemamod.bukkit.storage.sql.SQLDriver;
 import com.cinemamod.bukkit.video.VideoInfo;
 import com.cinemamod.bukkit.video.VideoRequest;
-import com.cinemamod.bukkit.storage.VideoStorage;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;
@@ -12,12 +13,24 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class SQLVideoStorage extends VideoStorage {
+public abstract class SQLVideoStorage implements VideoStorage {
+
+    private final SQLDriver driver;
+
+    public SQLVideoStorage(SQLDriver driver) throws SQLException {
+        this.driver = driver;
+
+        try (Connection connection = driver.createConnection()) {
+            createTables(connection);
+        }
+    }
+
+    public abstract void createTables(Connection connection) throws SQLException;
 
     @Override
     public CompletableFuture<Void> saveVideoInfo(VideoInfo videoInfo) {
         return searchVideoInfo(videoInfo.getServiceType(), videoInfo.getId()).thenAcceptAsync(search -> {
-            try (Connection connection = createConnection()) {
+            try (Connection connection = driver.createConnection()) {
                 if (search instanceof RelationalVideoInfo) {
                     updateVideoInfo(new RelationalVideoInfo(videoInfo, ((RelationalVideoInfo) search).getRelId()), connection);
                 } else {
@@ -32,7 +45,7 @@ public abstract class SQLVideoStorage extends VideoStorage {
     @Override
     public CompletableFuture<VideoInfo> searchVideoInfo(VideoServiceType videoService, String id) {
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection = createConnection()) {
+            try (Connection connection = driver.createConnection()) {
                 return queryVideoInfo(videoService, id, connection);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -46,7 +59,7 @@ public abstract class SQLVideoStorage extends VideoStorage {
     public CompletableFuture<Void> saveVideoRequest(VideoRequest request) {
         return searchVideoInfo(request.getVideoInfo().getServiceType(), request.getVideoInfo().getId()).thenAcceptAsync(videoInfoSearch -> {
             if (videoInfoSearch instanceof RelationalVideoInfo) {
-                try (Connection connection = createConnection()) {
+                try (Connection connection = driver.createConnection()) {
                     RelationalVideoRequest videoRequestSearch = queryVideoRequest(request.getRequester(), (RelationalVideoInfo) videoInfoSearch, connection);
 
                     if (videoRequestSearch == null) {
@@ -64,7 +77,7 @@ public abstract class SQLVideoStorage extends VideoStorage {
     @Override
     public CompletableFuture<Set<VideoRequest>> loadVideoRequests(UUID requester) {
         return CompletableFuture.supplyAsync(() -> {
-            try (Connection connection = createConnection()) {
+            try (Connection connection = driver.createConnection()) {
                 return queryVideoRequests(requester, connection);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -89,9 +102,5 @@ public abstract class SQLVideoStorage extends VideoStorage {
     protected abstract void updateVideoRequest(RelationalVideoRequest videoRequest, Connection connection) throws SQLException;
 
     protected abstract Set<VideoRequest> queryVideoRequests(UUID requester, Connection connection) throws SQLException;
-
-    protected abstract void createTables(Connection connection) throws SQLException;
-
-    protected abstract Connection createConnection() throws SQLException;
 
 }

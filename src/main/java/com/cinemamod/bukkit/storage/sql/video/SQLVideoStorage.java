@@ -1,6 +1,7 @@
-package com.cinemamod.bukkit.storage.sql;
+package com.cinemamod.bukkit.storage.sql.video;
 
 import com.cinemamod.bukkit.service.VideoServiceType;
+import com.cinemamod.bukkit.storage.sql.SQLDriver;
 import com.cinemamod.bukkit.video.VideoInfo;
 import com.cinemamod.bukkit.video.VideoRequest;
 
@@ -9,7 +10,35 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public abstract class GenericSQLVideoStorage extends SQLVideoStorage {
+public class GenericSQLVideoStorage extends SQLVideoStorage {
+
+    public GenericSQLVideoStorage(SQLDriver driver) {
+        super(driver);
+    }
+
+    @Override
+    public void createTables(Connection connection) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS video_info (" +
+                    "id INT NOT NULL AUTO_INCREMENT, " +
+                    "service_type VARCHAR(16) NOT NULL, " +
+                    "service_id VARCHAR(255) NOT NULL, " +
+                    "title TEXT NOT NULL, " +
+                    "poster TEXT NOT NULL, " +
+                    "thumbnail_url TEXT NOT NULL, " +
+                    "duration_seconds BIGINT NOT NULL, " +
+                    "PRIMARY KEY (id), " +
+                    "UNIQUE (service_type, service_id));");
+            statement.execute("CREATE TABLE IF NOT EXISTS video_requests (" +
+                    "requester VARCHAR(36) NOT NULL, " +
+                    "video_info_id INT NOT NULL, " +
+                    "last_requested BIGINT NOT NULL, " +
+                    "times_requested INT NOT NULL DEFAULT 1, " +
+                    "hidden BOOL NOT NULL DEFAULT 0, " +
+                    "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
+                    "UNIQUE (requester, video_info_id));");
+        }
+    }
 
     private RelationalVideoInfo buildVideoInfoFromResultSet(ResultSet resultSet) throws SQLException {
         int relId = resultSet.getInt("id");
@@ -136,30 +165,6 @@ public abstract class GenericSQLVideoStorage extends SQLVideoStorage {
         }
 
         return videoRequests;
-    }
-
-    @Override
-    protected void createTables(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            statement.execute("CREATE TABLE IF NOT EXISTS video_info (" +
-                    "id INT NOT NULL AUTO_INCREMENT, " +
-                    "service_type VARCHAR(16) NOT NULL, " +
-                    "service_id VARCHAR(255) NOT NULL, " +
-                    "title TEXT NOT NULL, " +
-                    "poster TEXT NOT NULL, " +
-                    "thumbnail_url TEXT NOT NULL, " +
-                    "duration_seconds BIGINT NOT NULL, " +
-                    "PRIMARY KEY (id), " +
-                    "UNIQUE (service_type, service_id));");
-            statement.execute("CREATE TABLE IF NOT EXISTS video_requests (" +
-                    "requester VARCHAR(36) NOT NULL, " +
-                    "video_info_id INT NOT NULL, " +
-                    "last_requested BIGINT NOT NULL, " +
-                    "times_requested INT NOT NULL DEFAULT 1, " +
-                    "hidden BOOL NOT NULL DEFAULT 0, " +
-                    "FOREIGN KEY (video_info_id) REFERENCES video_info(id), " +
-                    "UNIQUE (requester, video_info_id));");
-        }
     }
 
 }
