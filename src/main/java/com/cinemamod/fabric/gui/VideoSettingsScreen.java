@@ -52,7 +52,7 @@ public class VideoSettingsScreen extends Screen {
             }
         });
         ButtonWidget.Builder screenResolutionBuilder = new Builder(
-            Text.of("Screen Resolution: " + CinemaModClient.getInstance().getVideoSettings().getBrowserResolution() + "p"),
+            Text.of("Screen resolution: " + CinemaModClient.getInstance().getVideoSettings().getBrowserResolution() + "p"),
              button ->
         {
             CinemaModClient.getInstance().getVideoSettings().setNextBrowserResolution();
