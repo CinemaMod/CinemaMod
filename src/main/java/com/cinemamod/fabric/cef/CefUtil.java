@@ -1,6 +1,7 @@
 package com.cinemamod.fabric.cef;
 
 import com.cinemamod.fabric.CinemaModClient;
+import com.cinemamod.fabric.cef.scheme.CefCinemaAppHandler;
 import com.cinemamod.fabric.screen.Screen;
 import org.cef.CefApp;
 import org.cef.CefClient;
@@ -8,8 +9,7 @@ import org.cef.CefSettings;
 
 public final class CefUtil {
 
-    private CefUtil() {
-    }
+    private CefUtil() {}
 
     private static boolean init;
     private static CefApp cefAppInstance;
@@ -28,9 +28,11 @@ public final class CefUtil {
         CefSettings cefSettings = new CefSettings();
         cefSettings.windowless_rendering_enabled = true;
         cefSettings.background_color = cefSettings.new ColorType(0, 255, 255, 255);
-//        cefSettings.cache_path = new File("chromium", "cache").getAbsolutePath();
 
         cefAppInstance = CefApp.getInstance(cefSwitches, cefSettings);
+
+//        CefApp.addAppHandler(new CefCinemaAppHandler(cefSwitches));
+
         cefClientInstance = cefAppInstance.createClient();
         cefClientInstance.addLoadHandler(new CefBrowserCinemaLoadHandler());
 

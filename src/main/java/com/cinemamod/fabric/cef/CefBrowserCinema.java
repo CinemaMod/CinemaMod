@@ -27,7 +27,7 @@ public class CefBrowserCinema extends CefBrowserOsr {
     }
 
     public void sendKeyPress(int keyCode, int modifiers, long scanCode) {
-        CefBrowserKeyEvent keyEvent = new CefBrowserKeyEvent(dummyComponent,
+        CefBrowserCinemaKeyEvent keyEvent = new CefBrowserCinemaKeyEvent(dummyComponent,
                 KeyEvent.KEY_PRESSED,
                 System.currentTimeMillis(),
                 modifiers,
@@ -38,7 +38,7 @@ public class CefBrowserCinema extends CefBrowserOsr {
     }
 
     public void sendKeyRelease(int keyCode, int modifiers, long scanCode) {
-        CefBrowserKeyEvent keyEvent = new CefBrowserKeyEvent(dummyComponent,
+        CefBrowserCinemaKeyEvent keyEvent = new CefBrowserCinemaKeyEvent(dummyComponent,
                 KeyEvent.KEY_RELEASED,
                 System.currentTimeMillis(),
                 modifiers,
