@@ -1,0 +1,149 @@
+import net.fabricmc.loom.task.RemapJarTask
+
+plugins {
+	id "de.undercouch.download" version "5.3.0"
+	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'maven-publish'
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
+
+repositories {
+	// Add repositories to retrieve artifacts from in here.
+	// You should only use this when depending on other mods because
+	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
+	// for more information about repositories.
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API. This is technically optional, but you probably want it anyway.
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
+	it.options.release = 17
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
+}
+
+sourceSets {
+	jcef {
+		java {
+			srcDir "java-cef/java"
+			exclude "**/tests/**"
+		}
+	}
+
+	main {
+		compileClasspath += jcef.output
+		runtimeClasspath += jcef.output
+	}
+}
+
+idea {
+	module {
+		excludeDirs += file("java-cef/java/tests")
+	}
+}
+
+// From com.cinemamod.fabric.cef.Platform enum
+var platforms = ["linux_amd64", "linux_arm64", "windows_amd64", "windows_arm64", "macos_amd64", "macos_arm64"]
+
+import org.apache.tools.ant.taskdefs.condition.Os
+
+task downloadJcef {
+	for (String platform : platforms) {
+		try {
+			"https://ewr1.vultrobjects.com/cinemamod-libraries/cef/$cef_branch/$platform/manifest.txt".toURL().text.eachLine {
+				var fileHash = it.split("  ")[0]
+				var relFilePath = it.split("  ")[1]
+				var cefResourceUrl = "https://ewr1.vultrobjects.com/cinemamod-libraries/cef/$cef_branch/$platform/$relFilePath"
+				download.run {
+					src cefResourceUrl
+					dest "$buildDir/cef/$platform/$relFilePath"
+					overwrite false
+				}
+				if (Os.isFamily(Os.FAMILY_UNIX)) {
+					if (relFilePath.contains("chrome-sandbox") || relFilePath.contains("jcef_helper")) {
+						exec {
+							commandLine("chmod", "700", "$buildDir/cef/$platform/$relFilePath")
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			println("Skipping CEF libraries for $cef_branch/$platform")
+			println(e.getMessage())
+		}
+	}
+}
+
+void createPlatformJarTask(String platform) {
+	Task platformJarTask = task ("jar_$platform", type: RemapJarTask, dependsOn: jar) {
+		inputFile = jar.archiveFile
+
+		onlyIf {
+			new File("$buildDir/cef/$platform").exists()
+		}
+
+		into("cef") {
+			from "$buildDir/cef/$platform"
+		}
+
+		from sourceSets.main.output
+		from sourceSets.jcef.output
+		appendix platform
+	}
+
+	build.dependsOn(platformJarTask)
+}
+
+platforms.forEach(platform -> createPlatformJarTask(platform))
+
+// configure the maven publication
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+
+	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+	repositories {
+		// Add repositories to publish to here.
+		// Notice: This block does NOT have the same function as the block in the top level.
+		// The repositories here will be used for publishing your artifact, not for
+		// retrieving dependencies.
+	}
+}

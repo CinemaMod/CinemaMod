@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "cinemamod:block/screen_block"
+    }
+  }
+}
