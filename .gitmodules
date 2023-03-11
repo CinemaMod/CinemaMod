@@ -1,0 +1,3 @@
+[submodule "fabric/java-cef"]
+	path = fabric/java-cef
+	url = https://github.com/CinemaMod/java-cef.git
