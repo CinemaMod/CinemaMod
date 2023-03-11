@@ -1,0 +1,24 @@
+main: ${mainClass}
+name: ${name}
+version: ${version}
+api-version: 1.18
+author: ds58
+depend: [ WorldGuard, ProtocolLib ]
+commands:
+  request:
+    description: Request a video to be added to a theater queue
+    aliases: [ rq ]
+  forceskip:
+    description: Force skip a video
+  voteskip:
+    description: Vote skip a video
+  lockqueue:
+    description: Lock the video queue for your theater
+  volume:
+    description: Set the volume for videos
+  protect:
+    description: Purchase protection for your theater
+  playing:
+    description: Show information about what's playing
+  history:
+    description: Show your previously requested videos
