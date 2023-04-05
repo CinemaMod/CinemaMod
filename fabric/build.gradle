@@ -85,10 +85,10 @@ import org.apache.tools.ant.taskdefs.condition.Os
 task downloadJcef {
 	for (String platform : platforms) {
 		try {
-			"https://ewr1.vultrobjects.com/cinemamod-libraries/cef/$cef_branch/$platform/manifest.txt".toURL().text.eachLine {
+			"https://ewr1.vultrobjects.com/cinemamod-jcef/$cef_branch/$platform/manifest.txt".toURL().text.eachLine {
 				var fileHash = it.split("  ")[0]
 				var relFilePath = it.split("  ")[1]
-				var cefResourceUrl = "https://ewr1.vultrobjects.com/cinemamod-libraries/cef/$cef_branch/$platform/$relFilePath"
+				var cefResourceUrl = "https://ewr1.vultrobjects.com/cinemamod-jcef/$cef_branch/$platform/$relFilePath"
 				download.run {
 					src cefResourceUrl
 					dest "$buildDir/cef/$platform/$relFilePath"
