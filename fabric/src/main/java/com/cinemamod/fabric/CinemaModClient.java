@@ -61,15 +61,16 @@ public class CinemaModClient implements ClientModInitializer {
     }
 
     private static void initCefMac() {
-        if (Platform.getPlatform().isMacOS()) {
-            Util.getBootstrapExecutor().execute(() -> {
-                if (CefUtil.init()) {
-                    CinemaMod.LOGGER.info("Chromium Embedded Framework initialized for macOS");
-                } else {
-                    CinemaMod.LOGGER.warn("Could not initialize Chromium Embedded Framework for macOS");
-                }
-            });
-        }
+        // TODO: fixme
+//        if (Platform.getPlatform().isMacOS()) {
+//            Util.getBootstrapExecutor().execute(() -> {
+//                if (CefUtil.init()) {
+//                    CinemaMod.LOGGER.info("Chromium Embedded Framework initialized for macOS");
+//                } else {
+//                    CinemaMod.LOGGER.warning("Could not initialize Chromium Embedded Framework for macOS");
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -102,7 +103,7 @@ public class CinemaModClient implements ClientModInitializer {
             videoSettings.load();
         } catch (IOException e) {
             e.printStackTrace();
-            CinemaMod.LOGGER.warn("Could not load video settings.");
+            CinemaMod.LOGGER.warning("Could not load video settings.");
         }
 
         new WindowFocusMuteThread().start();

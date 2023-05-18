@@ -64,12 +64,12 @@ public class VideoQueueScreen extends Screen {
         for (int k = 0; k < j; ++k)
             this.drawTexture(matrices, i, 72 + 16 * k, 1, 10, 236, 16);
         this.drawTexture(matrices, i, 72 + 16 * j, 1, 27, 236, 8);
-        drawCenteredText(matrices, this.client.textRenderer, Text.of("Video Queue - " + videoQueueWidget.children().size() + " entries"), this.width / 2, 64 - 10, -1);
+        drawCenteredTextWithShadow(matrices, this.client.textRenderer, Text.of("Video Queue - " + videoQueueWidget.children().size() + " entries"), this.width / 2, 64 - 10, -1);
         if (videoQueueWidget.children().isEmpty()) {
-            drawCenteredText(matrices, this.client.textRenderer, Text.of("No videos queued"), this.width / 2, (56 + this.method_31361()) / 2, -1);
+            drawCenteredTextWithShadow(matrices, this.client.textRenderer, Text.of("No videos queued"), this.width / 2, (56 + this.method_31361()) / 2, -1);
         } else {
             if (videoQueueWidget.getScrollAmount() == 0f) {
-                drawCenteredText(matrices, this.client.textRenderer, Text.of("UP NEXT ->"), -158 + this.width / 2, 64 + 12, -1);
+                drawCenteredTextWithShadow(matrices, this.client.textRenderer, Text.of("UP NEXT ->"), -158 + this.width / 2, 64 + 12, -1);
             }
         }
     }

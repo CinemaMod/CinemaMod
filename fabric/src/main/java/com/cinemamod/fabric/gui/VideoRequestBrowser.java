@@ -172,7 +172,7 @@ public class VideoRequestBrowser extends Screen {
         if (urlField.isFocused()) {
             if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
                 String newURL = urlField.getText();
-                urlField.setTextFieldFocused(false);
+                urlField.setFocused(false);
                 browser.loadURL(newURL);
                 return true;
             }
@@ -255,7 +255,7 @@ public class VideoRequestBrowser extends Screen {
         super.mouseClicked(mouseX, mouseY, button);
 
         if (urlField.isMouseOver(mouseX, mouseY)) {
-            urlField.setTextFieldFocused(true);
+            urlField.setFocused(true);
             urlField.setEditable(true);
         }
 

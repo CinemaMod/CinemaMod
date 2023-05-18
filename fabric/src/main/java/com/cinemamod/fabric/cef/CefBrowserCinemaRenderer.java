@@ -18,7 +18,8 @@ public class CefBrowserCinemaRenderer {
     }
 
     public void initialize() {
-        RenderSystem.enableTexture();
+        // TODO: fixme
+//        RenderSystem.enableTexture();
         textureID[0] = glGenTextures();
         RenderSystem.bindTexture(textureID[0]);
         RenderSystem.texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -40,7 +41,8 @@ public class CefBrowserCinemaRenderer {
     protected void onPaint(ByteBuffer buffer, int width, int height) {
         if (textureID[0] == 0) return;
         if (transparent) RenderSystem.enableBlend();
-        RenderSystem.enableTexture();
+        // TODO: fixme
+//        RenderSystem.enableTexture();
         RenderSystem.bindTexture(textureID[0]);
         RenderSystem.pixelStore(GL_UNPACK_ROW_LENGTH, width);
         RenderSystem.pixelStore(GL_UNPACK_SKIP_PIXELS, 0);

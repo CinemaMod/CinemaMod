@@ -99,7 +99,7 @@ public class VideoSettingsScreen extends Screen {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.renderBackground(matrices);
-        drawCenteredText(matrices, this.client.textRenderer, Text.of("Video Settings"), this.width / 2, 64 - 10, -1);
+        drawCenteredTextWithShadow(matrices, this.client.textRenderer, Text.of("Video Settings"), this.width / 2, 64 - 10, -1);
         super.render(matrices, mouseX, mouseY, delta);
     }
 

@@ -118,7 +118,7 @@ public class CefInitMixin {
             if (CefUtil.init()) {
                 CinemaMod.LOGGER.info("Chromium Embedded Framework initialized");
             } else {
-                CinemaMod.LOGGER.warn("Could not initialize Chromium Embedded Framework");
+                CinemaMod.LOGGER.warning("Could not initialize Chromium Embedded Framework");
             }
         }
     }
