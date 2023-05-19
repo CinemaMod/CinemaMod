@@ -120,7 +120,7 @@ tasks.register('downloadJcef') {
 
 void createPlatformJarTask(String platform) {
 	tasks.register("jar_$platform", RemapJarTask) {
-		dependsOn jar
+		inputFile = jar.archiveFile
 
 		onlyIf {
 			new File("$buildDir/cef/$platform").exists()
@@ -132,10 +132,14 @@ void createPlatformJarTask(String platform) {
 
 		from sourceSets.main.output
 		from sourceSets.jcef.output
+
+		setArchiveAppendix(platform)
 	}
 }
 
 platforms.forEach(platform -> createPlatformJarTask(platform))
+
+
 
 // configure the maven publication
 publishing {

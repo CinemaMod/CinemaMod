@@ -23,3 +23,7 @@ dependencies {
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.7.0'
     compileOnly 'com.google.code.gson:gson:2.8.9'
 }
+
+jar {
+    archiveBaseName = "CinemaMod-Bukkit-$parent.version"
+}

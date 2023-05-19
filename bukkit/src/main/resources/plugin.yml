@@ -1,6 +1,6 @@
-main: ${mainClass}
-name: ${name}
-version: ${version}
+main: com.cinemamod.bukkit.CinemaModPlugin
+name: CinemaMod
+version: 1.0.5
 api-version: 1.18
 author: ds58
 depend: [ WorldGuard, ProtocolLib ]
