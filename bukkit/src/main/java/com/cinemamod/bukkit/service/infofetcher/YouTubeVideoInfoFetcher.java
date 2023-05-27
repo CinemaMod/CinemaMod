@@ -38,31 +38,35 @@ public class YouTubeVideoInfoFetcher extends VideoInfoFetcher {
         return youtubeDataApiKey.length() == 39;
     }
 
+    private CompletableFuture<VideoInfo> fetchPiped() {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                String urlString = String.format(PIPED_FETCH_URL_FORMAT, youtubeVideoId);
+                URL url = new URL(urlString);
+
+                try (InputStreamReader reader = new InputStreamReader(url.openStream())) {
+                    JsonObject root = JSON_PARSER.parse(reader).getAsJsonObject();
+                    return new VideoInfo(VideoServiceType.YOUTUBE,
+                            youtubeVideoId,
+                            root.get("title").getAsString(),
+                            root.get("uploader").getAsString(),
+                            root.get("thumbnailUrl").getAsString(), // goes through imageproxy tho
+                            root.get("duration").getAsInt());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
+    }
+
     @Override
     public CompletableFuture<VideoInfo> fetch() {
         // FUTURE TODO: Once another yt backend is added, allow for selection via "youtube-backend" config option instead of autoselecting based off if an valid api key is provided. 
         if (!keyConfigured()) {
             cinemaModPlugin.getLogger().warning("A YouTube video was unable to be requested. You must set a YouTube Data API V3 key in your CinemaMod config.yml. Falling back to Piped and Invidious backends");
             // Piped only for now (for some reason I feel like it's more reliable)
-            return CompletableFuture.supplyAsync(() -> {
-                try {
-                    String urlString = String.format(PIPED_FETCH_URL_FORMAT, youtubeVideoId);
-                    URL url = new URL(urlString);
-
-                    try (InputStreamReader reader = new InputStreamReader(url.openStream())) {
-                        JsonObject root = JSON_PARSER.parse(reader).getAsJsonObject();
-                        return new VideoInfo(VideoServiceType.YOUTUBE,
-                                youtubeVideoId,
-                                root.get("title").getAsString(),
-                                root.get("uploader").getAsString(),
-                                root.get("thumbnailUrl").getAsString(), // goes through imageproxy tho
-                                root.get("duration").getAsInt());
-                    }
-                }catch(Exception e){
-                    e.printStackTrace();
-                }
-                return null;
-            });
+            return fetchPiped();
         }
 
         return CompletableFuture.supplyAsync(() -> {
