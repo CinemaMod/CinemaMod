@@ -1,3 +1,7 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
 repositories {
     maven {
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -22,8 +26,18 @@ dependencies {
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.7'
     compileOnly 'com.comphenix.protocol:ProtocolLib:4.7.0'
     compileOnly 'com.google.code.gson:gson:2.8.9'
+    implementation 'org.bytedeco:ffmpeg:5.1.2-1.5.8'
+    implementation 'org.bytedeco:ffmpeg:5.1.2-1.5.8:windows-x86_64'
+    implementation 'org.bytedeco:ffmpeg:5.1.2-1.5.8:linux-x86_64'
+    implementation 'org.bytedeco:ffmpeg:5.1.2-1.5.8:linux-arm64'
+    implementation 'org.bytedeco:ffmpeg:5.1.2-1.5.8:macosx-x86_64'
+    implementation 'org.bytedeco:ffmpeg:5.1.2-1.5.8:macosx-arm64'
 }
 
-jar {
+jar.enabled = false
+
+shadowJar {
     archiveBaseName = "CinemaMod-Bukkit-$parent.version"
 }
+
+assemble.dependsOn(shadowJar)

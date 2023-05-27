@@ -66,8 +66,6 @@ public class CinemaModPlugin extends JavaPlugin {
             getLogger().warning("Invalid YouTube Data API V3 key. YouTube videos will not be able to be requested.");
         }
 
-        FileVideoInfoFetcher.ffprobeCheck(this);
-
         theaterManager = new TheaterManager(this);
         theaterManager.loadFromConfig(getConfig().getConfigurationSection("theaters"));
 

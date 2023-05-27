@@ -41,7 +41,7 @@ public class VideoURLParser {
         }
 
         if (url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith("m4v")) {
-            infoFetcher = new FileVideoInfoFetcher(cinemaModPlugin, "cinemamod.request.file", url, player == null ? "server" : player.getName());
+            infoFetcher = new FileVideoInfoFetcher("cinemamod.request.file", url, player == null ? "server" : player.getName());
             return;
         }
 
