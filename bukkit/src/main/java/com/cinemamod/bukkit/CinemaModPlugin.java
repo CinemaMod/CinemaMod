@@ -110,7 +110,6 @@ public class CinemaModPlugin extends JavaPlugin {
         getCommand("voteskip").setExecutor(new VoteSkipCommand(this));
         getCommand("lockqueue").setExecutor(new LockQueueCommand(this));
         getCommand("volume").setExecutor(new VolumeCommand(this));
-        getCommand("protect").setExecutor(new ProtectCommand(this));
         getCommand("playing").setExecutor(new PlayingCommand(this));
         getCommand("history").setExecutor(new HistoryCommand(this));
 

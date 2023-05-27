@@ -16,8 +16,6 @@ commands:
     description: Lock the video queue for your theater
   volume:
     description: Set the volume for videos
-  protect:
-    description: Purchase protection for your theater
   playing:
     description: Show information about what's playing
   history:
