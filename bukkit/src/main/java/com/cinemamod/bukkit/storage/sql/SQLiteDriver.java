@@ -20,7 +20,7 @@ public class SQLiteDriver implements SQLDriver {
 
     @Override
     public Connection createConnection() throws SQLException {
-        String jdbcUrl = "jdbc:sqlite:" + dbFile.getName();
+        String jdbcUrl = "jdbc:sqlite:" + dbFile.getPath();
         return DriverManager.getConnection(jdbcUrl);
     }
 

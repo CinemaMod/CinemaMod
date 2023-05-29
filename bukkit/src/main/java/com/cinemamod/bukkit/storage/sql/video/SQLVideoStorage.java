@@ -23,7 +23,7 @@ public class SQLVideoStorage extends AbstractSQLVideoStorage {
         try (Statement statement = connection.createStatement()) {
             if (getDriver() instanceof SQLiteDriver) {
                 statement.execute("CREATE TABLE IF NOT EXISTS video_info (" +
-                        "id INT, " +
+                        "id INTEGER, " +
                         "service_type VARCHAR(16), " +
                         "service_id VARCHAR(255), " +
                         "title TEXT, " +
