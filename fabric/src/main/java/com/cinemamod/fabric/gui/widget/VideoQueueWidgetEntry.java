@@ -5,20 +5,17 @@ import com.cinemamod.fabric.gui.VideoQueueScreen;
 import com.cinemamod.fabric.util.NetworkUtil;
 import com.cinemamod.fabric.video.queue.QueuedVideo;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static net.minecraft.client.gui.DrawableHelper.drawTexture;
-import static net.minecraft.client.gui.DrawableHelper.fill;
 import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry.*;
 
 public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWidgetEntry> implements Comparable<VideoQueueWidgetEntry> {
@@ -53,58 +50,54 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
     }
 
     @Override
-    public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+    public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
         int i = x + 4;
         int j = y + (entryHeight - 24) / 2;
         int m = y + (entryHeight - 7) / 2;
         int color = queuedVideo.isOwner() ? BLACK_COLOR : GRAY_COLOR;
-        fill(matrices, x, y, x + entryWidth, y + entryHeight, color);
-        client.textRenderer.draw(matrices, queuedVideo.getVideoInfo().getTitleShort(), (float) i, (float) m, WHITE_COLOR);
-        client.textRenderer.draw(matrices, queuedVideo.getVideoInfo().getDurationString(), (float) i + 118, (float) m, WHITE_COLOR);
-        client.textRenderer.draw(matrices, queuedVideo.getScoreString(), (float) i + 165, (float) m, WHITE_COLOR);
-        renderDownVoteButton(matrices, mouseX, mouseY, i, j);
-        renderUpVoteButton(matrices, mouseX, mouseY, i, j);
-        renderTrashButton(matrices, mouseX, mouseY, i, j);
+        context.fill(x, y, x + entryWidth, y + entryHeight, color);
+        context.drawText(client.textRenderer, queuedVideo.getVideoInfo().getTitleShort(), i, m, WHITE_COLOR, false);
+        context.drawText(client.textRenderer, queuedVideo.getVideoInfo().getDurationString(), i + 118, m, WHITE_COLOR, false);
+        context.drawText(client.textRenderer, queuedVideo.getScoreString(),  i + 165, m, WHITE_COLOR, false);
+        renderDownVoteButton(context, mouseX, mouseY, i, j);
+        renderUpVoteButton(context, mouseX, mouseY, i, j);
+        renderTrashButton(context, mouseX, mouseY, i, j);
         if (mouseX > i && mouseX < i + 180 && mouseY > j && mouseY < j + 18) {
-            parent.renderTooltip(matrices, Text.of(queuedVideo.getVideoInfo().getTitle()), mouseX, mouseY);
+            context.drawTooltip(client.textRenderer, Text.of(queuedVideo.getVideoInfo().getTitle()), mouseX, mouseY);
         }
     }
 
-    private void renderDownVoteButton(MatrixStack matrices, int mouseX, int mouseY, int i, int j) {
+    private void renderDownVoteButton(DrawContext context, int mouseX, int mouseY, int i, int j) {
         int downVoteButtonPosX = i + 185;
         int downVoteButtonPosY = j + 7;
 
         downVoteButtonSelected = mouseX > downVoteButtonPosX && mouseX < downVoteButtonPosX + 12 && mouseY > downVoteButtonPosY && mouseY < downVoteButtonPosY + 12;
 
         if (queuedVideo.getClientState() == -1) {
-            RenderSystem.setShaderTexture(0, DOWNVOTE_ACTIVE_TEXTURE);
+            context.drawTexture(DOWNVOTE_ACTIVE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
         } else if (downVoteButtonSelected) {
-            RenderSystem.setShaderTexture(0, DOWNVOTE_SELECTED_TEXTURE);
+            context.drawTexture(DOWNVOTE_SELECTED_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
         } else {
-            RenderSystem.setShaderTexture(0, DOWNVOTE_TEXTURE);
+            context.drawTexture(DOWNVOTE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
         }
-
-        drawTexture(matrices, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
     }
 
-    private void renderUpVoteButton(MatrixStack matrices, int mouseX, int mouseY, int i, int j) {
+    private void renderUpVoteButton(DrawContext context, int mouseX, int mouseY, int i, int j) {
         int upVoteButtonPosX = i + 200;
         int upVoteButtonPosY = j + 3;
 
         upVoteButtonSelected = mouseX > upVoteButtonPosX && mouseX < upVoteButtonPosX + 12 && mouseY > upVoteButtonPosY && mouseY < upVoteButtonPosY + 12;
 
         if (queuedVideo.getClientState() == 1) {
-            RenderSystem.setShaderTexture(0, UPVOTE_ACTIVE_TEXTURE);
+            context.drawTexture(UPVOTE_ACTIVE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
         } else if (upVoteButtonSelected) {
-            RenderSystem.setShaderTexture(0, UPVOTE_SELECTED_TEXTURE);
+            context.drawTexture(UPVOTE_SELECTED_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
         } else {
-            RenderSystem.setShaderTexture(0, UPVOTE_TEXTURE);
+            context.drawTexture(UPVOTE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
         }
-
-        drawTexture(matrices, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
     }
 
-    private void renderTrashButton(MatrixStack matrices, int mouseX, int mouseY, int i, int j) {
+    private void renderTrashButton(DrawContext context, int mouseX, int mouseY, int i, int j) {
         if (queuedVideo.isOwner()) {
             int trashButtonPosX = i + 225;
             int trashButtonPosY = j + 5;
@@ -112,12 +105,10 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
             trashButtonSelected = mouseX > trashButtonPosX && mouseX < trashButtonPosX + 12 && mouseY > trashButtonPosY && mouseY < trashButtonPosY + 12;
 
             if (trashButtonSelected) {
-                RenderSystem.setShaderTexture(0, TRASH_SELECTED_TEXTURE);
+                context.drawTexture(TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
             } else {
-                RenderSystem.setShaderTexture(0, TRASH_TEXTURE);
+                context.drawTexture(TRASH_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
             }
-
-            drawTexture(matrices, trashButtonPosX, trashButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
         }
     }
 

@@ -3,10 +3,9 @@ package com.cinemamod.fabric.gui.widget;
 import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.gui.VideoQueueScreen;
 import com.cinemamod.fabric.video.queue.QueuedVideo;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.util.math.MatrixStack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,11 +24,11 @@ public class VideoQueueWidget extends ElementListWidget<VideoQueueWidgetEntry> {
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         double d = client.getWindow().getScaleFactor();
-        RenderSystem.enableScissor((int) ((double) this.getRowLeft() * d), (int) ((double) (this.height - this.bottom) * d), (int) ((double) (this.getScrollbarPositionX() + 6) * d), (int) ((double) (this.height - (this.height - this.bottom) - this.top - 4) * d));
-        super.render(matrices, mouseX, mouseY, delta);
-        RenderSystem.disableScissor();
+        context.enableScissor((int) ((double) this.getRowLeft() * d), (int) ((double) (this.height - this.bottom) * d), (int) ((double) (this.getScrollbarPositionX() + 6) * d), (int) ((double) (this.height - (this.height - this.bottom) - this.top - 4) * d));
+        super.render(context, mouseX, mouseY, delta);
+        context.disableScissor();
     }
 
     @Override

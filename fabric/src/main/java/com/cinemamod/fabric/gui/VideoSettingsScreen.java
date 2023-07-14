@@ -1,13 +1,12 @@
 package com.cinemamod.fabric.gui;
 
 import com.cinemamod.fabric.CinemaModClient;
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.gui.widget.ButtonWidget.Builder;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -85,22 +84,21 @@ public class VideoSettingsScreen extends Screen {
         return (this.width - 238) / 2;
     }
 
-    public void renderBackground(MatrixStack matrices) {
+    public void renderBackground(DrawContext context) {
         int i = this.method_31362() + 3;
-        super.renderBackground(matrices);
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        this.drawTexture(matrices, i, 64, 1, 1, 236, 8);
+        super.renderBackground(context);
+        context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
-            this.drawTexture(matrices, i, 72 + 16 * k, 1, 10, 236, 16);
-        this.drawTexture(matrices, i, 72 + 16 * j, 1, 27, 236, 8);
+            context.drawTexture(TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16);
+        context.drawTexture(TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8);
     }
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
-        drawCenteredTextWithShadow(matrices, this.client.textRenderer, Text.of("Video Settings"), this.width / 2, 64 - 10, -1);
-        super.render(matrices, mouseX, mouseY, delta);
+    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderBackground(context);
+        context.drawCenteredTextWithShadow(this.client.textRenderer, Text.of("Video Settings"), this.width / 2, 64 - 10, -1);
+        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override

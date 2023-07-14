@@ -18,7 +18,7 @@ public class PreviewScreenBlock extends Block implements BlockEntityProvider {
     public static PreviewScreenBlock PREVIEW_SCREEN_BLOCK;
 
     public PreviewScreenBlock() {
-        super(FabricBlockSettings.of(Material.METAL).strength(-1.0f, 3600000.0F).dropsNothing().nonOpaque());
+        super(FabricBlockSettings.create().solid().strength(-1.0f, 3600000.0F).dropsNothing().nonOpaque());
     }
 
     @Override
