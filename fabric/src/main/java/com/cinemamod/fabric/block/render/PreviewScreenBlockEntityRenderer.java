@@ -1,5 +1,7 @@
 package com.cinemamod.fabric.block.render;
 
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.LightmapTextureManager;
 import org.joml.Quaternionf;
 
 import com.cinemamod.fabric.CinemaModClient;
@@ -34,7 +36,7 @@ public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<Pre
         BufferBuilder buffer = tessellator.getBuffer();
         renderScreenTexture(previewScreen, matrices, tessellator, buffer);
         renderVideoThumbnail(previewScreen, matrices, tessellator, buffer);
-        renderScreenText(previewScreen, matrices);
+        renderScreenText(previewScreen, matrices, vertexConsumers);
         RenderSystem.disableDepthTest();
     }
 
@@ -68,7 +70,7 @@ public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<Pre
         }
     }
 
-    private static void renderScreenText(PreviewScreen previewScreen, MatrixStack matrices) {
+    private static void renderScreenText(PreviewScreen previewScreen, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
         matrices.push();
         matrices.translate(1, 1, 0);
         RenderUtil.moveHorizontal(matrices, previewScreen.getFacing(), 0.1f);
@@ -87,9 +89,9 @@ public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<Pre
             topText = "NOTHING PLAYING";
             bottomText = "";
         }
-        textRenderer.draw(matrices, topText, 0F, 0F, 16777215);
+        textRenderer.draw(topText, 0F, 0F, 16777215, false, matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE);
         RenderUtil.moveVertical(matrices, 78f);
-        textRenderer.draw(matrices, bottomText, 0F, 0F, 16777215);
+        textRenderer.draw(bottomText, 0F, 0F, 16777215, false, matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE);
         matrices.pop();
     }
 
