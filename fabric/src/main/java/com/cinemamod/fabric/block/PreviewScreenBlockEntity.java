@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -25,6 +27,7 @@ public class PreviewScreenBlockEntity extends BlockEntity {
         PREVIEW_SCREEN_BLOCK_ENTITY = FabricBlockEntityTypeBuilder
                 .create(PreviewScreenBlockEntity::new, PreviewScreenBlock.PREVIEW_SCREEN_BLOCK)
                 .build();
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, IDENT, PREVIEW_SCREEN_BLOCK_ENTITY);
     }
 
 }

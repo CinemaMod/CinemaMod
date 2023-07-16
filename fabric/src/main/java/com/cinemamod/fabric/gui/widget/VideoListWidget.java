@@ -26,8 +26,7 @@ public abstract class VideoListWidget extends ElementListWidget<VideoListWidgetE
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        double d = client.getWindow().getScaleFactor();
-        context.enableScissor((int) ((double) this.getRowLeft() * d), (int) ((double) (this.height - this.bottom) * d), (int) ((double) (this.getScrollbarPositionX() + 6) * d), (int) ((double) (this.height - (this.height - this.bottom) - this.top - 4) * d));
+        context.enableScissor(this.getRowLeft(), this.top + 4, this.getScrollbarPositionX() + this.getRowLeft() + 6, this.height - this.top - 4);
         super.render(context, mouseX, mouseY, delta);
         context.disableScissor();
     }
