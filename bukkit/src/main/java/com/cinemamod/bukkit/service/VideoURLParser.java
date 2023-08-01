@@ -28,7 +28,10 @@ public class VideoURLParser {
 
         parsed = true;
 
-        String youtubeVideoId = getYouTubeVideoId(url);
+        String youtubeVideoId = getLink(url,
+        // https://stackoverflow.com/questions/24048308/how-to-get-the-video-id-from-a-youtube-url-with-regex-in-java
+        "http(?:s)?:\\/\\/(?:m.)?(?:www\\.)?youtu(?:\\.be\\/|be\\.com\\/(?:watch\\?(?:feature=youtu.be\\&)?v=|v\\/|embed\\/|user\\/(?:[\\w#]+\\/)+))([^&#?\\n]+)",
+        1);
         if (youtubeVideoId != null) {
             infoFetcher = new YouTubeVideoInfoFetcher(cinemaModPlugin, youtubeVideoId);
             return;
@@ -39,36 +42,32 @@ public class VideoURLParser {
             infoFetcher = new TwitchVideoInfoFetcher(twitchUser);
             return;
         }
+        String hlsLink = getLink(url, "^https?:\\/\\/[\\w\\-]+(\\.[\\w\\-]+)*\\/[\\w\\-]+\\.(m3u8?)(\\?.*)?$", 0);
+        if (hlsLink != null) {
+            infoFetcher = new HLSVideoInfoFetcher(url, player == null ? "server" : player.getName());
+            return;
+        }
 
-        if (url.endsWith(".mp4") || url.endsWith(".webm") || url.endsWith("m4v")) {
+        String mediaLink = getLink(url, "^https?:\\/\\/[\\w\\-]+(\\.[\\w\\-]+)*\\/[\\w\\-]+\\.((mp[3-4]|opus|m4v|webm|ogg))(\\?.*)?$", 0);
+        if (mediaLink != null) {
             infoFetcher = new FileVideoInfoFetcher("cinemamod.request.file", url, player == null ? "server" : player.getName());
             return;
         }
 
-        if (url.endsWith(".m3u8")) {
-            infoFetcher = new HLSVideoInfoFetcher(url, player == null ? "server" : player.getName());
-            return;
-        }
     }
-
+    private static String getLink(String url, String regex, int group) {
+        String link = null;
+        Pattern ptn = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = ptn.matcher(url);
+        if (matcher.find()) { link = matcher.group(group); }
+        return link;
+    }
     public VideoInfoFetcher getInfoFetcher() {
         return infoFetcher;
     }
 
     public boolean found() {
         return infoFetcher != null;
-    }
-
-    // https://stackoverflow.com/questions/24048308/how-to-get-the-video-id-from-a-youtube-url-with-regex-in-java
-    private static String getYouTubeVideoId(String url) {
-        String videoId = null;
-        String regex = "http(?:s)?:\\/\\/(?:m.)?(?:www\\.)?youtu(?:\\.be\\/|be\\.com\\/(?:watch\\?(?:feature=youtu.be\\&)?v=|v\\/|embed\\/|user\\/(?:[\\w#]+\\/)+))([^&#?\\n]+)";
-        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(url);
-        if (matcher.find()) {
-            videoId = matcher.group(1);
-        }
-        return videoId;
     }
 
     private static String getTwitchUser(String url) {
