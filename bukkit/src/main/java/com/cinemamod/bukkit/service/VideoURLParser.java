@@ -48,7 +48,7 @@ public class VideoURLParser {
             return;
         }
 
-        String mediaLink = getLink(url, "\\.((mp(3|4|eg))|ts|webm|m4v|ogg|opus)(?=\\??)", 0);
+        String mediaLink = getLink(url, "^https?:\\/\\/[\\w\\-]+(\\.[\\w\\-]+)*\\/[\\w\\-]+\\.((mp[3-4]|opus|m4v|webm|ogg))(\\?.*)?$", 0);
         if (mediaLink != null) {
             infoFetcher = new FileVideoInfoFetcher("cinemamod.request.file", url, player == null ? "server" : player.getName());
             return;
