@@ -42,7 +42,7 @@ public class VideoURLParser {
             infoFetcher = new TwitchVideoInfoFetcher(twitchUser);
             return;
         }
-        String hlsLink = getLink(url, "\\.(m3u(8|))(?=\\??)", 0);
+        String hlsLink = getLink(url, "^https?:\\/\\/[\\w\\-]+(\\.[\\w\\-]+)*\\/[\\w\\-]+\\.(m3u8?)(\\?.*)?$", 0);
         if (hlsLink != null) {
             infoFetcher = new HLSVideoInfoFetcher(url, player == null ? "server" : player.getName());
             return;
