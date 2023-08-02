@@ -49,14 +49,14 @@ public class VideoURLParser {
         }
 
         String mediaLink = getLink(url, "\\.((mp(3|4|eg))|ts|webm|m4v|ogg|opus)(?=\\??)", 0);
-        if (if mediaLink != null) {
+        if (mediaLink != null) {
             infoFetcher = new FileVideoInfoFetcher("cinemamod.request.file", url, player == null ? "server" : player.getName());
             return;
         }
 
     }
     private static String getLink(String url, String regex, int group) {
-        Static link = null;
+        String link = null;
         Pattern ptn = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         Matcher matcher = ptn.matcher(url);
         if (matcher.find()) { link = matcher.group(group); }
