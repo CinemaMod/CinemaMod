@@ -31,11 +31,13 @@ public class CefBrowserCinema extends CefBrowserOsr {
 
     public void sendKeyPress(int keyCode, int modifiers, long scanCode) {
         CefKeyEvent e = new CefKeyEvent(keyCode, CefKeyEvent.KEY_PRESS, modifiers, (char) keyCode);
+        e.scancode = scanCode;
         sendKeyEvent(e);
     }
 
     public void sendKeyRelease(int keyCode, int modifiers, long scanCode) {
         CefKeyEvent e = new CefKeyEvent(keyCode, CefKeyEvent.KEY_RELEASE, modifiers, (char) keyCode);
+        e.scancode = scanCode;
         sendKeyEvent(e);
     }
 
