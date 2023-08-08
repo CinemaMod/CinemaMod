@@ -114,12 +114,10 @@ public class CefInitMixin {
             System.loadLibrary("jawt");
         }
 
-        if (platform.isLinux() || platform.isWindows()) {
-            if (CefUtil.init()) {
-                CinemaMod.LOGGER.info("Chromium Embedded Framework initialized");
-            } else {
-                CinemaMod.LOGGER.warning("Could not initialize Chromium Embedded Framework");
-            }
+        if (CefUtil.init()) {
+            CinemaMod.LOGGER.info("Chromium Embedded Framework initialized");
+        } else {
+            CinemaMod.LOGGER.warning("Could not initialize Chromium Embedded Framework");
         }
     }
 

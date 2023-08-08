@@ -61,24 +61,23 @@ public class CinemaModClient implements ClientModInitializer {
     }
 
     private static void initCefMac() {
+        System.setProperty("java.awt.headless", "false");
         // TODO: fixme
-//        if (Platform.getPlatform().isMacOS()) {
-//            Util.getBootstrapExecutor().execute(() -> {
-//                if (CefUtil.init()) {
-//                    CinemaMod.LOGGER.info("Chromium Embedded Framework initialized for macOS");
-//                } else {
-//                    CinemaMod.LOGGER.warning("Could not initialize Chromium Embedded Framework for macOS");
-//                }
-//            });
-//        }
+        if (Platform.getPlatform().isMacOS()) {
+            Util.getMainWorkerExecutor().execute(() -> {
+                if (CefUtil.init()) {
+                    CinemaMod.LOGGER.info("Chromium Embedded Framework initialized for macOS");
+                } else {
+                    CinemaMod.LOGGER.warning("Could not initialize Chromium Embedded Framework for macOS");
+                }
+            });
+        }
+        System.setProperty("java.awt.headless", "true");
     }
 
     @Override
     public void onInitializeClient() {
         instance = this;
-
-        // Hack for initializing CEF on macos
-        initCefMac();
 
         // Register ScreenBlock
         ScreenBlock.register();

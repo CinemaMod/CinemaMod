@@ -30,39 +30,39 @@ public class CefBrowserCinema extends CefBrowserOsr {
     }
 
     public void sendKeyPress(int keyCode, int modifiers, long scanCode) {
-        CefKeyEvent e = new CefKeyEvent(keyCode, CefKeyEvent.KEY_PRESS, modifiers, (char) keyCode);
+        CefKeyEvent e = new CefKeyEvent(CefKeyEvent.KEY_PRESS, keyCode, (char) keyCode, modifiers);
         e.scancode = scanCode;
         sendKeyEvent(e);
     }
 
     public void sendKeyRelease(int keyCode, int modifiers, long scanCode) {
-        CefKeyEvent e = new CefKeyEvent(keyCode, CefKeyEvent.KEY_RELEASE, modifiers, (char) keyCode);
+        CefKeyEvent e = new CefKeyEvent(CefKeyEvent.KEY_RELEASE, keyCode, (char) keyCode, modifiers);
         e.scancode = scanCode;
         sendKeyEvent(e);
     }
 
     public void sendKeyTyped(char c, int modifiers) {
-        CefKeyEvent e = new CefKeyEvent(c, CefKeyEvent.KEY_TYPE, modifiers, c);
+        CefKeyEvent e = new CefKeyEvent(CefKeyEvent.KEY_TYPE, c, c, modifiers);
         sendKeyEvent(e);
     }
 
     public void sendMouseMove(int mouseX, int mouseY) {
-        CefMouseEvent e = new CefMouseEvent(503, mouseX, mouseY, CefMouseEvent.BUTTON1_MASK, 0, 0);
+        CefMouseEvent e = new CefMouseEvent(503, mouseX, mouseY, 1, 0, CefMouseEvent.BUTTON1_MASK);
         sendMouseEvent(e);
     }
 
     public void sendMousePress(int mouseX, int mouseY, int button) {
-        CefMouseEvent e = new CefMouseEvent(GLFW_PRESS, mouseX, mouseY, CefMouseEvent.BUTTON1_MASK, 1, button);
+        CefMouseEvent e = new CefMouseEvent(GLFW_PRESS, mouseX, mouseY, 1, button, CefMouseEvent.BUTTON1_MASK);
         sendMouseEvent(e);
     }
 
     public void sendMouseRelease(int mouseX, int mouseY, int button) {
-        CefMouseEvent e = new CefMouseEvent(GLFW_RELEASE, mouseX, mouseY, CefMouseEvent.BUTTON1_MASK, 1, button);
+        CefMouseEvent e = new CefMouseEvent(GLFW_RELEASE, mouseX, mouseY, 1, button, CefMouseEvent.BUTTON1_MASK);
         sendMouseEvent(e);
     }
 
     public void sendMouseWheel(int mouseX, int mouseY, int mods, int amount, int rotation) {
-        CefMouseWheelEvent e = new CefMouseWheelEvent(CefMouseWheelEvent.WHEEL_UNIT_SCROLL, amount, mouseX, mouseY, mods);
+        CefMouseWheelEvent e = new CefMouseWheelEvent(CefMouseWheelEvent.WHEEL_UNIT_SCROLL, mouseX, mouseY, amount, mods);
         sendMouseWheelEvent(e);
     }
 
