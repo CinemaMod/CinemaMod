@@ -15,9 +15,6 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
-
-import java.awt.event.KeyEvent;
-
 import org.lwjgl.glfw.GLFW;
 
 public class VideoRequestBrowser extends Screen {
@@ -114,55 +111,6 @@ public class VideoRequestBrowser extends Screen {
         }
     }
 
-    private static int remapKeyCode(int keyCode) {
-        switch (keyCode) {
-            case GLFW.GLFW_KEY_BACKSPACE:
-                return KeyEvent.VK_BACK_SPACE;
-            case GLFW.GLFW_KEY_DELETE:
-                return KeyEvent.VK_DELETE;
-            case GLFW.GLFW_KEY_DOWN:
-                return KeyEvent.VK_DOWN;
-            case GLFW.GLFW_KEY_ENTER:
-                return KeyEvent.VK_ENTER;
-            case GLFW.GLFW_KEY_ESCAPE:
-                return KeyEvent.VK_ESCAPE;
-            case GLFW.GLFW_KEY_LEFT:
-                return KeyEvent.VK_LEFT;
-            case GLFW.GLFW_KEY_RIGHT:
-                return KeyEvent.VK_RIGHT;
-            case GLFW.GLFW_KEY_TAB:
-                return KeyEvent.VK_TAB;
-            case GLFW.GLFW_KEY_UP:
-                return KeyEvent.VK_UP;
-            case GLFW.GLFW_KEY_PAGE_UP:
-                return KeyEvent.VK_PAGE_UP;
-            case GLFW.GLFW_KEY_PAGE_DOWN:
-                return KeyEvent.VK_PAGE_DOWN;
-            case GLFW.GLFW_KEY_END:
-                return KeyEvent.VK_END;
-            case GLFW.GLFW_KEY_HOME:
-                return KeyEvent.VK_HOME;
-        }
-        return -1;
-    }
-
-    private static int remapScanCode(int scanCode) {
-        switch (scanCode) {
-            case 327: return 0x47; // HOME
-            case 328: return 0x48; // UP
-            case 329: return 0x49; // PGUP
-            case 331: return 0x4B; // LEFT
-            case 333: return 0x4D; // RIGHT
-            case 335: return 0x4F; // END
-            case 336: return 0x50; // DOWN
-            case 337: return 0x51; // PGDOWN
-            case 338: return 0x52; // PGDOWN
-            case 339: return 0x53; // DEL
-        }
-        return scanCode;
-    }
-
-    @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
             return super.keyPressed(keyCode, scanCode, modifiers);
@@ -183,10 +131,7 @@ public class VideoRequestBrowser extends Screen {
             return true;
         }
 
-        int remap = remapKeyCode(keyCode);
-        if (remap != -1) {
-            browser.sendKeyPress(remap, modifiers, remapScanCode(scanCode));
-        }
+        browser.sendKeyPress(keyCode, modifiers, scanCode);
 
         return true;
     }
@@ -205,13 +150,7 @@ public class VideoRequestBrowser extends Screen {
             return true;
         }
 
-        int remap = remapKeyCode(keyCode);
-        if (remap != -1) {
-            if (remap == KeyEvent.VK_ENTER) {
-                browser.sendKeyTyped((char)13, 0);
-            }
-            browser.sendKeyRelease(remap, modifiers, remapScanCode(scanCode));
-        }
+        browser.sendKeyRelease(keyCode, modifiers, scanCode);
 
         return true;
     }
@@ -266,11 +205,6 @@ public class VideoRequestBrowser extends Screen {
             return true;
         }
 
-        // Extra mouse buttons will cause a crash
-        // by HeadlessToolkit.areExtraMouseButtonsEnabled
-        // Also, right click is middle click?
-        if (button > 0) return true;
-
         browser.sendMousePress(mx(mouseX), my(mouseY), button);
 
         return true;
@@ -287,11 +221,6 @@ public class VideoRequestBrowser extends Screen {
         if (browser == null) {
             return true;
         }
-
-        // Extra mouse buttons will cause a crash
-        // by HeadlessToolkit.areExtraMouseButtonsEnabled
-        // Also, right click is middle click?
-        if (button > 0) return true;
 
         browser.sendMouseRelease(mx(mouseX), my(mouseY), button);
 
