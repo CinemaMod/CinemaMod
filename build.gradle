@@ -1,5 +1,51 @@
-allprojects {
-    apply plugin: 'java'
+plugins {
+    id 'fabric-loom' version "${fabric_loom_version}" apply false
 }
 
-version = "1.0.6"
+task publishAll(type: GradleBuild) {
+    group = 'cinemamod'
+    tasks = [
+            ':common:clean',
+            ':forge:clean',
+            ':fabric:clean',
+            ':forge:curseforge',
+            ':fabric:curseforge'
+    ]
+}
+
+task fabricClient(type: GradleBuild) {
+    group = 'cinemamod'
+    tasks = [
+            ':fabric:runClient'
+    ]
+}
+
+task forgeClient(type: GradleBuild) {
+    group = 'cinemamod'
+    tasks = [
+            ':forge:runClient'
+    ]
+}
+
+task fabricServer(type: GradleBuild) {
+    group = 'cinemamod'
+    tasks = [
+            ':fabric:runServer'
+    ]
+}
+
+task forgeServer(type: GradleBuild) {
+    group = 'cinemamod'
+    tasks = [
+            ':forge:runServer'
+    ]
+}
+
+task cleanAll(type: GradleBuild) {
+    group = 'cinemamod'
+    tasks = [
+            ':common:clean',
+            ':fabric:clean',
+            ':forge:clean',
+    ]
+}

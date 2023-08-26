@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.cinemamod.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  ],
+  "client": [
+    "CrossHairMixin",
+    "ItemDropKeyMixin",
+    "UnloadScreensMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

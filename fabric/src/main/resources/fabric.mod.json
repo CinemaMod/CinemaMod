@@ -1,27 +1,38 @@
 {
   "schemaVersion": 1,
-  "id": "cinemamod",
-  "name": "CinemaMod",
-  "version": "${version}",
-  "license": "MIT",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "Watch online videos with others in Minecraft!",
+  "authors": [
+    "${mod_vendor}"
+  ],
+  "contact": {
+    "homepage": "https://github.com/CinemaMod/CinemaMod",
+    "issues": "https://github.com/CinemaMod/CinemaMod/issues",
+    "sources": "https://github.com/CinemaMod/CinemaMod",
+    "discord": "https://discord.gg/rNrh5kW8Ty"
+  },
+  "license": "LGPL 2.1",
+  "icon": "icon.png",
+  "environment": "*",
   "entrypoints": {
     "client": [
-      "com.cinemamod.fabric.CinemaModClient"
+      "com.cinemamod.cinemamod.FabricCinemaModClientMod"
+    ],
+    "main": [
+      "com.cinemamod.cinemamod.FabricCinemaModMod"
     ]
-  },
-  "contact": {
-    "homepage": "https://github.com/CinemaMod/CinemaMod-Fabric",
-    "sources": "https://github.com/CinemaMod/CinemaMod-Fabric",
-    "issues": "https://github.com/CinemaMod/CinemaMod-Fabric/issues",
-    "discord": "https://discord.gg/rNrh5kW8Ty"
   },
   "mixins": [
     "cinemamod.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.21",
-    "fabric": "*",
-    "minecraft": "1.20.1",
-    "java": ">=17"
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": ["1.20", "1.20.1"],
+    "java": ">=${java_version}"
+  },
+  "breaks": {
+    "fabric-api": "<${min_fabric_version}"
   }
 }

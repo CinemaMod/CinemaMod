@@ -1,159 +1,118 @@
-import net.fabricmc.loom.task.RemapJarTask
-
 plugins {
-	id "de.undercouch.download" version "5.4.0" // Used for downloading JCEF binaries
-	id 'fabric-loom' version '1.2-SNAPSHOT'
-	id 'maven-publish'
+    id 'fabric-loom'
+    id 'com.matthewprenger.cursegradle' version "${cursegradle_version}"
+    id 'com.github.johnrengelman.shadow' version "${shadow_version}"
 }
 
-archivesBaseName = project.archives_base_name
-version = project.mod_version
-group = project.maven_group
+sourceCompatibility = JavaLanguageVersion.of(java_version as int)
+targetCompatibility = JavaLanguageVersion.of(java_version as int)
+
+var mod_version = "${minecraft_version}-${cinemamod_version}"
+
+archivesBaseName = archives_base_name
+version = mod_version
+group = maven_group
 
 repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+    mavenCentral()
+    maven { url = 'https://maven.fabricmc.net/' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    mavenLocal()
 }
 
 dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    Set<String> apiModules = [
+            'fabric-api-base',
+            'fabric-command-api-v2',
+            'fabric-lifecycle-events-v1',
+            'fabric-networking-api-v1',
+            'fabric-resource-loader-v0',
+            'fabric-key-binding-api-v1'
+    ]
 
-	// Uncomment the following line to enable the deprecated Fabric API modules.
-	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
+    apiModules.forEach {
+        include(modImplementation(fabricApi.module(it, fabric_version)))
+    }
 
-	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
-
-	implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
-	implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+    implementation project(path: ':common', configuration: 'namedElements')
 }
 
-processResources {
-	inputs.property "version", project.version
+tasks.register('generateJava', Copy) {
+    from project(':common').file('src/template/java')
+    into "${buildDir}/generated/java"
+    expand 'compatibility_version': mod_compatibility_version
+}
+sourceSets.main.java {
+    srcDir "${buildDir}/generated/java"
+}
+compileJava.dependsOn generateJava
+generateJava.dependsOn('sourcesJar')
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
+processResources {
+    filesMatching('fabric.mod.json') {
+        expand 'mod_id': mod_id,
+                'mod_name': mod_name,
+                'mod_vendor': mod_vendor,
+                'mod_version': mod_version,
+                'java_version': java_version,
+                'minecraft_dependency': minecraft_dependency,
+                'fabric_loader_version': fabric_loader_version,
+                'min_fabric_version': min_fabric_version
+    }
+    from project(":common").sourceSets.main.resources
 }
 
 tasks.withType(JavaCompile).configureEach {
-	// Minecraft 1.18 (1.18-pre2) upwards uses Java 17.
-	it.options.release = 17
+    source(project(':common').sourceSets.main.allSource)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = java_version as int
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
-	}
+    from('LICENSE') {
+        rename { "${it}_${archivesBaseName}" }
+    }
 }
 
-sourceSets {
-	jcef {
-		java {
-			srcDir "java-cef/java"
-			exclude "**/tests/**"
-		}
-	}
-
-	main {
-		compileClasspath += jcef.output
-		runtimeClasspath += jcef.output
-	}
+curseforge {
+    apiKey = file("${rootDir}/curseforge_api_key.txt").exists() ? file("${rootDir}/curseforge_api_key.txt").text : ''
+    project {
+        id = curse_id
+        changelogType = 'markdown'
+        changelog = file('changelog.md')
+        releaseType = release_type
+        addGameVersion curseforge_minecraft_version
+        addGameVersion 'Fabric'
+        addGameVersion "Java ${java_version}"
+        mainArtifact(file("${buildDir}/libs/${archivesBaseName}-${version}.jar")) {
+            displayName = "[FABRIC][${minecraft_version}] ${mod_name} ${mod_version}"
+        }
+        afterEvaluate {
+            uploadTask.dependsOn(remapJar)
+        }
+    }
+    options {
+        forgeGradleIntegration = false
+    }
 }
 
-idea {
-	module {
-		excludeDirs += file("java-cef/java/tests")
-		inheritOutputDirs true
-	}
+shadowJar {
+    configurations = [project.configurations.shadow]
+    archiveClassifier = 'shadow-dev'
 }
 
-// From com.cinemamod.fabric.cef.Platform enum
-var platforms = ["linux_amd64", "linux_arm64", "windows_amd64", "windows_arm64", "macos_amd64", "macos_arm64"]
-
-import org.apache.tools.ant.taskdefs.condition.Os
-
-tasks.register('downloadJcef') {
-	for (String platform : platforms) {
-		try {
-			"https://ewr1.vultrobjects.com/cinemamod-jcef/$cef_branch/$platform/manifest.txt".toURL().text.eachLine {
-				var fileHash = it.split("  ")[0]
-				var relFilePath = it.split("  ")[1]
-				var cefResourceUrl = "https://ewr1.vultrobjects.com/cinemamod-jcef/$cef_branch/$platform/$relFilePath"
-				download.run {
-					src cefResourceUrl
-					dest "$buildDir/cef/$platform/$relFilePath"
-					overwrite false
-				}
-				if (Os.isFamily(Os.FAMILY_UNIX)) {
-					if (relFilePath.contains("chrome-sandbox") || relFilePath.contains("jcef_helper")) {
-						exec {
-							commandLine("chmod", "700", "$buildDir/cef/$platform/$relFilePath")
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			println("Skipping CEF libraries for $cef_branch/$platform")
-			println(e.getMessage())
-		}
-	}
-}
-
-void createPlatformJarTask(String platform) {
-	tasks.register("jar_$platform", RemapJarTask) {
-		inputFile = jar.archiveFile
-
-		onlyIf {
-			new File("$buildDir/cef/$platform").exists()
-		}
-
-		into("cef") {
-			from "$buildDir/cef/$platform"
-		}
-
-		from sourceSets.main.output
-		from sourceSets.jcef.output
-
-		setArchiveAppendix(platform)
-	}
-}
-
-platforms.forEach(platform -> createPlatformJarTask(platform))
-
-
-
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+remapJar {
+    dependsOn shadowJar
+    inputFile = shadowJar.archiveFile.get()
 }
