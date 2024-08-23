@@ -166,30 +166,35 @@ public abstract class Theater {
     }
 
     public void updateViewers() {
-        Set<Player> previousViewers = getViewers();
+        Set<Player> previousViewers = new HashSet<>(viewers);
         Set<Player> newViewers = new HashSet<>();
 
-        for (ProtectedRegion region : regions) {
-            newViewers.addAll(WorldGuardUtil.getPlayersInRegion(region));
+        // Find the region with the same name as the theater
+        ProtectedRegion targetRegion = regions.stream()
+                .filter(region -> region.getId().equalsIgnoreCase(getId()))
+                .findFirst()
+                .orElse(null);
+
+        if (targetRegion != null) {
+            newViewers.addAll(WorldGuardUtil.getPlayersInRegion(targetRegion));
+        } else {
+            cinemaModPlugin.getLogger().warning("No region found with name matching theater ID: " + getId());
         }
 
         viewers = newViewers;
 
         // Check for players who left the theater
         for (Player previousViewer : previousViewers) {
-            if (!getViewers().contains(previousViewer)) {
-                // Player left the theater
+            if (!viewers.contains(previousViewer)) {
                 PlayerLeaveTheaterEvent event = new PlayerLeaveTheaterEvent(previousViewer, this);
                 cinemaModPlugin.getServer().getPluginManager().callEvent(event);
-
                 NetworkUtil.sendUnloadScreenPacket(cinemaModPlugin, previousViewer, getScreen());
             }
         }
 
         // Check for players who entered the theater
-        for (Player viewer : getViewers()) {
+        for (Player viewer : viewers) {
             if (!previousViewers.contains(viewer)) {
-                // Player entered the theater
                 PlayerEnterTheaterEvent event = new PlayerEnterTheaterEvent(viewer, this);
                 cinemaModPlugin.getServer().getPluginManager().callEvent(event);
 
