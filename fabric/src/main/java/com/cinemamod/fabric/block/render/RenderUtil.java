@@ -1,15 +1,11 @@
 package com.cinemamod.fabric.block.render;
 
+import net.minecraft.client.render.*;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 
 public final class RenderUtil {
@@ -77,32 +73,32 @@ public final class RenderUtil {
         matrixStack.translate(0, amount, 0);
     }
 
-    public static void renderTexture(MatrixStack matrixStack, Tessellator tessellator, BufferBuilder buffer, int glId) {
-        RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
+    public static void renderTexture(MatrixStack matrixStack, Tessellator tessellator, int glId) {
+        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         RenderSystem.setShaderTexture(0, glId);
         Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-        buffer.vertex(matrix4f, 0.0F, -1.0F, 1.0F).color(255, 255, 255, 255).texture(0.0f, 1.0f).next();
-        buffer.vertex(matrix4f, 1.0F, -1.0F, 1.0F).color(255, 255, 255, 255).texture(1.0f, 1.0f).next();
-        buffer.vertex(matrix4f, 1.0F, 0.0F, 0.0F).color(255, 255, 255, 255).texture(1.0f, 0.0f).next();
-        buffer.vertex(matrix4f, 0, 0, 0).color(255, 255, 255, 255).texture(0.0f, 0.0f).next();
-        tessellator.draw();
+        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+        builder.vertex(matrix4f, 0.0F, -1.0F, 1.0F).color(255, 255, 255, 255).texture(0.0f, 1.0f);
+        builder.vertex(matrix4f, 1.0F, -1.0F, 1.0F).color(255, 255, 255, 255).texture(1.0f, 1.0f);
+        builder.vertex(matrix4f, 1.0F, 0.0F, 0.0F).color(255, 255, 255, 255).texture(1.0f, 0.0f);
+        builder.vertex(matrix4f, 0, 0, 0).color(255, 255, 255, 255).texture(0.0f, 0.0f);
+        BufferRenderer.drawWithGlobalProgram(builder.end());
         RenderSystem.setShaderTexture(0, 0);
     }
 
-    public static void renderColor(MatrixStack matrixStack, Tessellator tessellator, BufferBuilder buffer, int r, int g, int b) {
+    public static void renderColor(MatrixStack matrixStack, Tessellator tessellator, int r, int g, int b) {
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        buffer.vertex(matrix4f, 0.0F, -1.0F, 1.0F).color(r, g, b, 255).next();
-        buffer.vertex(matrix4f, 1.0F, -1.0F, 1.0F).color(r, g, b, 255).next();
-        buffer.vertex(matrix4f, 1.0F, 0.0F, 0.0F).color(r, g, b, 255).next();
-        buffer.vertex(matrix4f, 0, 0, 0).color(r, g, b, 255).next();
-        tessellator.draw();
+        BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        builder.vertex(matrix4f, 0.0F, -1.0F, 1.0F).color(r, g, b, 255);
+        builder.vertex(matrix4f, 1.0F, -1.0F, 1.0F).color(r, g, b, 255);
+        builder.vertex(matrix4f, 1.0F, 0.0F, 0.0F).color(r, g, b, 255);
+        builder.vertex(matrix4f, 0, 0, 0).color(r, g, b, 255);
+        BufferRenderer.drawWithGlobalProgram(builder.end());
     }
 
-    public static void renderBlack(MatrixStack matrixStack, Tessellator tessellator, BufferBuilder buffer) {
-        renderColor(matrixStack, tessellator, buffer, 0, 0, 0);
+    public static void renderBlack(MatrixStack matrixStack, Tessellator tessellator) {
+        renderColor(matrixStack, tessellator, 0, 0, 0);
     }
 
 }

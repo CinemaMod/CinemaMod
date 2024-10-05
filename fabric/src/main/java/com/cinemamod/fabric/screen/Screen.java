@@ -1,7 +1,6 @@
 package com.cinemamod.fabric.screen;
 
 import com.cinemamod.fabric.block.ScreenBlock;
-import com.cinemamod.fabric.buffer.PacketByteBufSerializable;
 import com.cinemamod.fabric.cef.CefBrowserCinema;
 import com.cinemamod.fabric.cef.CefUtil;
 import com.cinemamod.fabric.video.Video;
@@ -15,7 +14,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Screen implements PacketByteBufSerializable<Screen> {
+public class Screen {
 
     private int x;
     private int y;
@@ -214,7 +213,6 @@ public class Screen implements PacketByteBufSerializable<Screen> {
         }
     }
 
-    @Override
     public Screen fromBytes(PacketByteBuf buf) {
         x = buf.readInt();
         y = buf.readInt();
@@ -225,11 +223,6 @@ public class Screen implements PacketByteBufSerializable<Screen> {
         visible = buf.readBoolean();
         muted = buf.readBoolean();
         return this;
-    }
-
-    @Override
-    public void toBytes(PacketByteBuf buf) {
-        throw new NotImplementedException("Not implemented on client");
     }
 
 }

@@ -17,7 +17,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class VideoQueueScreen extends Screen {
 
-    protected static final Identifier TEXTURE = new Identifier("textures/gui/social_interactions.png");
+    protected static final Identifier TEXTURE = Identifier.of("textures/gui/social_interactions.png");
     protected static KeyBinding keyBinding;
 
     public VideoQueueWidget videoQueueWidget;
@@ -54,9 +54,9 @@ public class VideoQueueScreen extends Screen {
         return (this.width - 238) / 2;
     }
 
-    public void renderBackground(DrawContext context) {
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         int i = this.method_31362() + 3;
-        super.renderBackground(context);
+        super.renderBackground(context, mouseX, mouseY, delta);
         context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
@@ -74,7 +74,7 @@ public class VideoQueueScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
+        this.renderBackground(context, mouseX, mouseY, delta);
         videoQueueWidget.render(context, mouseX, mouseY, delta);
         super.render(context, mouseX, mouseY, delta);
     }
@@ -99,9 +99,9 @@ public class VideoQueueScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        videoQueueWidget.mouseScrolled(mouseX, mouseY, amount);
-        return super.mouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount, double verticalAmount) {
+        videoQueueWidget.mouseScrolled(mouseX, mouseY, amount, verticalAmount);
+        return super.mouseScrolled(mouseX, mouseY, amount, verticalAmount);
     }
 
     public static void registerKeyInput() {

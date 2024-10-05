@@ -1,6 +1,7 @@
 package com.cinemamod.fabric.gui;
 
 import com.cinemamod.fabric.CinemaModClient;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -12,11 +13,22 @@ import net.minecraft.util.Identifier;
 
 public class VideoSettingsScreen extends Screen {
 
-    protected static final Identifier TEXTURE = new Identifier("textures/gui/social_interactions.png");
+    protected static final Identifier TEXTURE = Identifier.of("textures/gui/social_interactions.png");
     private boolean shouldReloadScreen;
 
     public VideoSettingsScreen() {
         super(Text.of("Video Settings"));
+    }
+
+    private static CheckboxWidget checkboxWidget(int x, int y, int width, int height, Text text, boolean checked, CheckboxWidget.Callback callback) {
+        CheckboxWidget widget = CheckboxWidget.builder(text, MinecraftClient.getInstance().textRenderer)
+                .pos(x, y)
+                .checked(checked)
+                .callback(callback)
+                .build();
+        widget.setWidth(width);
+        widget.setHeight(height);
+        return widget;
     }
 
     @Override
@@ -34,22 +46,14 @@ public class VideoSettingsScreen extends Screen {
                 CinemaModClient.getInstance().getVideoSettings().setVolume((float) value);
             }
         });
-        addDrawableChild(new CheckboxWidget(method_31362() + 23, 110, 196, 20, Text.of("Mute video while alt-tabbed"),
-                CinemaModClient.getInstance().getVideoSettings().isMuteWhenAltTabbed()) {
-            @Override
-            public void onPress() {
-                super.onPress();
-                CinemaModClient.getInstance().getVideoSettings().setMuteWhenAltTabbed(isChecked());
-            }
-        });
-        addDrawableChild(new CheckboxWidget(method_31362() + 23, 142, 196, 20, Text.of("Hide crosshair while video playing"),
-                CinemaModClient.getInstance().getVideoSettings().isHideCrosshair()) {
-            @Override
-            public void onPress() {
-                super.onPress();
-                CinemaModClient.getInstance().getVideoSettings().setHideCrosshair(isChecked());
-            }
-        });
+        addDrawableChild(checkboxWidget(method_31362() + 23, 110, 196, 20, Text.of("Mute video while alt-tabbed"),
+                CinemaModClient.getInstance().getVideoSettings().isMuteWhenAltTabbed(),
+                (checkbox, checked) -> CinemaModClient.getInstance().getVideoSettings().setMuteWhenAltTabbed(checked)
+        ));
+        addDrawableChild(checkboxWidget(method_31362() + 23, 142, 196, 20, Text.of("Hide crosshair while video playing"),
+                CinemaModClient.getInstance().getVideoSettings().isHideCrosshair(),
+                (checkbox, checked) -> CinemaModClient.getInstance().getVideoSettings().setHideCrosshair(checked)
+        ));
         ButtonWidget.Builder screenResolutionBuilder = new Builder(
             Text.of("Screen resolution: " + CinemaModClient.getInstance().getVideoSettings().getBrowserResolution() + "p"),
              button ->
@@ -84,9 +88,9 @@ public class VideoSettingsScreen extends Screen {
         return (this.width - 238) / 2;
     }
 
-    public void renderBackground(DrawContext context) {
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         int i = this.method_31362() + 3;
-        super.renderBackground(context);
+        super.renderBackground(context, mouseX, mouseY, delta);
         context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
@@ -96,7 +100,7 @@ public class VideoSettingsScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
+        this.renderBackground(context, mouseX, mouseY, delta);
         context.drawCenteredTextWithShadow(this.client.textRenderer, Text.of("Video Settings"), this.width / 2, 64 - 10, -1);
         super.render(context, mouseX, mouseY, delta);
     }

@@ -1,12 +1,11 @@
 package com.cinemamod.fabric.video.list;
 
-import com.cinemamod.fabric.buffer.PacketByteBufSerializable;
 import com.cinemamod.fabric.video.VideoInfo;
 import net.minecraft.network.PacketByteBuf;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 
-public class VideoListEntry implements Comparable<VideoListEntry>, PacketByteBufSerializable<VideoListEntry> {
+public class VideoListEntry implements Comparable<VideoListEntry> {
 
     private VideoInfo videoInfo;
     private long lastRequested;
@@ -45,17 +44,10 @@ public class VideoListEntry implements Comparable<VideoListEntry>, PacketByteBuf
         }
     }
 
-    @Override
     public VideoListEntry fromBytes(PacketByteBuf buf) {
         videoInfo = new VideoInfo().fromBytes(buf);
         lastRequested = buf.readLong();
         timesRequested = buf.readInt();
         return this;
     }
-
-    @Override
-    public void toBytes(PacketByteBuf buf) {
-        throw new NotImplementedException("Not implemented on client");
-    }
-
 }

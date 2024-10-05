@@ -13,20 +13,22 @@ import java.util.Locale;
 public abstract class VideoListWidget extends ElementListWidget<VideoListWidgetEntry> {
 
     protected final VideoList videoList;
+    private final int top;
     @Nullable
     private String search;
 
     public VideoListWidget(VideoList videoList, MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
-        super(client, width, height, top, bottom, itemHeight);
+        super(client, width, height, bottom, itemHeight);
+        this.top = top;
         this.videoList = videoList;
-        setRenderBackground(false);
-        setRenderHorizontalShadows(false);
+        setRenderHeader(false, 0);
+//        setRenderHorizontalShadows(false);
         update();
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.enableScissor(this.getRowLeft(), this.top + 4, this.getScrollbarPositionX() + this.getRowLeft() + 6, this.height - this.top - 4);
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.enableScissor(this.getRowLeft(), this.top + 4, this.getScrollbarX() + this.getRowLeft() + 6, this.height - this.top - 4);
         super.render(context, mouseX, mouseY, delta);
         context.disableScissor();
     }

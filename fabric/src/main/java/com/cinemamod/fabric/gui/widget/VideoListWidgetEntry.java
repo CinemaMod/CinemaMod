@@ -18,10 +18,10 @@ import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlay
 
 public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<VideoListWidgetEntry> implements Comparable<VideoListWidgetEntry> {
 
-    private static final Identifier PLAY_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/play.png");
-    private static final Identifier PLAY_SELECTED_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/play_selected.png");
-    private static final Identifier TRASH_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/trash.png");
-    private static final Identifier TRASH_SELECTED_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/trash_selected.png");
+    private static final Identifier PLAY_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/play.png");
+    private static final Identifier PLAY_SELECTED_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/play_selected.png");
+    private static final Identifier TRASH_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/trash.png");
+    private static final Identifier TRASH_SELECTED_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/trash_selected.png");
 
     private final VideoListWidget parent;
     private final VideoListEntry video;

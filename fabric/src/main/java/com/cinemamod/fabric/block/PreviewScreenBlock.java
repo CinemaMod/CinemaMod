@@ -32,7 +32,7 @@ public class PreviewScreenBlock extends Block implements BlockEntityProvider {
     }
 
     public static void register() {
-        IDENT = new Identifier("cinemamod", "preview_screen");
+        IDENT = Identifier.of("cinemamod", "preview_screen");
         PREVIEW_SCREEN_BLOCK = new PreviewScreenBlock();
 
         Registry.register(Registries.BLOCK, IDENT, PREVIEW_SCREEN_BLOCK);

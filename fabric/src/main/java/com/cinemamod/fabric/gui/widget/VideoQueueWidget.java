@@ -14,18 +14,20 @@ import java.util.List;
 public class VideoQueueWidget extends ElementListWidget<VideoQueueWidgetEntry> {
 
     private VideoQueueScreen parent;
+    private final int top;
 
     public VideoQueueWidget(VideoQueueScreen parent, MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
-        super(client, width, height, top, bottom, itemHeight);
+        super(client, width, height, bottom, itemHeight);
         this.parent = parent;
-        setRenderBackground(false);
-        setRenderHorizontalShadows(false);
+        this.top = top;
+        setRenderHeader(false, 0);
+//        setRenderHorizontalShadows(false);
         update();
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.enableScissor(this.getRowLeft(), this.top + 4, this.getScrollbarPositionX() + this.getRowLeft() + 6, this.height - this.top - 4);
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.enableScissor(this.getRowLeft(), this.top + 4, this.getScrollbarX() + this.getRowLeft() + 6, this.height - this.top - 4);
         super.render(context, mouseX, mouseY, delta);
         context.disableScissor();
     }
