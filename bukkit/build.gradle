@@ -16,6 +16,7 @@ repositories {
     maven { url = 'https://oss.sonatype.org/content/repositories/central' }
     maven { url = 'https://maven.enginehub.org/repo/' }
     maven { url = 'https://repo.dmulloy2.net/repository/public/' }
+    mavenCentral()
 }
 
 dependencies {
