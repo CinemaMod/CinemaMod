@@ -1,5 +1,23 @@
 {
   "category.cinemamod.keybinds": "Cinema Mod",
+
   "key.cinemamod.openvideoqueue": "Open Video Queue",
-  "key.cinemamod.openrequestbrowser": "Open Video Request Browser"
+  "key.cinemamod.openrequestbrowser": "Open Video Request Browser",
+
+  "gui.cinemamod.videohistorytitle": "Video History",
+
+  "gui.cinemamod.videoqueuetitle": "Video Queue",
+  "gui.cinemamod.videoqueueentries": "Video Queue - %d entries",
+  "gui.cinemamod.videoqueuenovideos": "No videos queued",
+  "gui.cinemamod.videoqueueupnext": "UP NEXT %s",
+
+  "gui.cinemamod.videosettingstitle": "Video Settings",
+  "gui.cinemamod.videosettingsvolume": "Volume",
+  "gui.cinemamod.videosettingsmute": "Mute video while alt-tabbed",
+  "gui.cinemamod.videosettingscrosshair": "Hide crosshair while video playing",
+  "gui.cinemamod.videosettingsresolution": "Screen resolution: %d%s",
+  "gui.cinemamod.videosettingsrefreshrate": "Screen refresh rate: %d %s",
+
+  "gui.cinemamod.videorequesttitle": "Video Request Browser",
+  "gui.cinemamod.videorequestbtn": "Request"
 }

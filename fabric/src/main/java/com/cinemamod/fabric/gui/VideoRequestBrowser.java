@@ -30,7 +30,7 @@ public class VideoRequestBrowser extends Screen {
     private TextFieldWidget urlField;
 
     protected VideoRequestBrowser() {
-        super(Text.of("Video Request Browser"));
+        super(Text.translatable("gui.cinemamod.videorequesttitle"));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class VideoRequestBrowser extends Screen {
         ButtonWidget.Builder fwdBtnBuilder = new Builder(Text.of(">"), button -> {
             browser.goForward();
         });
-        ButtonWidget.Builder requestBtnBuilder = new Builder(Text.of("Request"), button -> {
+        ButtonWidget.Builder requestBtnBuilder = new Builder(Text.translatable("gui.cinemamod.videorequestbtn"), button -> {
             System.out.println("TODO, request button");
         });
         ButtonWidget.Builder closeBtnBuilder = new Builder(Text.of("X"), button -> {

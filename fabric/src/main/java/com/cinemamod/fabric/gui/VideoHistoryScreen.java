@@ -24,7 +24,7 @@ public class VideoHistoryScreen extends Screen {
     private String currentSearch = "";
 
     public VideoHistoryScreen() {
-        super(Text.of("Video History"));
+        super(Text.translatable("gui.cinemamod.videohistorytitle"));
     }
 
     @Override
