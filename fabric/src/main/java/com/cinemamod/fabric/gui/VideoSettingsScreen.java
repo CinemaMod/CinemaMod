@@ -1,5 +1,6 @@
 package com.cinemamod.fabric.gui;
 
+import com.cinemamod.fabric.CinemaMod;
 import com.cinemamod.fabric.CinemaModClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -13,7 +14,7 @@ import net.minecraft.util.Identifier;
 
 public class VideoSettingsScreen extends Screen {
 
-    protected static final Identifier TEXTURE = Identifier.of("textures/gui/social_interactions.png");
+    protected static final Identifier TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/menuui_trans.png");
     private boolean shouldReloadScreen;
 
     public VideoSettingsScreen() {
@@ -88,9 +89,8 @@ public class VideoSettingsScreen extends Screen {
         return (this.width - 238) / 2;
     }
 
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderBackground(DrawContext context) {
         int i = this.method_31362() + 3;
-        super.renderBackground(context, mouseX, mouseY, delta);
         context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
@@ -100,9 +100,9 @@ public class VideoSettingsScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context, mouseX, mouseY, delta);
-        context.drawCenteredTextWithShadow(this.client.textRenderer, Text.of("Video Settings"), this.width / 2, 64 - 10, -1);
         super.render(context, mouseX, mouseY, delta);
+        this.renderBackground(context);
+        context.drawCenteredTextWithShadow(this.client.textRenderer, Text.of("Video Settings"), this.width / 2, 64 - 10, -1);
     }
 
     @Override

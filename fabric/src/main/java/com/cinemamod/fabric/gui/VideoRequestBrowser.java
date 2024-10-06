@@ -76,8 +76,8 @@ public class VideoRequestBrowser extends Screen {
             urlField.setText(browser.getURL());
             urlField.setCursor(0, false); // If the URL is longer than the URL field, we want it to start at the beginning
         }
-        urlField.render(context, mouseX, mouseY, delta); // The URL bar looks better under everything else
         super.render(context, mouseX, mouseY, delta);
+        urlField.render(context, mouseX, mouseY, delta); // The URL bar looks better under everything else
         RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         int glId = browser.renderer.getTextureID();

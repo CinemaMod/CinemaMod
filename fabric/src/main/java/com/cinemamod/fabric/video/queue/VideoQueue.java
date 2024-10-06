@@ -23,6 +23,10 @@ public class VideoQueue {
         videos.clear();
     }
 
+    public void setVideos(List<QueuedVideo> videos) {
+        this.videos = videos;
+    }
+
     public VideoQueue fromBytes(PacketByteBuf buf) {
         List<QueuedVideo> videos = new ArrayList<>();
         int length = buf.readInt();

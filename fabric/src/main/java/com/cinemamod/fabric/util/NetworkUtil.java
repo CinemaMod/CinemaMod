@@ -73,7 +73,7 @@ public final class NetworkUtil {
             CD.getVideoListManager().getHistory().merge(new VideoList(payload.entries()));
         }));
         registerInbound(ChannelVideoQueueStatePayload.CHANNEL_VIDEO_QUEUE_STATE, ((payload, context) -> {
-            CD.getVideoQueue().getVideos().addAll(payload.queue());
+            CD.getVideoQueue().setVideos(payload.queue());
             context.client().submit(() -> {
                 if (context.client().currentScreen instanceof VideoQueueScreen) {
                     VideoQueueScreen videoQueueScreen = (VideoQueueScreen) context.client().currentScreen;
