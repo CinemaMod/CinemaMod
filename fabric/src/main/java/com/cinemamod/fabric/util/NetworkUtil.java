@@ -69,7 +69,7 @@ public final class NetworkUtil {
         registerInbound(ChannelOpenHistoryScreenPayload.CHANNEL_OPEN_HISTORY_SCREEN, ((payload, context) -> {
             context.client().submit(() -> context.client().setScreen(payload.screen()));
         }));
-        registerInbound(ChannelVideoListHistorySplit.CHANNEL_OPEN_SETTINGS_SCREEN, ((payload, context) -> {
+        registerInbound(ChannelVideoListHistorySplit.CHANNEL_VIDEO_LIST_HISTORY_SPLIT, ((payload, context) -> {
             CD.getVideoListManager().getHistory().merge(new VideoList(payload.entries()));
         }));
         registerInbound(ChannelVideoQueueStatePayload.CHANNEL_VIDEO_QUEUE_STATE, ((payload, context) -> {

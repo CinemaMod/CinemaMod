@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record ChannelVideoListHistorySplit(List<VideoListEntry> entries) implements CustomPayload {
-    public static final IdCodec<ChannelVideoListHistorySplit> CHANNEL_OPEN_SETTINGS_SCREEN = new IdCodec<>(
+    public static final IdCodec<ChannelVideoListHistorySplit> CHANNEL_VIDEO_LIST_HISTORY_SPLIT = new IdCodec<>(
             new Id<>(Identifier.of(CinemaMod.MODID, "video_list_history_split")),
             PacketCodec.ofStatic(
                     (b, p) -> {
@@ -31,6 +31,6 @@ public record ChannelVideoListHistorySplit(List<VideoListEntry> entries) impleme
 
     @Override
     public Id<? extends CustomPayload> getId() {
-        return CHANNEL_OPEN_SETTINGS_SCREEN.id();
+        return CHANNEL_VIDEO_LIST_HISTORY_SPLIT.id();
     }
 }
