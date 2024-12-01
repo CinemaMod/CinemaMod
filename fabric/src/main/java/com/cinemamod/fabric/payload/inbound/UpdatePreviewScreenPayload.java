@@ -18,7 +18,7 @@ public record UpdatePreviewScreenPayload(PreviewScreen screen) implements Custom
                     },
                     b -> {
                         PreviewScreen previewScreen = new PreviewScreen().fromBytes(b);
-                        VideoInfo videoInfo = b.readBoolean() ? new VideoInfo().fromBytes(b) : null;
+                        VideoInfo videoInfo = previewScreen.getVideoInfo();
                         previewScreen.setVideoInfo(videoInfo);
                         b.clear();
                         return new UpdatePreviewScreenPayload(previewScreen);
