@@ -1,6 +1,8 @@
 package com.cinemamod.fabric.gui;
 
+import com.cinemamod.fabric.CinemaMod;
 import com.cinemamod.fabric.CinemaModClient;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -12,16 +14,27 @@ import net.minecraft.util.Identifier;
 
 public class VideoSettingsScreen extends Screen {
 
-    protected static final Identifier TEXTURE = new Identifier("textures/gui/social_interactions.png");
+    protected static final Identifier TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/menuui_trans.png");
     private boolean shouldReloadScreen;
 
     public VideoSettingsScreen() {
-        super(Text.of("Video Settings"));
+        super(Text.translatable("gui.cinemamod.videosettingstitle"));
+    }
+
+    private static CheckboxWidget checkboxWidget(int x, int y, int width, int height, Text text, boolean checked, CheckboxWidget.Callback callback) {
+        CheckboxWidget widget = CheckboxWidget.builder(text, MinecraftClient.getInstance().textRenderer)
+                .pos(x, y)
+                .checked(checked)
+                .callback(callback)
+                .build();
+        widget.setWidth(width);
+        widget.setHeight(height);
+        return widget;
     }
 
     @Override
     protected void init() {
-        addDrawableChild(new SliderWidget(method_31362() + 23, 78, 196, 20, Text.of("Volume"),
+        addDrawableChild(new SliderWidget(method_31362() + 23, 78, 196, 20, Text.translatable("gui.cinemamod.videosettingsvolume"),
                 CinemaModClient.getInstance().getVideoSettings().getVolume()) {
             @Override
             protected void updateMessage() {
@@ -34,38 +47,30 @@ public class VideoSettingsScreen extends Screen {
                 CinemaModClient.getInstance().getVideoSettings().setVolume((float) value);
             }
         });
-        addDrawableChild(new CheckboxWidget(method_31362() + 23, 110, 196, 20, Text.of("Mute video while alt-tabbed"),
-                CinemaModClient.getInstance().getVideoSettings().isMuteWhenAltTabbed()) {
-            @Override
-            public void onPress() {
-                super.onPress();
-                CinemaModClient.getInstance().getVideoSettings().setMuteWhenAltTabbed(isChecked());
-            }
-        });
-        addDrawableChild(new CheckboxWidget(method_31362() + 23, 142, 196, 20, Text.of("Hide crosshair while video playing"),
-                CinemaModClient.getInstance().getVideoSettings().isHideCrosshair()) {
-            @Override
-            public void onPress() {
-                super.onPress();
-                CinemaModClient.getInstance().getVideoSettings().setHideCrosshair(isChecked());
-            }
-        });
+        addDrawableChild(checkboxWidget(method_31362() + 23, 110, 196, 20, Text.translatable("gui.cinemamod.videosettingsmute"),
+                CinemaModClient.getInstance().getVideoSettings().isMuteWhenAltTabbed(),
+                (checkbox, checked) -> CinemaModClient.getInstance().getVideoSettings().setMuteWhenAltTabbed(checked)
+        ));
+        addDrawableChild(checkboxWidget(method_31362() + 23, 142, 196, 20, Text.translatable("gui.cinemamod.videosettingscrosshair"),
+                CinemaModClient.getInstance().getVideoSettings().isHideCrosshair(),
+                (checkbox, checked) -> CinemaModClient.getInstance().getVideoSettings().setHideCrosshair(checked)
+        ));
         ButtonWidget.Builder screenResolutionBuilder = new Builder(
-            Text.of("Screen resolution: " + CinemaModClient.getInstance().getVideoSettings().getBrowserResolution() + "p"),
+            Text.translatable("gui.cinemamod.videosettingsresolution", CinemaModClient.getInstance().getVideoSettings().getBrowserResolution(), "p"),
              button ->
         {
             CinemaModClient.getInstance().getVideoSettings().setNextBrowserResolution();
-            button.setMessage(Text.of("Screen resolution: " + CinemaModClient.getInstance().getVideoSettings().getBrowserResolution() + "p"));
+            button.setMessage(Text.translatable("gui.cinemamod.videosettingsresolution", CinemaModClient.getInstance().getVideoSettings().getBrowserResolution(), "p"));
             shouldReloadScreen = true;
         });
         screenResolutionBuilder.dimensions(method_31362() + 23, 142 + 32, 196, 20);
         addDrawableChild(screenResolutionBuilder.build());
         ButtonWidget.Builder browserRefreshRateBuilder = new Builder(
-                Text.of("Screen refresh rate: " + CinemaModClient.getInstance().getVideoSettings().getBrowserRefreshRate() + " fps"),
+                Text.translatable("gui.cinemamod.videosettingsrefreshrate", CinemaModClient.getInstance().getVideoSettings().getBrowserRefreshRate(), "fps"),
                 button ->
                 {
                     CinemaModClient.getInstance().getVideoSettings().setNextBrowserRefreshRate();
-                    button.setMessage(Text.of("Screen refresh rate: " + CinemaModClient.getInstance().getVideoSettings().getBrowserRefreshRate() + " fps"));
+                    button.setMessage(Text.translatable("gui.cinemamod.videosettingsrefreshrate", CinemaModClient.getInstance().getVideoSettings().getBrowserRefreshRate(), "fps"));
                     shouldReloadScreen = true;
                 });
         browserRefreshRateBuilder.dimensions(method_31362() + 23, 142 + 32 + 32, 196, 20);
@@ -86,7 +91,6 @@ public class VideoSettingsScreen extends Screen {
 
     public void renderBackground(DrawContext context) {
         int i = this.method_31362() + 3;
-        super.renderBackground(context);
         context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
@@ -96,9 +100,9 @@ public class VideoSettingsScreen extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackground(context);
-        context.drawCenteredTextWithShadow(this.client.textRenderer, Text.of("Video Settings"), this.width / 2, 64 - 10, -1);
         super.render(context, mouseX, mouseY, delta);
+        this.renderBackground(context);
+        context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videosettingstitle"), this.width / 2, 64 - 10, -1);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.cinemamod.fabric.screen;
 
 import com.cinemamod.fabric.block.PreviewScreenBlock;
-import com.cinemamod.fabric.buffer.PacketByteBufSerializable;
 import com.cinemamod.fabric.util.ImageUtil;
 import com.cinemamod.fabric.video.VideoInfo;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
@@ -13,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 
-public class PreviewScreen implements PacketByteBufSerializable<PreviewScreen> {
+public class PreviewScreen{
 
     private int x;
     private int y;
@@ -165,7 +164,6 @@ public class PreviewScreen implements PacketByteBufSerializable<PreviewScreen> {
         }
     }
 
-    @Override
     public PreviewScreen fromBytes(PacketByteBuf buf) {
         x = buf.readInt();
         y = buf.readInt();
@@ -173,12 +171,8 @@ public class PreviewScreen implements PacketByteBufSerializable<PreviewScreen> {
         facing = buf.readString();
         staticTextureUrl = buf.readString();
         activeTextureUrl = buf.readString();
+        videoInfo = buf.readBoolean() ? new VideoInfo().fromBytes(buf) : null;
         return this;
-    }
-
-    @Override
-    public void toBytes(PacketByteBuf buf) {
-        throw new NotImplementedException("Not implemented on client");
     }
 
 }

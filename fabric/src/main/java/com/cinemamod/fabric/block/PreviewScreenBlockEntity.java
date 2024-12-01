@@ -23,7 +23,7 @@ public class PreviewScreenBlockEntity extends BlockEntity {
     }
 
     public static void register() {
-        IDENT = new Identifier("cinemamod", "preview_screen_block_entity");
+        IDENT = Identifier.of("cinemamod", "preview_screen_block_entity");
         PREVIEW_SCREEN_BLOCK_ENTITY = FabricBlockEntityTypeBuilder
                 .create(PreviewScreenBlockEntity::new, PreviewScreenBlock.PREVIEW_SCREEN_BLOCK)
                 .build();

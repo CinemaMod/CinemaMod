@@ -1,7 +1,6 @@
 package com.cinemamod.fabric.video;
 
 import com.cinemamod.fabric.CinemaModClient;
-import com.cinemamod.fabric.buffer.PacketByteBufSerializable;
 import com.cinemamod.fabric.service.VideoService;
 import net.minecraft.network.PacketByteBuf;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -9,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class VideoInfo implements PacketByteBufSerializable<VideoInfo> {
+public class VideoInfo {
 
     private VideoService videoService;
     private String id;
@@ -113,7 +112,6 @@ public class VideoInfo implements PacketByteBufSerializable<VideoInfo> {
         return Objects.hash(videoService, id);
     }
 
-    @Override
     public VideoInfo fromBytes(PacketByteBuf buf) {
         videoService = CinemaModClient.getInstance().getVideoServiceManager().getByName(buf.readString());
         if (videoService == null) return null;
@@ -125,7 +123,6 @@ public class VideoInfo implements PacketByteBufSerializable<VideoInfo> {
         return this;
     }
 
-    @Override
     public void toBytes(PacketByteBuf buf) {
         buf.writeString(videoService.getName());
         buf.writeString(id);

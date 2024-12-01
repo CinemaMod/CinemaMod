@@ -20,14 +20,14 @@ import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlay
 
 public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWidgetEntry> implements Comparable<VideoQueueWidgetEntry> {
 
-    private static final Identifier UPVOTE_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/upvote.png");
-    private static final Identifier UPVOTE_SELECTED_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/upvote_selected.png");
-    private static final Identifier UPVOTE_ACTIVE_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/upvote_active.png");
-    private static final Identifier DOWNVOTE_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/downvote.png");
-    private static final Identifier DOWNVOTE_SELECTED_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/downvote_selected.png");
-    private static final Identifier DOWNVOTE_ACTIVE_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/downvote_active.png");
-    private static final Identifier TRASH_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/trash.png");
-    private static final Identifier TRASH_SELECTED_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/trash_selected.png");
+    private static final Identifier UPVOTE_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/upvote.png");
+    private static final Identifier UPVOTE_SELECTED_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/upvote_selected.png");
+    private static final Identifier UPVOTE_ACTIVE_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/upvote_active.png");
+    private static final Identifier DOWNVOTE_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/downvote.png");
+    private static final Identifier DOWNVOTE_SELECTED_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/downvote_selected.png");
+    private static final Identifier DOWNVOTE_ACTIVE_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/downvote_active.png");
+    private static final Identifier TRASH_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/trash.png");
+    private static final Identifier TRASH_SELECTED_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/trash_selected.png");
 
     private final VideoQueueScreen parent;
     private final QueuedVideo queuedVideo;

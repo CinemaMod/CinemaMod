@@ -30,7 +30,7 @@ public class VideoRequestBrowser extends Screen {
     private TextFieldWidget urlField;
 
     protected VideoRequestBrowser() {
-        super(Text.of("Video Request Browser"));
+        super(Text.translatable("gui.cinemamod.videorequesttitle"));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class VideoRequestBrowser extends Screen {
         ButtonWidget.Builder fwdBtnBuilder = new Builder(Text.of(">"), button -> {
             browser.goForward();
         });
-        ButtonWidget.Builder requestBtnBuilder = new Builder(Text.of("Request"), button -> {
+        ButtonWidget.Builder requestBtnBuilder = new Builder(Text.translatable("gui.cinemamod.videorequestbtn"), button -> {
             System.out.println("TODO, request button");
         });
         ButtonWidget.Builder closeBtnBuilder = new Builder(Text.of("X"), button -> {
@@ -74,22 +74,21 @@ public class VideoRequestBrowser extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         if (!urlField.isFocused()) {
             urlField.setText(browser.getURL());
-            urlField.setCursor(0); // If the URL is longer than the URL field, we want it to start at the beginning
+            urlField.setCursor(0, false); // If the URL is longer than the URL field, we want it to start at the beginning
         }
-        urlField.render(context, mouseX, mouseY, delta); // The URL bar looks better under everything else
         super.render(context, mouseX, mouseY, delta);
+        urlField.render(context, mouseX, mouseY, delta); // The URL bar looks better under everything else
         RenderSystem.disableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionColorTexProgram);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         int glId = browser.renderer.getTextureID();
         RenderSystem.setShaderTexture(0, glId);
         Tessellator t = Tessellator.getInstance();
-        BufferBuilder buffer = t.getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
-        buffer.vertex(browserDrawOffset, height - browserDrawOffset, 0).color(255, 255, 255, 255).texture(0.0f, 1.0f).next();
-        buffer.vertex(width - browserDrawOffset, height - browserDrawOffset, 0).color(255, 255, 255, 255).texture(1.0f, 1.0f).next();
-        buffer.vertex(width - browserDrawOffset, browserDrawOffset, 0).color(255, 255, 255, 255).texture(1.0f, 0.0f).next();
-        buffer.vertex(browserDrawOffset, browserDrawOffset, 0).color(255, 255, 255, 255).texture(0.0f, 0.0f).next();
-        t.draw();
+        BufferBuilder builder = t.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+        builder.vertex(browserDrawOffset, height - browserDrawOffset, 0).color(255, 255, 255, 255).texture(0.0f, 1.0f);
+        builder.vertex(width - browserDrawOffset, height - browserDrawOffset, 0).color(255, 255, 255, 255).texture(1.0f, 1.0f);
+        builder.vertex(width - browserDrawOffset, browserDrawOffset, 0).color(255, 255, 255, 255).texture(1.0f, 0.0f);
+        builder.vertex(browserDrawOffset, browserDrawOffset, 0).color(255, 255, 255, 255).texture(0.0f, 0.0f);
+        BufferRenderer.drawWithGlobalProgram(builder.end());
         RenderSystem.setShaderTexture(0, 0);
         RenderSystem.enableDepthTest();
     }
@@ -299,11 +298,11 @@ public class VideoRequestBrowser extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        super.mouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount, double verticalAmount) {
+        super.mouseScrolled(mouseX, mouseY, amount, verticalAmount);
 
         if (urlField.isFocused()) {
-            urlField.mouseScrolled(mouseX, mouseY, amount);
+            urlField.mouseScrolled(mouseX, mouseY, amount, verticalAmount);
         }
 
         if (browser == null) {

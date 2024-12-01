@@ -32,7 +32,7 @@ public class ScreenBlock extends Block implements BlockEntityProvider {
     }
 
     public static void register() {
-        IDENT = new Identifier("cinemamod", "screen");
+        IDENT = Identifier.of("cinemamod", "screen");
         SCREEN_BLOCK = new ScreenBlock();
 
         Registry.register(Registries.BLOCK, IDENT, SCREEN_BLOCK);

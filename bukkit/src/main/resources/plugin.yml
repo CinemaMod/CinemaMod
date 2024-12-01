@@ -1,7 +1,7 @@
 main: com.cinemamod.bukkit.CinemaModPlugin
 name: CinemaMod
-version: 1.0.6
-api-version: 1.18
+version: 1.0.7
+api-version: 1.21
 author: ds58
 depend: [ WorldGuard, ProtocolLib ]
 commands:
