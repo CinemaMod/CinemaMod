@@ -86,9 +86,9 @@ public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<Video
         requestButtonSelected = mouseX > reqButtonPosX && mouseX < reqButtonPosX + 12 && mouseY > reqButtonY && mouseY < reqButtonY + 12;
 
         if (requestButtonSelected) {
-            context.drawTexture(GUI_TEXTURED, PLAY_SELECTED_TEXTURE, reqButtonPosX, reqButtonY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED, PLAY_SELECTED_TEXTURE, reqButtonPosX, reqButtonY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         } else {
-            context.drawTexture(GUI_TEXTURED, PLAY_TEXTURE, reqButtonPosX, reqButtonY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED, PLAY_TEXTURE, reqButtonPosX, reqButtonY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         }
     }
 
@@ -99,9 +99,9 @@ public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<Video
         trashButtonSelected = mouseX > trashButtonPosX && mouseX < trashButtonPosX + 12 && mouseY > trashButtonY && mouseY < trashButtonY + 12;
 
         if (trashButtonSelected) {
-            context.drawTexture(GUI_TEXTURED,TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonY, 32F, 32F, 12, 12,8, 8, 8, 8);
         } else {
-            context.drawTexture(GUI_TEXTURED,TRASH_TEXTURE, trashButtonPosX, trashButtonY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,TRASH_TEXTURE, trashButtonPosX, trashButtonY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         }
     }
 

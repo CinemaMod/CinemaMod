@@ -87,11 +87,11 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
         downVoteButtonSelected = mouseX > downVoteButtonPosX && mouseX < downVoteButtonPosX + 12 && mouseY > downVoteButtonPosY && mouseY < downVoteButtonPosY + 12;
 
         if (queuedVideo.getClientState() == -1) {
-            context.drawTexture(GUI_TEXTURED,DOWNVOTE_ACTIVE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_ACTIVE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         } else if (downVoteButtonSelected) {
-            context.drawTexture(GUI_TEXTURED,DOWNVOTE_SELECTED_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_SELECTED_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 32F, 32F, 12, 12,  8, 8, 8, 8);
         } else {
-            context.drawTexture(GUI_TEXTURED,DOWNVOTE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 32F, 32F, 12, 12, 12, 8, 8, 8, 8);
         }
     }
 
@@ -102,11 +102,11 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
         upVoteButtonSelected = mouseX > upVoteButtonPosX && mouseX < upVoteButtonPosX + 12 && mouseY > upVoteButtonPosY && mouseY < upVoteButtonPosY + 12;
 
         if (queuedVideo.getClientState() == 1) {
-            context.drawTexture(GUI_TEXTURED,UPVOTE_ACTIVE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_ACTIVE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         } else if (upVoteButtonSelected) {
-            context.drawTexture(GUI_TEXTURED,UPVOTE_SELECTED_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_SELECTED_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         } else {
-            context.drawTexture(GUI_TEXTURED,UPVOTE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         }
     }
 
@@ -118,9 +118,9 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
             trashButtonSelected = mouseX > trashButtonPosX && mouseX < trashButtonPosX + 12 && mouseY > trashButtonPosY && mouseY < trashButtonPosY + 12;
 
             if (trashButtonSelected) {
-                context.drawTexture(GUI_TEXTURED,TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
+                context.drawTexture(GUI_TEXTURED,TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
             } else {
-                context.drawTexture(GUI_TEXTURED,TRASH_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
+                context.drawTexture(GUI_TEXTURED,TRASH_TEXTURE, trashButtonPosX, trashButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
             }
         }
     }

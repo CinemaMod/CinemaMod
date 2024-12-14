@@ -58,7 +58,7 @@ public class VideoHistoryScreen extends Screen {
         });
         super.applyBlur();
         int i = this.method_31362() + 3;
-        context.drawTexture(GUI_TEXTURED, TEXTURE, i,64,1,1,236, 8, 8, 256, 256);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i,64,1,1,236, 8, 256, 256);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
             context.drawTexture(GUI_TEXTURED, TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16, 256, 256);
