@@ -8,14 +8,18 @@ import com.cinemamod.fabric.video.list.VideoList;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 
 import java.util.Locale;
 import java.util.function.Function;
+
+import static net.minecraft.client.render.RenderPhase.*;
+import static net.minecraft.client.render.RenderPhase.COLOR_MASK;
 
 public class VideoHistoryScreen extends Screen {
 
@@ -48,6 +52,10 @@ public class VideoHistoryScreen extends Screen {
     private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
 
     public void renderBackground(DrawContext context) {
+        //Create a Function<Identifier, RenderLayer> GUI_TEXTURED from RenderLayer class
+        Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+            return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+        });
         super.applyBlur();
         int i = this.method_31362() + 3;
         context.drawTexture(GUI_TEXTURED, TEXTURE, i,64,1,1,236, 8, 8, 256, 256);

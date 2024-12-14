@@ -10,10 +10,17 @@ import net.minecraft.client.gui.widget.CheckboxWidget;
 import net.minecraft.client.gui.widget.SliderWidget;
 import net.minecraft.client.gui.widget.ButtonWidget.Builder;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 
 import java.util.function.Function;
+
+import static net.minecraft.client.render.RenderPhase.*;
 
 public class VideoSettingsScreen extends Screen {
 
@@ -92,15 +99,17 @@ public class VideoSettingsScreen extends Screen {
         return (this.width - 238) / 2;
     }
 
-    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
-
     public void renderBackground(DrawContext context) {
+        //Create a Function<Identifier, RenderLayer> GUI_TEXTURED from RenderLayer class
+        Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+            return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+        });
         int i = this.method_31362() + 3;
-        context.drawTexture(GUI_TEXTURED,TEXTURE, i, 64, 1, 1, 236, 8, 8,8);
+        context.drawTexture(GUI_TEXTURED,TEXTURE, i, 64, 1, 1, 236, 8, 256,256);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
-            context.drawTexture(GUI_TEXTURED,TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16, 8,8);
-        context.drawTexture(GUI_TEXTURED,TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8, 8,8);
+            context.drawTexture(GUI_TEXTURED,TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16, 256,256);
+        context.drawTexture(GUI_TEXTURED,TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8, 256,256);
     }
 
     @Override

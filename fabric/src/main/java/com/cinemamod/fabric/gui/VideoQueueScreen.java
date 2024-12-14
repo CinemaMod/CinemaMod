@@ -12,12 +12,20 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget.Builder;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Function;
+
+import static net.minecraft.client.render.RenderPhase.*;
+import static net.minecraft.client.render.RenderPhase.COLOR_MASK;
 
 public class VideoQueueScreen extends Screen {
 
@@ -61,6 +69,10 @@ public class VideoQueueScreen extends Screen {
     private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
 
     public void renderBackground(DrawContext context) {
+        //Create a Function<Identifier, RenderLayer> GUI_TEXTURED from RenderLayer class
+        Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+            return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+        });
         int i = this.method_31362() + 3;
         context.drawTexture(GUI_TEXTURED, TEXTURE, i, 64, 1, 1, 236, 8, 256, 256);
         int j = this.method_31360();
@@ -71,9 +83,11 @@ public class VideoQueueScreen extends Screen {
         if (videoQueueWidget.children().isEmpty()) {
             context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueuenovideos"), this.width / 2, (56 + this.method_31361()) / 2, -1);
         } else {
+            //not found getScrollAmount()
 //            if (videoQueueWidget.getScrollAmount() == 0f) {
 //                context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueueupnext", " ->"), -158 + this.width / 2, 64 + 12, -1);
 //            }
+            context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueueupnext", " ->"), -158 + this.width / 2, 64 + 12, -1);
         }
     }
 
