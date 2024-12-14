@@ -8,10 +8,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry.GRAY_COLOR;
 import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry.WHITE_COLOR;
@@ -58,6 +60,8 @@ public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<Video
         renderTrashButton(context, mouseX, mouseY, i, j);
     }
 
+    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
+
     @Override
     public int compareTo(@NotNull VideoListWidgetEntry other) {
         return video.compareTo(other.video);
@@ -70,9 +74,9 @@ public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<Video
         requestButtonSelected = mouseX > reqButtonPosX && mouseX < reqButtonPosX + 12 && mouseY > reqButtonY && mouseY < reqButtonY + 12;
 
         if (requestButtonSelected) {
-            context.drawTexture(PLAY_SELECTED_TEXTURE, reqButtonPosX, reqButtonY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED, PLAY_SELECTED_TEXTURE, reqButtonPosX, reqButtonY, 12, 12, 32, 32, 8, 8, 8, 8);
         } else {
-            context.drawTexture(PLAY_TEXTURE, reqButtonPosX, reqButtonY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED, PLAY_TEXTURE, reqButtonPosX, reqButtonY, 12, 12, 32, 32, 8, 8, 8, 8);
         }
     }
 
@@ -83,9 +87,9 @@ public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<Video
         trashButtonSelected = mouseX > trashButtonPosX && mouseX < trashButtonPosX + 12 && mouseY > trashButtonY && mouseY < trashButtonY + 12;
 
         if (trashButtonSelected) {
-            context.drawTexture(TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonY, 12, 12, 32, 32, 8, 8, 8, 8);
         } else {
-            context.drawTexture(TRASH_TEXTURE, trashButtonPosX, trashButtonY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,TRASH_TEXTURE, trashButtonPosX, trashButtonY, 12, 12, 32, 32, 8, 8, 8, 8);
         }
     }
 

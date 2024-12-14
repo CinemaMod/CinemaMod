@@ -1,5 +1,6 @@
 package com.cinemamod.fabric.block.render;
 
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.render.*;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -74,7 +75,7 @@ public final class RenderUtil {
     }
 
     public static void renderTexture(MatrixStack matrixStack, Tessellator tessellator, int glId) {
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
         RenderSystem.setShaderTexture(0, glId);
         Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
         BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
@@ -87,7 +88,7 @@ public final class RenderUtil {
     }
 
     public static void renderColor(MatrixStack matrixStack, Tessellator tessellator, int r, int g, int b) {
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
         Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
         BufferBuilder builder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         builder.vertex(matrix4f, 0.0F, -1.0F, 1.0F).color(r, g, b, 255);

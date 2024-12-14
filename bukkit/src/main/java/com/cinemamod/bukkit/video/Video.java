@@ -3,8 +3,8 @@ package com.cinemamod.bukkit.video;
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.buffer.PacketByteBufSerializable;
 import com.cinemamod.bukkit.video.queue.QueueVoteType;
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;

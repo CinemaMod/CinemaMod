@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -79,7 +80,7 @@ public class VideoRequestBrowser extends Screen {
         super.render(context, mouseX, mouseY, delta);
         urlField.render(context, mouseX, mouseY, delta); // The URL bar looks better under everything else
         RenderSystem.disableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
         int glId = browser.renderer.getTextureID();
         RenderSystem.setShaderTexture(0, glId);
         Tessellator t = Tessellator.getInstance();

@@ -8,11 +8,14 @@ import com.cinemamod.fabric.video.list.VideoList;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.Locale;
+import java.util.function.Function;
 
 public class VideoHistoryScreen extends Screen {
 
@@ -42,15 +45,17 @@ public class VideoHistoryScreen extends Screen {
         videoListWidget = new VideoHistoryListWidget(videoList, client, this.width, this.height, 88, this.method_31361(), 19);
     }
 
+    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
+
     public void renderBackground(DrawContext context) {
-        super.applyBlur(0);
+        super.applyBlur();
         int i = this.method_31362() + 3;
-        context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i,64,1,1,236, 8, 8, 256, 256);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
-            context.drawTexture(TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16);
-        context.drawTexture(TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8);
-        context.drawTexture(TEXTURE, i + 10, 76, 243, 1, 12, 12);
+            context.drawTexture(GUI_TEXTURED, TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16, 256, 256);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8, 256, 256);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i + 10, 76, 243, 1, 12, 12, 256, 256);
     }
 
     @Override

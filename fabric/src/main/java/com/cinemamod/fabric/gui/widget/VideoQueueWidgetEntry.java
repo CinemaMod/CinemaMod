@@ -10,11 +10,13 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry.*;
 
@@ -67,6 +69,8 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
         }
     }
 
+    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
+
     private void renderDownVoteButton(DrawContext context, int mouseX, int mouseY, int i, int j) {
         int downVoteButtonPosX = i + 185;
         int downVoteButtonPosY = j + 7;
@@ -74,11 +78,11 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
         downVoteButtonSelected = mouseX > downVoteButtonPosX && mouseX < downVoteButtonPosX + 12 && mouseY > downVoteButtonPosY && mouseY < downVoteButtonPosY + 12;
 
         if (queuedVideo.getClientState() == -1) {
-            context.drawTexture(DOWNVOTE_ACTIVE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_ACTIVE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
         } else if (downVoteButtonSelected) {
-            context.drawTexture(DOWNVOTE_SELECTED_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_SELECTED_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
         } else {
-            context.drawTexture(DOWNVOTE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
         }
     }
 
@@ -89,11 +93,11 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
         upVoteButtonSelected = mouseX > upVoteButtonPosX && mouseX < upVoteButtonPosX + 12 && mouseY > upVoteButtonPosY && mouseY < upVoteButtonPosY + 12;
 
         if (queuedVideo.getClientState() == 1) {
-            context.drawTexture(UPVOTE_ACTIVE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_ACTIVE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
         } else if (upVoteButtonSelected) {
-            context.drawTexture(UPVOTE_SELECTED_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_SELECTED_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
         } else {
-            context.drawTexture(UPVOTE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
         }
     }
 
@@ -105,9 +109,9 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
             trashButtonSelected = mouseX > trashButtonPosX && mouseX < trashButtonPosX + 12 && mouseY > trashButtonPosY && mouseY < trashButtonPosY + 12;
 
             if (trashButtonSelected) {
-                context.drawTexture(TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+                context.drawTexture(GUI_TEXTURED,TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
             } else {
-                context.drawTexture(TRASH_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+                context.drawTexture(GUI_TEXTURED,TRASH_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32, 32, 8, 8, 8, 8);
             }
         }
     }

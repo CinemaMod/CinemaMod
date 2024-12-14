@@ -63,6 +63,8 @@ public class RequestCommand extends TheaterCommandExecutor {
                 return;
             }
 
+            player.sendMessage(ChatColor.GOLD + videoInfo.toString());
+
             if (videoInfo == null) {
                 player.sendMessage(ChatColor.RED + "Unable to fetch video information.");
                 return;

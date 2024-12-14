@@ -11,10 +11,13 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget.Builder;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.function.Function;
 
 public class VideoQueueScreen extends Screen {
 
@@ -55,20 +58,22 @@ public class VideoQueueScreen extends Screen {
         return (this.width - 238) / 2;
     }
 
+    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
+
     public void renderBackground(DrawContext context) {
         int i = this.method_31362() + 3;
-        context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i, 64, 1, 1, 236, 8, 256, 256);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
-            context.drawTexture(TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16);
-        context.drawTexture(TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8);
+            context.drawTexture(GUI_TEXTURED,TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16, 256, 256);
+        context.drawTexture(GUI_TEXTURED,TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8, 256, 256);
         context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueueentries", videoQueueWidget.children().size()), this.width / 2, 64 - 10, -1);
         if (videoQueueWidget.children().isEmpty()) {
             context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueuenovideos"), this.width / 2, (56 + this.method_31361()) / 2, -1);
         } else {
-            if (videoQueueWidget.getScrollAmount() == 0f) {
-                context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueueupnext", " ->"), -158 + this.width / 2, 64 + 12, -1);
-            }
+//            if (videoQueueWidget.getScrollAmount() == 0f) {
+//                context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueueupnext", " ->"), -158 + this.width / 2, 64 + 12, -1);
+//            }
         }
     }
 
