@@ -11,14 +11,21 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Function;
 
 import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry.*;
+import static net.minecraft.client.render.RenderPhase.*;
+import static net.minecraft.client.render.RenderPhase.COLOR_MASK;
 
 public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWidgetEntry> implements Comparable<VideoQueueWidgetEntry> {
 
@@ -38,6 +45,10 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
     private boolean downVoteButtonSelected;
     private boolean upVoteButtonSelected;
     private boolean trashButtonSelected;
+
+    private final Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+        return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+    });
 
     public VideoQueueWidgetEntry(VideoQueueScreen parent, QueuedVideo queuedVideo, MinecraftClient client) {
         this.parent = parent;
@@ -68,8 +79,6 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
             context.drawTooltip(client.textRenderer, Text.of(queuedVideo.getVideoInfo().getTitle()), mouseX, mouseY);
         }
     }
-
-    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
 
     private void renderDownVoteButton(DrawContext context, int mouseX, int mouseY, int i, int j) {
         int downVoteButtonPosX = i + 185;

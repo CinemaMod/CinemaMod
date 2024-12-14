@@ -9,7 +9,12 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,6 +22,8 @@ import java.util.function.Function;
 
 import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry.GRAY_COLOR;
 import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry.WHITE_COLOR;
+import static net.minecraft.client.render.RenderPhase.*;
+import static net.minecraft.client.render.RenderPhase.COLOR_MASK;
 
 public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<VideoListWidgetEntry> implements Comparable<VideoListWidgetEntry> {
 
@@ -31,6 +38,10 @@ public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<Video
     protected final MinecraftClient client;
     private boolean requestButtonSelected;
     private boolean trashButtonSelected;
+
+    private final Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+        return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+    });
 
     public VideoListWidgetEntry(VideoListWidget parent, VideoListEntry video, MinecraftClient client) {
         this.parent = parent;
@@ -60,14 +71,15 @@ public abstract class VideoListWidgetEntry extends ElementListWidget.Entry<Video
         renderTrashButton(context, mouseX, mouseY, i, j);
     }
 
-    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
-
     @Override
     public int compareTo(@NotNull VideoListWidgetEntry other) {
         return video.compareTo(other.video);
     }
 
     private void renderRequestButton(DrawContext context, int mouseX, int mouseY, int i, int j) {
+        Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+            return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+        });
         int reqButtonPosX = i + 185;
         int reqButtonY = j + 5;
 
