@@ -2,7 +2,7 @@ package com.cinemamod.bukkit.service;
 
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.buffer.PacketByteBufSerializable;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 public enum VideoServiceType implements PacketByteBufSerializable<VideoServiceType> {
 

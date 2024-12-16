@@ -1,0 +1,23 @@
+{
+  "category.cinemamod.keybinds": "电影院",
+
+  "key.cinemamod.openvideoqueue": "打开视频队列",
+  "key.cinemamod.openrequestbrowser": "打开视频请求浏览器",
+
+  "gui.cinemamod.videohistorytitle": "历史记录",
+
+  "gui.cinemamod.videoqueuetitle": "视频队列",
+  "gui.cinemamod.videoqueueentries": "视频队列 - %d entries",
+  "gui.cinemamod.videoqueuenovideos": "队列无视频",
+  "gui.cinemamod.videoqueueupnext": "下一个播放的视频信息 %s",
+
+  "gui.cinemamod.videosettingstitle": "视频设置",
+  "gui.cinemamod.videosettingsvolume": "音量设置",
+  "gui.cinemamod.videosettingsmute": "切换到其他窗口时静音视频",
+  "gui.cinemamod.videosettingscrosshair": "播放视频时隐藏准星",
+  "gui.cinemamod.videosettingsresolution": "屏幕分辨率: %d%s",
+  "gui.cinemamod.videosettingsrefreshrate": "屏幕刷新率: %d %s",
+
+  "gui.cinemamod.videorequesttitle": "视频请求浏览器",
+  "gui.cinemamod.videorequestbtn": "请求"
+}

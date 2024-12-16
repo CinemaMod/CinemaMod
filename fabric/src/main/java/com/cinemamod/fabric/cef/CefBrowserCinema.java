@@ -14,6 +14,13 @@ import java.nio.ByteBuffer;
 
 public class CefBrowserCinema extends CefBrowserOsr {
 
+    protected final Component dummyComponent = new Component() {
+        @Override
+        public Point getLocationOnScreen() {
+            return new Point(0, 0);
+        }
+    };
+
     public final CefBrowserCinemaRenderer renderer = new CefBrowserCinemaRenderer(true);
 
     public CefBrowserCinema(CefClient client, String url, boolean transparent, CefRequestContext context) {

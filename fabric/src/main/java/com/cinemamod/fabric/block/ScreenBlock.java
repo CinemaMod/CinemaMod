@@ -1,10 +1,13 @@
 package com.cinemamod.fabric.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.registry.Registry;
+import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
@@ -12,18 +15,20 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Function;
+
 public class ScreenBlock extends Block implements BlockEntityProvider {
 
     public static Identifier IDENT;
     public static ScreenBlock SCREEN_BLOCK;
 
-    public ScreenBlock() {
-        super(FabricBlockSettings.create().solid().strength(-1.0f, 3600000.0F).dropsNothing().nonOpaque());
+    public ScreenBlock(Settings settings) {
+        super(settings);
     }
 
     @Override
     public BlockRenderType getRenderType(BlockState blockState) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+        return BlockRenderType.INVISIBLE;
     }
 
     @Override
@@ -32,10 +37,13 @@ public class ScreenBlock extends Block implements BlockEntityProvider {
     }
 
     public static void register() {
-        IDENT = new Identifier("cinemamod", "screen");
-        SCREEN_BLOCK = new ScreenBlock();
+        IDENT = Identifier.of("cinemamod", "screen_block");
+        final RegistryKey<Block> registryKey = RegistryKey.of(RegistryKeys.BLOCK, IDENT);
 
-        Registry.register(Registries.BLOCK, IDENT, SCREEN_BLOCK);
+        Settings settings = AbstractBlock.Settings.create().solid().strength(1.0f, 3600000.0F).dropsNothing().registryKey(registryKey);
+        SCREEN_BLOCK = new ScreenBlock(settings);
+
+        Registry.register(Registries.BLOCK, registryKey, SCREEN_BLOCK);
     }
 
     @Nullable

@@ -1,5 +1,6 @@
 package com.cinemamod.fabric.gui;
 
+import com.cinemamod.fabric.CinemaMod;
 import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.gui.widget.VideoHistoryListWidget;
 import com.cinemamod.fabric.gui.widget.VideoListWidget;
@@ -7,15 +8,22 @@ import com.cinemamod.fabric.video.list.VideoList;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.render.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 
 import java.util.Locale;
+import java.util.function.Function;
+
+import static net.minecraft.client.render.RenderPhase.*;
+import static net.minecraft.client.render.RenderPhase.COLOR_MASK;
 
 public class VideoHistoryScreen extends Screen {
 
-    protected static final Identifier TEXTURE = new Identifier("textures/gui/social_interactions.png");
+    protected static final Identifier TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/menuui_trans.png");
     protected static final Text SEARCH_TEXT = Text.translatable("gui.socialInteractions.search_hint").formatted(Formatting.ITALIC).formatted(Formatting.GRAY);
 
     private TextFieldWidget searchBox;
@@ -23,7 +31,7 @@ public class VideoHistoryScreen extends Screen {
     private String currentSearch = "";
 
     public VideoHistoryScreen() {
-        super(Text.of("Video History"));
+        super(Text.translatable("gui.cinemamod.videohistorytitle"));
     }
 
     @Override
@@ -41,25 +49,26 @@ public class VideoHistoryScreen extends Screen {
         videoListWidget = new VideoHistoryListWidget(videoList, client, this.width, this.height, 88, this.method_31361(), 19);
     }
 
-    @Override
-    public void tick() {
-        super.tick();
-        this.searchBox.tick();
-    }
+    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
 
     public void renderBackground(DrawContext context) {
+        //Create a Function<Identifier, RenderLayer> GUI_TEXTURED from RenderLayer class
+        Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+            return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+        });
+        super.applyBlur();
         int i = this.method_31362() + 3;
-        super.renderBackground(context);
-        context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i,64,1,1,236, 8, 256, 256);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
-            context.drawTexture(TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16);
-        context.drawTexture(TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8);
-        context.drawTexture(TEXTURE, i + 10, 76, 243, 1, 12, 12);
+            context.drawTexture(GUI_TEXTURED, TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16, 256, 256);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8, 256, 256);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i + 10, 76, 243, 1, 12, 12, 256, 256);
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
         this.renderBackground(context);
         videoListWidget.render(context, mouseX, mouseY, delta);
         if (!this.searchBox.isFocused() && this.searchBox.getText().isEmpty()) {
@@ -67,7 +76,6 @@ public class VideoHistoryScreen extends Screen {
         } else {
             this.searchBox.render(context, mouseX, mouseY, delta);
         }
-        super.render(context, mouseX, mouseY, delta);
     }
 
     private int method_31359() {
@@ -114,9 +122,9 @@ public class VideoHistoryScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        videoListWidget.mouseScrolled(mouseX, mouseY, amount);
-        return super.mouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount, double verticalAmount) {
+        videoListWidget.mouseScrolled(mouseX, mouseY, amount, verticalAmount);
+        return super.mouseScrolled(mouseX, mouseY, amount, verticalAmount);
     }
 
 }

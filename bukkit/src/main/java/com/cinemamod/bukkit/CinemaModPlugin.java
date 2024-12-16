@@ -19,19 +19,27 @@ import com.cinemamod.bukkit.util.NetworkUtil;
 import com.cinemamod.bukkit.util.ProtocolLibUtil;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import javax.json.JsonObject;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 public class CinemaModPlugin extends JavaPlugin {
 
     private CinemaModConfig cinemaModConfig;
+    private CinemaLanguageConfig cinemaLanguageConfig;
     private TheaterManager theaterManager;
     private VideoStorage videoStorage;
     private PlayerDataManager playerDataManager;
 
     public CinemaModConfig getCinemaModConfig() {
         return cinemaModConfig;
+    }
+
+    public CinemaLanguageConfig getCinemaLanguageConfig() {
+        return cinemaLanguageConfig;
     }
 
     public TheaterManager getTheaterManager() {
@@ -48,11 +56,13 @@ public class CinemaModPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         saveDefaultConfig();
 
         cinemaModConfig = new CinemaModConfig();
         cinemaModConfig.youtubeDataApiKey = getConfig().getString("youtube-data-api-key");
         cinemaModConfig.enableTabTheaterList = getConfig().getBoolean("enable-tab-theater-list");
+        cinemaModConfig.lang = getConfig().getString("lang");
         cinemaModConfig.useMysql = getConfig().getBoolean("storage.mysql.use");
         cinemaModConfig.mysqlHost = getConfig().getString("storage.mysql.host");
         cinemaModConfig.mysqlPort = getConfig().getInt("storage.mysql.port");
@@ -66,8 +76,11 @@ public class CinemaModPlugin extends JavaPlugin {
             getLogger().warning("Invalid YouTube Data API V3 key. YouTube videos will not be able to be requested.");
         }
 
+        File langFile = new File(getDataFolder(), cinemaModConfig.lang + ".json");
+        cinemaLanguageConfig = new CinemaLanguageConfig(langFile);
+
         theaterManager = new TheaterManager(this);
-        theaterManager.loadFromConfig(getConfig().getConfigurationSection("theaters"));
+        theaterManager.loadFromConfig(Objects.requireNonNull(getConfig().getConfigurationSection("theaters")));
 
         SQLDriver sqlDriver = null;
 

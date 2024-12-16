@@ -1,5 +1,6 @@
 package com.cinemamod.fabric.gui;
 
+import com.cinemamod.fabric.CinemaMod;
 import com.cinemamod.fabric.CinemaModClient;
 import com.cinemamod.fabric.gui.widget.VideoQueueWidget;
 import com.cinemamod.fabric.util.NetworkUtil;
@@ -10,26 +11,37 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget.Builder;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.function.Function;
+
+import static net.minecraft.client.render.RenderPhase.*;
+import static net.minecraft.client.render.RenderPhase.COLOR_MASK;
 
 public class VideoQueueScreen extends Screen {
 
-    protected static final Identifier TEXTURE = new Identifier("textures/gui/social_interactions.png");
+    protected static final Identifier TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/menuui_trans.png");
     protected static KeyBinding keyBinding;
 
     public VideoQueueWidget videoQueueWidget;
 
     public VideoQueueScreen() {
-        super(Text.of("Video Queue"));
+        super(Text.translatable("gui.cinemamod.videoqueuetitle"));
     }
 
     @Override
     protected void init() {
         videoQueueWidget = new VideoQueueWidget(this, client, this.width, this.height, 68, this.method_31361(), 19);
-        ButtonWidget.Builder videoSettingsBuilder = new Builder(Text.of("Video Settings"), button -> {
+        ButtonWidget.Builder videoSettingsBuilder = new Builder(Text.translatable("gui.cinemamod.videosettingstitle"), button -> {
             client.setScreen(new VideoSettingsScreen());
         });
 
@@ -54,29 +66,36 @@ public class VideoQueueScreen extends Screen {
         return (this.width - 238) / 2;
     }
 
+    private static final Function<Identifier, RenderLayer> GUI_TEXTURED = null;
+
     public void renderBackground(DrawContext context) {
+        //Create a Function<Identifier, RenderLayer> GUI_TEXTURED from RenderLayer class
+        Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+            return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+        });
         int i = this.method_31362() + 3;
-        super.renderBackground(context);
-        context.drawTexture(TEXTURE, i, 64, 1, 1, 236, 8);
+        context.drawTexture(GUI_TEXTURED, TEXTURE, i, 64, 1, 1, 236, 8, 256, 256);
         int j = this.method_31360();
         for (int k = 0; k < j; ++k)
-            context.drawTexture(TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16);
-        context.drawTexture(TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8);
-        context.drawCenteredTextWithShadow(this.client.textRenderer, Text.of("Video Queue - " + videoQueueWidget.children().size() + " entries"), this.width / 2, 64 - 10, -1);
+            context.drawTexture(GUI_TEXTURED,TEXTURE, i, 72 + 16 * k, 1, 10, 236, 16, 256, 256);
+        context.drawTexture(GUI_TEXTURED,TEXTURE, i, 72 + 16 * j, 1, 27, 236, 8, 256, 256);
+        context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueueentries", videoQueueWidget.children().size()), this.width / 2, 64 - 10, -1);
         if (videoQueueWidget.children().isEmpty()) {
-            context.drawCenteredTextWithShadow(this.client.textRenderer, Text.of("No videos queued"), this.width / 2, (56 + this.method_31361()) / 2, -1);
+            context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueuenovideos"), this.width / 2, (56 + this.method_31361()) / 2, -1);
         } else {
-            if (videoQueueWidget.getScrollAmount() == 0f) {
-                context.drawCenteredTextWithShadow(this.client.textRenderer, Text.of("UP NEXT ->"), -158 + this.width / 2, 64 + 12, -1);
-            }
+            //not found getScrollAmount()
+//            if (videoQueueWidget.getScrollAmount() == 0f) {
+//                context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueueupnext", " ->"), -158 + this.width / 2, 64 + 12, -1);
+//            }
+            context.drawCenteredTextWithShadow(this.client.textRenderer, Text.translatable("gui.cinemamod.videoqueueupnext", " ->"), -158 + this.width / 2, 64 + 12, -1);
         }
     }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.render(context, mouseX, mouseY, delta);
         this.renderBackground(context);
         videoQueueWidget.render(context, mouseX, mouseY, delta);
-        super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
@@ -99,9 +118,9 @@ public class VideoQueueScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        videoQueueWidget.mouseScrolled(mouseX, mouseY, amount);
-        return super.mouseScrolled(mouseX, mouseY, amount);
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount, double verticalAmount) {
+        videoQueueWidget.mouseScrolled(mouseX, mouseY, amount, verticalAmount);
+        return super.mouseScrolled(mouseX, mouseY, amount, verticalAmount);
     }
 
     public static void registerKeyInput() {

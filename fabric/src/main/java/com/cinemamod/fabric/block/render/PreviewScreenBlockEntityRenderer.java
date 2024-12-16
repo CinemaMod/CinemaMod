@@ -33,14 +33,13 @@ public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<Pre
         if (previewScreen == null) return;
         RenderSystem.enableDepthTest();
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        renderScreenTexture(previewScreen, matrices, tessellator, buffer);
-        renderVideoThumbnail(previewScreen, matrices, tessellator, buffer);
+        renderScreenTexture(previewScreen, matrices, tessellator);
+        renderVideoThumbnail(previewScreen, matrices, tessellator);
         renderScreenText(previewScreen, matrices, vertexConsumers);
         RenderSystem.disableDepthTest();
     }
 
-    private static void renderScreenTexture(PreviewScreen previewScreen, MatrixStack matrices, Tessellator tessellator, BufferBuilder buffer) {
+    private static void renderScreenTexture(PreviewScreen previewScreen, MatrixStack matrices, Tessellator tessellator) {
         NativeImageBackedTexture texture = previewScreen.hasVideoInfo() ? previewScreen.getActiveTexture() : previewScreen.getStaticTexture();
 
         if (texture != null) {
@@ -49,12 +48,12 @@ public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<Pre
             RenderUtil.moveForward(matrices, previewScreen.getFacing(), 0.008f);
             RenderUtil.fixRotation(matrices, previewScreen.getFacing());
             matrices.scale(3, 2, 0);
-            RenderUtil.renderTexture(matrices, tessellator, buffer, texture.getGlId());
+            RenderUtil.renderTexture(matrices, tessellator, texture.getGlId());
             matrices.pop();
         }
     }
 
-    private static void renderVideoThumbnail(PreviewScreen previewScreen, MatrixStack matrices, Tessellator tessellator, BufferBuilder buffer) {
+    private static void renderVideoThumbnail(PreviewScreen previewScreen, MatrixStack matrices, Tessellator tessellator) {
         NativeImageBackedTexture texture = previewScreen.getThumbnailTexture();
 
         if (texture != null) {
@@ -65,7 +64,7 @@ public class PreviewScreenBlockEntityRenderer implements BlockEntityRenderer<Pre
             RenderUtil.moveForward(matrices, previewScreen.getFacing(), 0.01f);
             RenderUtil.fixRotation(matrices, previewScreen.getFacing());
             matrices.scale(3 / 1.5f, 2 / 1.5f, 0);
-            RenderUtil.renderTexture(matrices, tessellator, buffer, texture.getGlId());
+            RenderUtil.renderTexture(matrices, tessellator, texture.getGlId());
             matrices.pop();
         }
     }

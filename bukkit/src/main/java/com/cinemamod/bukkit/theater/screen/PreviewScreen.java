@@ -2,7 +2,7 @@ package com.cinemamod.bukkit.theater.screen;
 
 import com.cinemamod.bukkit.buffer.PacketByteBufReimpl;
 import com.cinemamod.bukkit.buffer.PacketByteBufSerializable;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 public class PreviewScreen implements PacketByteBufSerializable<PreviewScreen> {
 

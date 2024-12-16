@@ -17,9 +17,14 @@ import com.cinemamod.fabric.util.NetworkUtil;
 import com.cinemamod.fabric.video.list.VideoListManager;
 import com.cinemamod.fabric.video.queue.VideoQueue;
 import net.fabricmc.api.ClientModInitializer;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 
 import java.io.IOException;
+
+import static com.cinemamod.fabric.block.ScreenBlock.SCREEN_BLOCK;
 
 public class CinemaModClient implements ClientModInitializer {
 

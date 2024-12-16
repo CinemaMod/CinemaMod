@@ -25,12 +25,11 @@ public class ScreenBlockEntityRenderer implements BlockEntityRenderer<ScreenBloc
         if (screen == null || !screen.isVisible()) return;
         RenderSystem.enableDepthTest();
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        renderScreenTexture(screen, matrices, tessellator, buffer);
+        renderScreenTexture(screen, matrices, tessellator);
         RenderSystem.disableDepthTest();
     }
 
-    private static void renderScreenTexture(Screen screen, MatrixStack matrices, Tessellator tessellator, BufferBuilder buffer) {
+    private static void renderScreenTexture(Screen screen, MatrixStack matrices, Tessellator tessellator) {
         matrices.push();
         matrices.translate(1, 1, 0);
         RenderUtil.moveForward(matrices, screen.getFacing(), 0.008f);
@@ -38,9 +37,9 @@ public class ScreenBlockEntityRenderer implements BlockEntityRenderer<ScreenBloc
         matrices.scale(screen.getWidth(), screen.getHeight(), 0);
         if (screen.hasBrowser()) {
             int glId = screen.getBrowser().renderer.getTextureID();
-            RenderUtil.renderTexture(matrices, tessellator, buffer, glId);
+            RenderUtil.renderTexture(matrices, tessellator, glId);
         } else {
-            RenderUtil.renderBlack(matrices, tessellator, buffer);
+            RenderUtil.renderBlack(matrices, tessellator);
         }
         matrices.pop();
     }

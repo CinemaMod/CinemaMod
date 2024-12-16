@@ -23,7 +23,7 @@ public class ScreenBlockEntity extends BlockEntity {
     }
 
     public static void register() {
-        IDENT = new Identifier("cinemamod", "screen_block_entity");
+        IDENT = Identifier.of("cinemamod", "screen_block_entity");
         SCREEN_BLOCK_ENTITY = FabricBlockEntityTypeBuilder
                 .create(ScreenBlockEntity::new, ScreenBlock.SCREEN_BLOCK)
                 .build();

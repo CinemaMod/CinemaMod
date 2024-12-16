@@ -10,24 +10,33 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ElementListWidget;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderPhase;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TriState;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static net.minecraft.client.gui.screen.multiplayer.SocialInteractionsPlayerListEntry.*;
+import static net.minecraft.client.render.RenderPhase.*;
+import static net.minecraft.client.render.RenderPhase.COLOR_MASK;
 
 public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWidgetEntry> implements Comparable<VideoQueueWidgetEntry> {
 
-    private static final Identifier UPVOTE_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/upvote.png");
-    private static final Identifier UPVOTE_SELECTED_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/upvote_selected.png");
-    private static final Identifier UPVOTE_ACTIVE_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/upvote_active.png");
-    private static final Identifier DOWNVOTE_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/downvote.png");
-    private static final Identifier DOWNVOTE_SELECTED_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/downvote_selected.png");
-    private static final Identifier DOWNVOTE_ACTIVE_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/downvote_active.png");
-    private static final Identifier TRASH_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/trash.png");
-    private static final Identifier TRASH_SELECTED_TEXTURE = new Identifier(CinemaMod.MODID, "textures/gui/trash_selected.png");
+    private static final Identifier UPVOTE_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/upvote.png");
+    private static final Identifier UPVOTE_SELECTED_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/upvote_selected.png");
+    private static final Identifier UPVOTE_ACTIVE_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/upvote_active.png");
+    private static final Identifier DOWNVOTE_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/downvote.png");
+    private static final Identifier DOWNVOTE_SELECTED_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/downvote_selected.png");
+    private static final Identifier DOWNVOTE_ACTIVE_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/downvote_active.png");
+    private static final Identifier TRASH_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/trash.png");
+    private static final Identifier TRASH_SELECTED_TEXTURE = Identifier.of(CinemaMod.MODID, "textures/gui/trash_selected.png");
 
     private final VideoQueueScreen parent;
     private final QueuedVideo queuedVideo;
@@ -36,6 +45,10 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
     private boolean downVoteButtonSelected;
     private boolean upVoteButtonSelected;
     private boolean trashButtonSelected;
+
+    private final Function<Identifier, RenderLayer> GUI_TEXTURED = Util.memoize((texture) -> {
+        return RenderLayer.of("gui_textured_overlay", VertexFormats.POSITION_TEXTURE_COLOR, VertexFormat.DrawMode.QUADS, 1536, RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, TriState.DEFAULT, false)).program(POSITION_TEXTURE_COLOR_PROGRAM).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(ALWAYS_DEPTH_TEST).writeMaskState(COLOR_MASK).build(false));
+    });
 
     public VideoQueueWidgetEntry(VideoQueueScreen parent, QueuedVideo queuedVideo, MinecraftClient client) {
         this.parent = parent;
@@ -74,11 +87,11 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
         downVoteButtonSelected = mouseX > downVoteButtonPosX && mouseX < downVoteButtonPosX + 12 && mouseY > downVoteButtonPosY && mouseY < downVoteButtonPosY + 12;
 
         if (queuedVideo.getClientState() == -1) {
-            context.drawTexture(DOWNVOTE_ACTIVE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_ACTIVE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         } else if (downVoteButtonSelected) {
-            context.drawTexture(DOWNVOTE_SELECTED_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_SELECTED_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 32F, 32F, 12, 12,  8, 8, 8, 8);
         } else {
-            context.drawTexture(DOWNVOTE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,DOWNVOTE_TEXTURE, downVoteButtonPosX, downVoteButtonPosY, 32F, 32F, 12, 12, 12, 8, 8, 8, 8);
         }
     }
 
@@ -89,11 +102,11 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
         upVoteButtonSelected = mouseX > upVoteButtonPosX && mouseX < upVoteButtonPosX + 12 && mouseY > upVoteButtonPosY && mouseY < upVoteButtonPosY + 12;
 
         if (queuedVideo.getClientState() == 1) {
-            context.drawTexture(UPVOTE_ACTIVE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_ACTIVE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         } else if (upVoteButtonSelected) {
-            context.drawTexture(UPVOTE_SELECTED_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_SELECTED_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         } else {
-            context.drawTexture(UPVOTE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+            context.drawTexture(GUI_TEXTURED,UPVOTE_TEXTURE, upVoteButtonPosX, upVoteButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
         }
     }
 
@@ -105,9 +118,9 @@ public class VideoQueueWidgetEntry extends ElementListWidget.Entry<VideoQueueWid
             trashButtonSelected = mouseX > trashButtonPosX && mouseX < trashButtonPosX + 12 && mouseY > trashButtonPosY && mouseY < trashButtonPosY + 12;
 
             if (trashButtonSelected) {
-                context.drawTexture(TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+                context.drawTexture(GUI_TEXTURED,TRASH_SELECTED_TEXTURE, trashButtonPosX, trashButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
             } else {
-                context.drawTexture(TRASH_TEXTURE, trashButtonPosX, trashButtonPosY, 12, 12, 32F, 32F, 8, 8, 8, 8);
+                context.drawTexture(GUI_TEXTURED,TRASH_TEXTURE, trashButtonPosX, trashButtonPosY, 32F, 32F, 12, 12, 8, 8, 8, 8);
             }
         }
     }
