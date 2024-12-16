@@ -22,7 +22,7 @@ public class PlayerListUpdateTask implements Runnable {
 
         footerBuilder.add("");
         footerBuilder.add("");
-        footerBuilder.add(ChatColor.BOLD + "NOW PLAYING" + ChatColor.RESET);
+        footerBuilder.add(ChatColor.BOLD + cinemaModPlugin.getCinemaLanguageConfig().getMessage("now-playing", "NOW PLAYING") + ChatColor.RESET);
         footerBuilder.add(ChatColor.STRIKETHROUGH + "                    " + ChatColor.RESET);
 
         for (Theater theater : cinemaModPlugin.getTheaterManager().getTheaters()) {
@@ -33,7 +33,7 @@ public class PlayerListUpdateTask implements Runnable {
             final String playing;
 
             if (!theater.isPlaying()) {
-                playing = "Nothing";
+                playing = cinemaModPlugin.getCinemaLanguageConfig().getMessage("nothing", "Nothing");
             } else {
                 playing = theater.getPlaying().getVideoInfo().getTitleShort();
             }

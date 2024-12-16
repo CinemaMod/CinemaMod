@@ -80,7 +80,7 @@ public class TheaterManager {
                     theater = new StaticTheater(cinemaModPlugin, theaterId, theaterName, theaterHidden, screen, staticUrl, staticResWidth, staticResHeight);
                     break;
                 default:
-                    throw new RuntimeException("Unknown theater type for " + theaterId);
+                    throw new RuntimeException(cinemaModPlugin.getCinemaLanguageConfig().getMessage("unknown-theater-type-for", "Unknown theater type for ") + theaterId);
             }
 
             if (theaterSection.isSet(theaterId + ".preview-screens")) {

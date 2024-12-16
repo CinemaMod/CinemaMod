@@ -3,6 +3,7 @@
 youtube-data-api-key: abc123
 
 enable-tab-theater-list: true
+lang: zh_cn
 
 storage:
   mysql:

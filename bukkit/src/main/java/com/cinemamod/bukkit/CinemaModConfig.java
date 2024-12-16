@@ -4,6 +4,7 @@ public class CinemaModConfig {
 
     public String youtubeDataApiKey = "abc123";
     public boolean enableTabTheaterList = true;
+    public String lang = "zh_cn";
 
     /*
      * Storage
